@@ -68,8 +68,9 @@
         var n = /P[ée]riode\s*(\d)/i.exec(h.textContent);
         page.sections.push({ id: id, titre: h.textContent.trim(), periode: n ? parseInt(n[1], 10) : null });
       });
-      GS.annoteTitres(div);
+      // le titre, avant les badges de dates (sinon il porterait leur texte)
       page.titre = h1 ? h1.textContent.trim() : page.doc.titre;
+      GS.annoteTitres(div);
       page.html = div.innerHTML;
       if (h1) h1.remove();
       page.corps = div.innerHTML;
