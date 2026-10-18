@@ -36,6 +36,8 @@ sys.path.insert(0, ICI)
 import classe  # noqa: E402
 ns = classe.manifeste("corpus")
 entrees, CARTES = ns["entrees"], ns["CARTES"]
+COUVERTURE = int(bool(next((m for m in classe.charger()["materiel"] if m.get("cle") == "cartes-corpus"),
+                           {"couverture": True}).get("couverture")))
 
 REVUE = os.environ.get("REVUE_DIR", "/tmp")
 PORT = int(os.environ.get("PORT", "8932"))
@@ -56,12 +58,13 @@ def chrome():
 
 
 def pages_attendues(p):
-    """1 garde + les planches de cartes + les étiquettes + le tri + 1 crédits.
+    """la couverture (si le cahier en a une) + 1 garde + les planches de
+    cartes + les étiquettes + le tri + 1 crédits.
 
     Les constantes viennent de generer-cartes-corpus.py : 6 cartes par planche,
     20 étiquettes par planche."""
     n = sum(1 for _ in entrees(p))
-    return 1 + 2 * math.ceil(n / 6) + math.ceil(n / 20) + 1 + 1
+    return COUVERTURE + 1 + 2 * math.ceil(n / 6) + math.ceil(n / 20) + 1 + 1
 
 
 cibles = [int(a) for a in sys.argv[1:]] or sorted(CARTES)

@@ -93,7 +93,12 @@ Ce sont des demandes de l'enseignante, chacune née d'un premier jet refusé.
 2. **Les mots que l'enfant lit sont en Andika** (`--police-enfant`), avec les
    classes existantes (`.case`, `.item`, `.al`, `.carte-lettre`…). Un mot
    nouveau dans un élément qui n'en a pas : l'envelopper dans un `.case` ou
-   ajouter la classe à la liste en fin de `fiches.css`.
+   ajouter la classe à la liste du socle (`site/charte/socle.css`, « Les mots
+   que l'enfant lit » — tableaux et défis y sont déjà), puis
+   `classe.py generer`. Le thème ne peut pas la défaire.
+   Les couleurs de la consigne, du sous-objectif et du défi viennent de la
+   charte et de la période (accroches `--consigne-*`, `--sous-objectif-*`,
+   `--defi-*`, skill charte-graphique) : n'en écrire aucune en dur.
 3. **Des cases où une main de cinq ans peut écrire** : lettres ≥ 10 × 12 mm,
    chiffres ≥ 13 × 15 mm (`.lettre-case`, `.chiffre-case`).
 4. **Des images, jamais d'émoji ni de dessin fait main.** Pictogrammes Mulberry

@@ -4,6 +4,7 @@
 Une page par période (milieu) : site/imagier/periode-N.html, imprimée en PDF
 par scripts/generer-pdf.sh. Chaque cahier contient, pour les animaux et les
 plantes du milieu que liste le manifeste de l'imagier (classe.yml, `contenu`) :
+  0. la couverture (sauf `couverture: false` dans le matériel de classe.yml) ;
   1. le mode d'emploi (leçon en trois temps, préparation du matériel) ;
   2. les cartes de contrôle    — photographie + nom en script ;
   3. les cartes-photos         — la même photographie, emplacement du nom vide ;
@@ -28,6 +29,7 @@ IMAGIER = ns["IMAGIER"]
 CLASSE = classe.charger()
 MILIEUX = classe.milieux()
 COULEURS = [p["couleur"] for p in CLASSE["periodes"]]
+CAHIER = next((m for m in CLASSE["materiel"] if m.get("cle") == "imagier"), {"couverture": True})
 # Ce que rassemble l'imagier, dans ses titres (« Imagier » et l'intitulé) :
 # l'`intitule` du cahier dans le matériel de classe.yml.
 INTITULE = " ".join(["Imagier"] + [m["intitule"] for m in CLASSE["materiel"]
@@ -66,7 +68,7 @@ def repere(p, milieu, groupe):
 def carte(p, milieu, groupe, slug, nom, avec_nom):
     mot = ('<div class="mot%s">%s</div>' % (classe_mot(nom), echappe(nom))
            if avec_nom else '<div class="mot vide"></div>')
-    return ('<div class="carte">'
+    return ('<div class="carte" data-composant="carte-imagier">'
             '<div class="photo"><img src="img/%s.jpg" alt="%s"></div>'
             '%s%s</div>' % (slug, echappe(nom) if avec_nom else "", mot,
                             repere(p, milieu, groupe)))
@@ -81,7 +83,7 @@ def planches(p, milieu, entrees, avec_nom, intitule):
         cartes = "\n    ".join(carte(p, milieu, g, s, n, avec_nom) for g, s, n in lot)
         out.append(
             '<section class="planche">\n'
-            '  <div class="entete-planche"><span class="milieu">Période %d · %s</span>'
+            '  <div class="entete-planche" data-composant="entete-planche"><span class="milieu">Période %d · %s</span>'
             '<span>%s — planche %d/%d</span>'
             '<span>%s · @NIVEAU@</span></div>\n'
             '  <div class="cartes">\n    %s\n  </div>\n'
@@ -96,11 +98,11 @@ def planche_etiquettes(p, milieu, entrees):
     for i in range(total):
         lot = entrees[i * ETIQUETTES_PAR_PLANCHE:(i + 1) * ETIQUETTES_PAR_PLANCHE]
         ets = "\n    ".join(
-            '<div class="etiquette"><div class="mot%s">%s</div>%s</div>'
+            '<div class="etiquette" data-composant="etiquette"><div class="mot%s">%s</div>%s</div>'
             % (classe_mot(n), echappe(n), repere(p, milieu, GROUPES[g])) for g, s, n in lot)
         rang = " — planche %d/%d" % (i + 1, total) if total > 1 else ""
         out.append('<section class="planche">\n'
-                   '  <div class="entete-planche"><span class="milieu">Période %d · %s</span>'
+                   '  <div class="entete-planche" data-composant="entete-planche"><span class="milieu">Période %d · %s</span>'
                    '<span>Étiquettes-mots (à découper)%s</span>'
                    '<span>%s · @NIVEAU@</span></div>\n'
                    '  <div class="etiquettes">\n    %s\n  </div>\n'
@@ -118,7 +120,8 @@ def liste(titre, entrees):
 
 
 def garde(p, milieu, description, faune, flore):
-    return """<section class="planche garde">
+    return """<section class="planche garde" data-composant="garde">
+  <span class="orne" data-orne="garde" aria-hidden="true"></span>
   <h1>L’imagier de {milieu_min}</h1>
   <p class="sous-titre">Cartes de nomenclature Montessori — période {p} · {description}</p>
 
@@ -189,7 +192,7 @@ def page_credits(p, entrees):
         lignes.append("<li><strong>%s</strong> (<em>%s</em>) — %s, licence %s.</li>"
                       % (echappe(n), echappe(c.get("taxon", "")), echappe(c["auteur"]),
                          echappe(c["licence"] or "voir la page de l’observation")))
-    return ('<section class="planche credits">\n'
+    return ('<section class="planche credits" data-composant="credits">\n'
             '  <h2>Crédits des photographies</h2>\n'
             '  <p>Les photographies de cet imagier proviennent d’<strong>iNaturalist</strong> '
             '(inaturalist.org). Ce sont des observations de <strong>qualité recherche</strong> — '
@@ -217,7 +220,9 @@ for p, cle, emoji, milieu, description in MILIEUX:
 <link rel="stylesheet" href="../charte/charte.css">
 <link rel="stylesheet" href="imagier.css">
 </head>
-<body data-periode="{p}">
+<body data-periode="{p}" data-support="papier" data-cahier="imagier">
+
+{couverture}
 
 {garde}
 
@@ -235,6 +240,8 @@ for p, cle, emoji, milieu, description in MILIEUX:
 </body>
 </html>
 """.format(p=p, milieu=milieu, intitule_titre=INTITULE.replace("Imagier", "Imagier Montessori", 1),
+           couverture=(classe.couverture(CLASSE, p, "Imagier Montessori", description)
+                       if CAHIER.get("couverture") else "<!-- sans couverture (classe.yml) -->"),
            garde=garde(p, milieu, description, faune, flore),
            controle=planches(p, milieu, toutes, True, "Cartes de contrôle (photo + nom)"),
            photos=planches(p, milieu, toutes, False, "Cartes-photos (sans le nom)"),

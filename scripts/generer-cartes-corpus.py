@@ -5,6 +5,7 @@ Les fiches d'évaluation X.1 et X.3 réclamaient « 12 cartes-images des
 corpus » que rien ne fabriquait. Un cahier par période, sur le modèle de
 l'imagier — site/cartes-corpus/periode-N.html, imprimé en PDF par
 scripts/generer-pdf.sh — contient :
+  0. la couverture (sauf `couverture: false` dans le matériel de classe.yml) ;
   1. le mode d'emploi (à quoi servent ces cartes, comment les préparer) ;
   2. les cartes de contrôle  — image + mot en script ;
   3. les cartes-images       — la même image, emplacement du nom vide ;
@@ -44,6 +45,7 @@ entrees = ns["entrees"]
 # Ce qui tient à la classe (milieux, niveau, en-tête) vient de classe.yml.
 CLASSE = classe.charger()
 MILIEUX = classe.milieux()
+CAHIER = next((m for m in CLASSE["materiel"] if m.get("cle") == "cartes-corpus"), {"couverture": True})
 # « l’imagier » suivi de l'`intitule` de l'imagier dans le matériel.
 IMAGIER = " ".join(["imagier"] + [m["intitule"] for m in CLASSE["materiel"]
                                   if m.get("cle") == "imagier" and m.get("intitule")][:1])
@@ -95,7 +97,7 @@ def carte(p, milieu, groupe, slug, nom, source, avec_nom):
     chemin, classe = image(slug, source)
     mot = ('<div class="mot%s">%s</div>' % (classe_mot(nom), echappe(nom))
            if avec_nom else '<div class="mot vide"></div>')
-    return ('<div class="carte">'
+    return ('<div class="carte" data-composant="carte-corpus">'
             '<div class="visuel %s"><img src="%s" alt="%s"></div>'
             '%s%s</div>' % (classe, chemin, echappe(nom) if avec_nom else "",
                             mot, repere(p, milieu, groupe)))
@@ -109,7 +111,7 @@ def planches(p, milieu, lot_complet, avec_nom, intitule):
         cartes = "\n    ".join(carte(p, milieu, g, s, n, src, avec_nom) for g, s, n, src in lot)
         out.append(
             '<section class="planche">\n'
-            '  <div class="entete-planche"><span class="milieu">Période %d · %s</span>'
+            '  <div class="entete-planche" data-composant="entete-planche"><span class="milieu">Période %d · %s</span>'
             '<span>%s — planche %d/%d</span>'
             '<span>Cartes-corpus · @NIVEAU@</span></div>\n'
             '  <div class="cartes">\n    %s\n  </div>\n'
@@ -126,10 +128,10 @@ def planches_etiquettes(p, milieu, lot_complet):
     for i in range(total):
         lot = lot_complet[i * par_page:(i + 1) * par_page]
         ets = "\n    ".join(
-            '<div class="etiquette"><div class="mot%s">%s</div>%s</div>'
+            '<div class="etiquette" data-composant="etiquette"><div class="mot%s">%s</div>%s</div>'
             % (classe_mot(n), echappe(n), repere(p, milieu, g)) for g, s, n, _ in lot)
         out.append('<section class="planche">\n'
-                   '  <div class="entete-planche"><span class="milieu">Période %d · %s</span>'
+                   '  <div class="entete-planche" data-composant="entete-planche"><span class="milieu">Période %d · %s</span>'
                    '<span>Étiquettes-mots (à découper) — planche %d/%d</span>'
                    '<span>Cartes-corpus · @NIVEAU@</span></div>\n'
                    '  <div class="etiquettes">\n    %s\n  </div>\n'
@@ -142,7 +144,7 @@ def planche_tri(p, milieu):
     trois barquettes. Le cahier de la période TRI_MILIEUX_PERIODE, qui fait le
     tour des milieux de l'année, porte en plus les étiquettes-milieux."""
     def bloc(titre, intitules):
-        cases = "".join('<div class="tri"><div class="mot-tri">%s</div></div>' % echappe(t)
+        cases = "".join('<div class="tri" data-composant="etiquette-tri"><div class="mot-tri">%s</div></div>' % echappe(t)
                         for t in intitules)
         return '<h3 class="titre-tri">%s</h3>\n  <div class="tris">%s</div>' % (titre, cases)
 
@@ -157,7 +159,7 @@ def planche_tri(p, milieu):
     else:
         corps = [bloc("Pour trier les cartes de ce cahier (fiche %d.1)" % p, TRI[p])]
     return ('<section class="planche">\n'
-            '  <div class="entete-planche"><span class="milieu">Période %d · %s</span>'
+            '  <div class="entete-planche" data-composant="entete-planche"><span class="milieu">Période %d · %s</span>'
             '<span>Étiquettes de tri (à coller sur les boîtes)</span>'
             '<span>Cartes-corpus · @NIVEAU@</span></div>\n'
             '  %s\n'
@@ -172,7 +174,8 @@ def liste(titre, entrees_groupe):
 
 def garde(p, milieu, groupes, total):
     c1, c2, c3 = CORPUS[p]
-    return """<section class="planche garde">
+    return """<section class="planche garde" data-composant="garde">
+  <span class="orne" data-orne="garde" aria-hidden="true"></span>
   <h1>Les mots de {milieu_min}</h1>
   <p class="sous-titre">Cartes-corpus — période {p} · les trois corpus de vocabulaire de la période</p>
 
@@ -256,7 +259,7 @@ def page_credits(lot_complet):
             texte = "%s — %s, licence %s" % (c.get("source", "?"),
                                              c.get("auteur", "?"), c.get("licence", "?"))
         lignes.append("<li><strong>%s</strong> — %s.</li>" % (echappe(nom), echappe(texte)))
-    return ('<section class="planche credits">\n'
+    return ('<section class="planche credits" data-composant="credits">\n'
             '  <h2>Crédits des images</h2>\n'
             '  <p>Les <strong>photographies</strong> viennent de l’%s de ce '
             'site (observations d’<strong>iNaturalist</strong>, licences libres). Les '
@@ -285,7 +288,9 @@ for p, cle, emoji, milieu, description in MILIEUX:
 <link rel="stylesheet" href="../charte/charte.css">
 <link rel="stylesheet" href="cartes-corpus.css">
 </head>
-<body data-periode="{p}">
+<body data-periode="{p}" data-support="papier" data-cahier="cartes-corpus">
+
+{couverture}
 
 {garde}
 
@@ -306,6 +311,9 @@ for p, cle, emoji, milieu, description in MILIEUX:
 </body>
 </html>
 """.format(p=p, milieu=milieu,
+           couverture=(classe.couverture(CLASSE, p, "Cartes-corpus de vocabulaire",
+                                         " · ".join(CORPUS[p]))
+                       if CAHIER.get("couverture") else "<!-- sans couverture (classe.yml) -->"),
            garde=garde(p, milieu, groupes, len(toutes)),
            controle=planches(p, milieu, toutes, True, "Cartes de contrôle (image + mot)"),
            images=planches(p, milieu, toutes, False, "Cartes-images (sans le mot)"),

@@ -16,7 +16,7 @@ chaque enseignant met à jour **sa** classe, quand il le veut.
 
 | Couche | Chemins | Synchronisée ? |
 |---|---|---|
-| **le moteur** | `scripts/`, `site/*.js` (sauf `site/classe.js`), `site/*.html`, `site/*.css`, `site/marked.min.js`, le socle de la charte : `site/charte/socle.css` et `site/charte/polices/` (Andika), `referentiel/` (la liste du programme **et le calendrier officiel de chaque année**, `calendrier-AAAA-AAAA.yml`), `.claude/skills/`, `.github/workflows/`, `tests/` | **oui** |
+| **le moteur** | `scripts/`, `site/*.js` (sauf `site/classe.js`), `site/*.html`, `site/*.css`, `site/marked.min.js`, les feuilles des cahiers (`site/fiches/fiches.css`, `site/imagier/imagier.css`, `site/cartes-corpus/cartes-corpus.css`), le socle de la charte : `site/charte/socle.css`, `site/charte/composants.css` et `site/charte/polices/` (Andika), `referentiel/` (la liste du programme **et le calendrier officiel de chaque année**, `calendrier-AAAA-AAAA.yml`), `.claude/skills/`, `.github/workflows/`, `tests/` | **oui** |
 | **la classe** | `classe.yml`, `classe/`, les documents `01-…` à `04-…`, `README.md`, les cahiers fabriqués (`site/fiches/*.html`, `site/imagier/`, `site/cartes-corpus/`, leurs images et crédits), `site/classe.json`, `site/classe.js`, les thèmes `site/charte/themes/` | **jamais** |
 | **fabriqué** | `site/charte/charte.css` (socle + thème), `site/charte/icones.svg` (icônes génériques + celles des milieux de `classe.yml`) | **jamais copiés** : refaits après la synchronisation, `python3 scripts/classe.py generer` puis `python3 scripts/generer-icones.py` (réseau) |
 | **à la main** | `CLAUDE.md` (il mêle les règles du moteur et l'identité de la classe) | ne reprendre que les règles générales, par une lecture attentive |
@@ -57,8 +57,10 @@ grandes ; l'entretien demande le modèle d'écriture cursive »).
 ```sh
 git checkout moteur/main -- scripts/ referentiel/ .claude/skills/ .github/workflows/ tests/ \
   site/app.js site/commun.js site/marked.min.js site/index.html site/imprimer.html \
-  site/app.css site/impression.css site/charte/socle.css site/charte/polices/
+  site/app.css site/impression.css site/charte/socle.css site/charte/composants.css site/charte/polices/ \
+  site/fiches/fiches.css site/imagier/imagier.css site/cartes-corpus/cartes-corpus.css
 python3 scripts/classe.py generer      # refait charte.css : nouveau socle + thème de la classe
+python3 scripts/verifier-theme.py      # le thème de la classe tient-il le contrat du nouveau moteur ?
 ```
 
 Puis **relire `git diff --cached`** fichier par fichier : rien de la classe
@@ -78,6 +80,11 @@ la leçon si elle vaut toujours, en la remontant.
   `classe.py verifier` refuser ces anciennes clés : ne garder que
   `calendrier: {zone: X}` — la zone qu'utilise l'enseignant, à lui
   demander si rien ne la dit — plus ses ponts propres s'il en a ajouté.
+- **Le thème** : il ne se synchronise jamais, mais il dépend des accroches
+  du moteur (skill charte-graphique, « Le contrat du thème »).
+  `verifier-theme.py` le dit si une accroche a disparu ou si le contrat a
+  changé ; le moteur s'engage à ne jamais renommer une accroche. Regarder
+  les captures et le PDF avec le nouveau moteur avant de committer.
 - **Nouvelles clés de `classe.yml`** : si le moteur en attend une que la
   classe n'a pas, `python3 scripts/classe.py verifier` le dit. L'ajouter
   avec la valeur par défaut annoncée par le skill concerné, et l'annoncer à

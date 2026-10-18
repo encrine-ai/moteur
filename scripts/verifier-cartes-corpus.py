@@ -148,7 +148,7 @@ for p in sorted(CARTES):
         continue
     html = open(page, encoding="utf-8").read()
     attendu = sum(1 for _ in entrees(p))
-    trouve = html.count('<div class="carte">')
+    trouve = len(re.findall(r'<div class="carte"[ >]', html))
     if trouve != attendu * 2:          # cartes de contrôle + cartes-images
         ennuis.append("periode-%d.html : %d cartes pour %d mots — page à régénérer"
                       % (p, trouve, attendu))

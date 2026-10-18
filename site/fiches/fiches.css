@@ -1,6 +1,12 @@
 /* Fiches élève — mise en page A4, une fiche par page.
    Les fiches à grand format (lettres, bandes, appariements) utilisent
    la classe .paysage : leur page passe en orientation paysage. */
+
+/* La feuille du moteur est rangée dans la couche « moteur » : l'habillage du
+   thème de la classe (charte.css, hors couche) l'emporte sur elle sans
+   surenchère de sélecteurs, et un style écrit dans la page (une fiche
+   resserrée à la main) l'emporte sur les deux. Skill charte-graphique. */
+@layer moteur {
 @page { size: A4 portrait; margin: 10mm 12mm; }
 @page paysage { size: A4 landscape; margin: 10mm 12mm; }
 .fiche.paysage { page: paysage; }
@@ -18,24 +24,25 @@ body {
      lecteurs PDF */
   padding-right: 1.2mm;
 }
-.fiche { page-break-after: always; padding-top: 2mm; }
+.fiche { page-break-after: always; padding-top: 2mm; position: relative; }
 .fiche:last-child { page-break-after: auto; }
 
 /* — En-tête de fiche — */
-.entete { display: flex; gap: 4mm; align-items: stretch; border: 1.2pt solid #333; border-radius: 3mm; overflow: hidden; margin-bottom: 4mm; }
+.entete { display: flex; gap: 4mm; align-items: stretch; border: 1.2pt solid var(--fiche-cadre, #333); border-radius: 3mm; overflow: hidden; margin-bottom: 4mm; }
 .entete .idext { flex: 1; padding: 2.5mm 4mm; font-size: 11pt; }
 .entete .idext .champ { display: inline-block; margin-right: 8mm; }
 .entete .idext .trait { display: inline-block; min-width: 45mm; border-bottom: 1pt solid #333; }
-.entete .cartouche { background: var(--periode-pale); padding: 2.5mm 4mm; text-align: right; min-width: 58mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.entete .cartouche { position: relative; background: var(--periode-pale); padding: 2.5mm 4mm; text-align: right; min-width: 58mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .entete .cartouche .ref { font-size: 8.5pt; color: var(--periode); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
 .entete .cartouche .dom { font-size: 8pt; color: #444; }
-.titre { font-family: var(--police-titre); font-size: 14pt; font-weight: 700; color: var(--periode); margin: 0 0 2mm; }
+.titre { position: relative; font-family: var(--police-titre); font-size: 14pt; font-weight: 700; color: var(--periode); margin: 0 0 2mm; }
 .consigne {
-  border: 1pt dashed #b08d2f; background: #fdf6e0; border-radius: 2mm;
-  padding: 2mm 4mm; font-size: 9.5pt; color: #4a3f1d; margin-bottom: 4mm;
+  /* les couleurs de la consigne sont des jetons que le thème peut fournir */
+  border: 1pt dashed var(--consigne-bord, var(--trait-fort)); background: var(--consigne-fond, var(--feuille-creuse)); border-radius: 2mm;
+  padding: 2mm 4mm; font-size: 9.5pt; color: var(--consigne-encre, var(--encre)); margin-bottom: 4mm;
   -webkit-print-color-adjust: exact; print-color-adjust: exact;
 }
-.consigne strong { color: #7a5c10; }
+.consigne strong { color: var(--consigne-accent, var(--periode)); }
 .pied-fiche { margin-top: 4mm; font-size: 8pt; color: #666; display: flex; justify-content: space-between; gap: 4mm; }
 .pied-fiche .codage { border: .8pt solid #999; border-radius: 2mm; padding: .5mm 3mm; }
 
@@ -140,10 +147,10 @@ td.coche { width: 22mm; height: 12mm; }
 /* — Niveaux et défis — */
 .niveau { display: inline-block; font-size: 8pt; font-weight: 700; border-radius: 999px; padding: .4mm 3mm; margin-left: 2mm; vertical-align: middle; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 .niveau.n1 { background: var(--periode-pale); color: var(--periode); border: .8pt solid var(--periode-trait); }
-.niveau.n2 { background: #e8f1fa; color: #1c4f80; border: .8pt solid #7fa8cd; }
-.sous-objectif { font-size: 8.5pt; color: #1c4f80; background: #eef4fb; border-left: 3pt solid #7fa8cd; padding: 1.5mm 3mm; margin: 0 0 3mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-.defi { border: 1.2pt solid #b0762f; background: #fdf1e0; border-radius: 2mm; padding: 2mm 4mm; margin-top: 4mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-.defi .etoile { font-weight: 700; color: #9a5f14; }
+.niveau.n2 { background: var(--sous-objectif-fond, var(--periode-pale)); color: var(--sous-objectif-encre, var(--encre)); border: .8pt solid var(--sous-objectif-bord, var(--periode-trait)); }
+.sous-objectif { font-size: 8.5pt; color: var(--sous-objectif-encre, var(--encre)); background: var(--sous-objectif-fond, var(--periode-pale)); border-left: 3pt solid var(--sous-objectif-bord, var(--periode-trait)); padding: 1.5mm 3mm; margin: 0 0 3mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.defi { position: relative; border: 1.2pt solid var(--defi-bord, var(--bouton-dor)); background: var(--defi-fond, var(--feuille-creuse)); border-radius: 2mm; padding: 2mm 4mm; margin-top: 4mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.defi .etoile { font-weight: 700; color: var(--defi-accent, var(--sapin)); }
 
 /* — Grandes lettres et cases à découper (format paysage) — */
 .lettres-decoupe { display: flex; gap: 3.5mm; flex-wrap: wrap; margin-top: 2.5mm; }
@@ -167,8 +174,7 @@ td.coche { width: 22mm; height: 12mm; }
 .paysage .pied-fiche { margin-top: 2mm; }
 .paysage .lettres-decoupe .carte-lettre, .paysage .grandes-cases .gc { height: 21mm; }
 
-/* — Les mots que l'enfant lit : en script, avec la police Andika (a et g à un
-   étage, l et I distincts), comme sur les cartes de l'imagier. La consigne,
-   l'en-tête et le pied, qui s'adressent à l'adulte, restent en Atkinson. — */
-.case, .appariement .item, .alphabet .al, .bande .c, .carte-lettre, .plaque,
-.bande-lettres, .mot-grand, .quadrillage td, .trace, .modele { font-family: var(--police-enfant); }
+/* — Les mots que l'enfant lit : leur police (Andika) est imposée par le
+   socle (charte/socle.css), hors de portée du thème et de cette feuille. — */
+
+} /* fin de la couche moteur */

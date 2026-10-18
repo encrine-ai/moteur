@@ -7,9 +7,10 @@ vacances, elles, sont nationales : referentiel/calendrier-<année>.yml les porte
 pour les trois zones, et `generer` n'y prend que celles de la zone de la classe. Le site ne lit pas le
 YAML : il charge site/classe.js, fabriqué ici ; scripts/generer-pdf.sh lit
 site/classe.json. La charte que chargent toutes les pages, site/charte/charte.css,
-est elle aussi fabriquée ici : le socle commun (site/charte/socle.css) suivi du
-style du thème choisi (site/charte/themes/<theme>/theme.css). Ces fichiers sont
-versionnés, comme les cahiers.
+est elle aussi fabriquée ici : le socle commun (site/charte/socle.css), les
+composants communs du moteur (site/charte/composants.css), puis le thème choisi
+(site/charte/themes/<theme>/theme.css et, s'il en a un, son habillage.css).
+Ces fichiers sont versionnés, comme les cahiers.
 
 Usage :
   python3 scripts/classe.py generer    # écrit site/classe.json, site/classe.js
@@ -18,10 +19,12 @@ Usage :
                                        # matériel déclaré et les pages fabriquées
                                        # ne concordent pas, ou si une donnée de
                                        # classe est écrite en dur dans le moteur
-                                       # (site/*.js, *.html, *.css, scripts/)
+                                       # (site/*.js, *.html, *.css, scripts/),
+                                       # ou si le thème enfreint son contrat
+                                       # (scripts/verifier-theme.py)
 
 Depuis un autre script :
-  from classe import charger, milieux, chemin, manifeste, cahiers
+  from classe import charger, milieux, chemin, manifeste, cahiers, couverture
 """
 import datetime
 import json
@@ -111,7 +114,48 @@ def charger():
             source, nom, budget = CAHIERS[m["cle"]]
             m["periodes"] = m.get("periodes") or []
             m.update(source=source, pdf="pdf/%s-periode-{n}.pdf" % nom, nom=nom, budget=budget)
+            # la couverture du cahier : l'imagier et les cartes-corpus en ont
+            # une, sauf `couverture: false` (une page de plus par cahier)
+            if m["cle"] in COUVERTURES:
+                m.setdefault("couverture", True)
     return c
+
+
+# Les cahiers qui s'ouvrent sur une couverture (ceux qu'on range et qu'on
+# reprend : les fiches élève, photocopiées une à une, n'en ont pas).
+COUVERTURES = ("imagier", "cartes-corpus")
+
+
+def couverture(c, n, cahier, sous_titre=""):
+    """La couverture d'un cahier de la période n : une `section.planche`, la
+    première page du PDF. La structure est fixe et documentée (skill
+    charte-graphique, « Les composants ») : le thème l'habille par ses
+    classes et remplit ses ornements, il ne la réécrit pas."""
+    p = c["periodes"][n - 1]
+    def e(t):
+        return t.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    orne = '<span class="orne" data-orne="%s" aria-hidden="true"></span>'
+    return (
+        '<section class="planche couverture" data-composant="couverture" data-periode="%d" data-cle="%s">\n'
+        '  %s\n'
+        '  <div class="couverture-tete"><span class="couverture-classe">%s</span>'
+        '<span class="couverture-annee">%s · %s</span></div>\n'
+        '  <div class="couverture-centre">\n'
+        '    %s\n'
+        '    <p class="couverture-cahier">%s</p>\n'
+        '    <h1 class="couverture-titre">%s</h1>\n'
+        '    %s\n'
+        '  </div>\n'
+        '  <div class="couverture-pied"><span class="couverture-periode">'
+        '<span class="couverture-num">%d</span>Période %d</span>'
+        '<span class="couverture-projet">« %s »</span></div>\n'
+        '  %s\n'
+        '</section>' % (
+            n, e(p["cle"]), orne % "couverture-fond",
+            e(c["nom"]), e(c["niveau"]["libelle"]), e(c["annee"]),
+            orne % "couverture-embleme", e(cahier), e(p["milieu"]),
+            '<p class="couverture-sous">%s</p>' % e(sous_titre) if sous_titre else "",
+            n, n, e(c["projet"]), orne % "couverture-tampon"))
 
 
 def cahiers(c=None, cle=None):
@@ -156,20 +200,31 @@ def _contenus(c):
     return texte, js
 
 
+# Les feuilles d'un thème, dans l'ordre : ses jetons, puis l'habillage de ses
+# composants (facultatif). skill charte-graphique, « Le contrat du thème ».
+FEUILLES_THEME = ("theme.css", "habillage.css")
+
+
 def _charte(c):
-    """charte.css : le socle, puis le thème, ses url() réécrites depuis site/charte/.
+    """charte.css : le socle, les composants communs du moteur, puis les
+    feuilles du thème, leurs url() réécrites depuis site/charte/.
     Un seul fichier plutôt qu'un @import : chaque page ne fait qu'une requête,
     et l'impression des PDF ne dépend pas d'une feuille chargée en cascade."""
     dossier = CHARTE / "themes" / c["theme"]
-    theme = (dossier / "theme.css").read_text(encoding="utf-8")
     prefixe = "themes/%s/" % c["theme"]
-    theme = re.sub(r'url\("(?![a-z]+:|/)([^"]+)"\)',
-                   lambda m: 'url("%s%s")' % (prefixe, m.group(1)), theme)
-    return ("/* Fabriqué par scripts/classe.py : socle.css, puis le thème « %s » "
-            "(themes/%s/theme.css).\n   Ne pas modifier à la main : éditer ces deux fichiers, "
+    feuilles = [f for f in FEUILLES_THEME if (dossier / f).is_file()]
+    theme = ""
+    for f in feuilles:
+        css = (dossier / f).read_text(encoding="utf-8")
+        css = re.sub(r'url\("(?![a-z]+:|/)([^"]+)"\)',
+                     lambda m: 'url("%s%s")' % (prefixe, m.group(1)), css)
+        theme += "\n/* ——— themes/%s/%s ——— */\n" % (c["theme"], f) + css
+    return ("/* Fabriqué par scripts/classe.py : socle.css, composants.css, puis le thème « %s » "
+            "(themes/%s/ : %s).\n   Ne pas modifier à la main : éditer ces fichiers, "
             "puis relancer  python3 scripts/classe.py generer */\n\n"
-            % (c["theme"], c["theme"])
-            + (CHARTE / "socle.css").read_text(encoding="utf-8") + "\n" + theme)
+            % (c["theme"], c["theme"], ", ".join(feuilles))
+            + (CHARTE / "socle.css").read_text(encoding="utf-8") + "\n"
+            + (CHARTE / "composants.css").read_text(encoding="utf-8") + theme)
 
 
 def generer():
@@ -334,6 +389,13 @@ def verifier():
                     anomalies.append("%s:%d écrit « %s » en dur — à lire dans classe.yml"
                                      % (rel, i, v))
                     break
+    # Le thème : son contrat (polices de l'élève, contrastes, papier, fichiers
+    # déclarés), contrôlé par scripts/verifier-theme.py.
+    if (CHARTE / "themes" / c.get("theme", "") / "theme.css").is_file():
+        sys.path.insert(0, str(RACINE / "scripts"))
+        import importlib
+        vt = importlib.import_module("verifier-theme")
+        anomalies += ["thème « %s » : %s" % (c["theme"], a) for a in vt.anomalies(c["theme"])]
     for a in anomalies:
         print("✘ " + a)
     print("classe.yml : %d anomalie(s)" % len(anomalies))

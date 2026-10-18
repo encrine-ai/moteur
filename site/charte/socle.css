@@ -7,10 +7,17 @@
  *  - la mécanique des périodes : data-periode="1".."5" pose --periode,
  *    --periode-trait et --periode-pale à partir des --pN que fournit le thème.
  *
- * Le thème de la classe (site/charte/themes/<thème>/theme.css, choisi par
- * classe.yml) fournit le reste : couleurs, polices de l'adulte, ombre.
- * scripts/classe.py generer assemble les deux dans site/charte/charte.css,
- * le seul fichier que chargent les pages. Ne pas éditer charte.css à la main.
+ * Le thème de la classe (site/charte/themes/<thème>/, choisi par classe.yml)
+ * fournit le reste : couleurs, polices de l'adulte, ombre (theme.css), et
+ * l'habillage des composants nommés (composants.css, facultatif), avec ses
+ * motifs et ses polices. scripts/classe.py generer assemble le socle et le
+ * thème dans site/charte/charte.css, le seul fichier que chargent les pages.
+ * Ne pas éditer charte.css à la main.
+ *
+ * Ce que le thème ne peut pas changer — la police de l'enfant, les
+ * espacements, la mécanique des périodes, le format des pages — est contrôlé
+ * par scripts/verifier-theme.py (skill charte-graphique, « Le contrat du
+ * thème »).
  */
 
 /* ——— Police de l'enfant (auto-hébergée : le PDF se fabrique sans réseau) ——— */
@@ -36,12 +43,27 @@
   --esp-1: 4px; --esp-2: 8px; --esp-3: 12px; --esp-4: 16px;
   --esp-5: 24px; --esp-6: 32px; --esp-7: 48px; --esp-8: 64px;
 
-  /* Rayons */
-  --rayon-s: 6px;     /* boutons, champs, pastilles carrées */
-  --rayon-m: 12px;    /* cartes, encadrés */
-  --rayon-l: 20px;    /* le document, les grands panneaux */
-  --rayon-pilule: 999px;
+  /* Les rayons ne sont pas du socle : ils donnent son visage à la classe,
+     le thème les porte (--rayon-s, -m, -l, -pilule). */
+
+  /* La mention de rangement des cartes (« période 1 · l'Europe · faune ») :
+     l'enseignant la lit en triant les cartes plastifiées. Imprimée à 5,5 pt
+     en gris pâle, elle ne se lisait plus ; 6,5 pt et l'encre douce (4,5:1)
+     sont le minimum. */
+  --repere-taille: 6.5pt;
+  --repere-encre: var(--encre-douce);
+
+  /* La police des étiquettes de l'adulte (pastilles, numéros de période,
+     tampons) : celle des titres, sauf si le thème en apporte une troisième. */
+  --police-etiquette: var(--police-titre);
 }
+
+/* Les ornements : des éléments vides que le moteur pose aux points
+   d'accroche (data-orne="…") et qu'un thème peut remplir d'un motif. Sans
+   thème, ils n'existent pas. Ils ne prennent jamais de place dans la page :
+   un thème les place en position absolue (verifier-theme.py le vérifie sur
+   le papier). */
+.orne { display: none; }
 
 /* La période d'un bloc : data-periode="1".."5" pose --periode, --periode-trait et --periode-pale. */
 [data-periode="1"] { --periode: var(--p1); --periode-trait: var(--p1-trait); --periode-pale: var(--p1-pale); }
@@ -49,3 +71,15 @@
 [data-periode="3"] { --periode: var(--p3); --periode-trait: var(--p3-trait); --periode-pale: var(--p3-pale); }
 [data-periode="4"] { --periode: var(--p4); --periode-trait: var(--p4-trait); --periode-pale: var(--p4-pale); }
 [data-periode="5"] { --periode: var(--p5); --periode-trait: var(--p5-trait); --periode-pale: var(--p5-pale); }
+
+/* ——— Les mots que l'enfant lit ———
+   Tout mot qu'un enfant lit s'écrit en Andika (a et g à un étage, l et I
+   distincts) : cartes, étiquettes, mots sous les images, lettres, tableaux,
+   défis. Règle du socle, hors couche : ni le thème ni une feuille de cahier
+   ne la défont (verifier-theme.py refuse qu'un thème y touche). La consigne,
+   l'en-tête et le pied d'une fiche, qui s'adressent à l'adulte, restent dans
+   la police du texte. */
+.fiche :is(.case, .appariement .item, .alphabet .al, .bande .c, .carte-lettre, .plaque, .bande-lettres,
+  .mot-grand, .quadrillage td, .trace, .modele, table.tab td, table.tab th, .defi, .domino .total,
+  .graphisme, .seriation, .lettres-decoupe, .grandes-cases, .motif),
+.carte .mot, .etiquette .mot, .mot-tri, .mot-script, .couverture-titre { font-family: var(--police-enfant); }

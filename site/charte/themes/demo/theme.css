@@ -54,6 +54,9 @@
   --p5: #0f7189; --p5-trait: #a9d9e4; --p5-pale: #e6f4f7;   /* la mer — turquoise */
   --sur-periode: #ffffff;
 
+  /* Rayons (du thème : le socle n'en impose aucun) */
+  --rayon-s: 6px; --rayon-m: 12px; --rayon-l: 20px; --rayon-pilule: 999px;
+
   /* Polices */
   --police-titre: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
   --police-texte: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;

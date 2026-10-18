@@ -4,6 +4,12 @@
    Les noms sont écrits en script (Andika, police conçue pour l'apprentissage
    de la lecture : a et g à un seul étage, l et I bien distincts). */
 
+/* La feuille du moteur est rangée dans la couche « moteur » : l'habillage du
+   thème de la classe (charte.css, hors couche) l'emporte sur elle sans
+   surenchère de sélecteurs, et un style écrit dans la page (une fiche
+   resserrée à la main) l'emporte sur les deux. Skill charte-graphique. */
+@layer moteur {
+
 
 @page { size: A4 portrait; margin: 10mm; }
 * { box-sizing: border-box; }
@@ -34,7 +40,7 @@ body {
 /* — Filet d'identification en haut de planche (hors zone de découpe) — */
 .entete-planche {
   display: flex; justify-content: space-between; align-items: baseline;
-  font-size: 7pt; color: #8b949c; letter-spacing: .04em; text-transform: uppercase;
+  font-size: 7pt; color: var(--entete-planche-encre, var(--encre-douce)); letter-spacing: .04em; text-transform: uppercase;
   margin-bottom: 1.5mm;
 }
 .entete-planche .milieu { font-weight: 700; color: var(--couleur); }
@@ -47,14 +53,14 @@ body {
   justify-content: center;
 }
 .carte {
-  border: .5pt solid #939ba3;
-  padding: 2mm;
+  border: .5pt solid var(--trait-coupe, #939ba3);
+  padding: 2mm; position: relative;
   display: flex; flex-direction: column;
   break-inside: avoid;
   background: #fff;
 }
 .carte .photo {
-  height: 62mm; width: 100%;
+  height: 62mm; width: 100%; position: relative;
   overflow: hidden; background: #fff;
 }
 .carte .photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -80,7 +86,7 @@ body {
    cartes-photos. */
 .carte .repere, .etiquette .repere {
   border-top: 1.1mm solid var(--couleur);
-  font-size: 5.5pt; color: #aab2b9; letter-spacing: .04em;
+  font-size: var(--repere-taille); color: var(--repere-encre); letter-spacing: .04em;
   padding-top: .5mm;
 }
 
@@ -92,7 +98,7 @@ body {
   gap: 6mm 12mm; justify-content: center; padding-top: 2mm;
 }
 .etiquette {
-  height: 18mm; border: .5pt solid #939ba3; padding: 1.2mm 2mm;
+  height: 18mm; border: .5pt solid var(--trait-coupe, #939ba3); position: relative; padding: 1.2mm 2mm;
   display: flex; flex-direction: column; break-inside: avoid; background: #fff;
 }
 .etiquette .mot {
@@ -104,7 +110,7 @@ body {
 .etiquette .mot.tres-long { font-size: 12pt; }
 
 /* ══ Page de garde et mode d'emploi ══ */
-.garde { line-height: 1.34; }
+.garde { line-height: 1.34; position: relative; }
 .garde h1 {
   font-size: 18pt; color: var(--couleur); margin: 0 0 .5mm;
   font-family: var(--police-enfant);
@@ -152,3 +158,5 @@ body {
 .credits ul { columns: 2; column-gap: 8mm; padding-left: 4mm; margin: 2mm 0;
   font-size: 7pt; color: #55606a; line-height: 1.45; }
 .credits li { break-inside: avoid; margin-bottom: .6mm; }
+
+} /* fin de la couche moteur */

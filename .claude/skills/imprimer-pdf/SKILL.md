@@ -20,8 +20,13 @@ personne les voie. Toute retouche du papier se termine donc par le PDF.
 | le même, extrait d'une période (`&periode=N`) | `<doc>-periode-N.pdf` | (libre) |
 | `site/fiches/periode-N.html` | `fiches-eleve-periode-N.pdf` | une `section.fiche` |
 | `site/fiches/entrainement-periode-N.html` | `fiches-entrainement-periode-N.pdf` | une `section.fiche` |
-| `site/imagier/periode-N.html` | `imagier-periode-N.pdf` | une `section.planche` |
-| `site/cartes-corpus/periode-N.html` | `cartes-corpus-periode-N.pdf` | une `section.planche` |
+| `site/imagier/periode-N.html` | `imagier-periode-N.pdf` | une `section.planche` (la couverture comprise) |
+| `site/cartes-corpus/periode-N.html` | `cartes-corpus-periode-N.pdf` | une `section.planche` (la couverture comprise) |
+
+L'imagier et les cartes-corpus s'ouvrent sur une **couverture**, une page de
+plus par cahier (`couverture: false` dans `materiel` la retire ; skill
+charte-graphique). Elle a une hauteur fixe de 271 mm : c'est la seule page
+où le thème compose librement, sans risque pour la pagination.
 
 Une classe n'a **qu'une zone** (`calendrier.zone` dans `classe.yml`) : chaque
 document s'imprime une fois, à ses dates, et tout est à plat dans `pdf/`. Une

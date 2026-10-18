@@ -1,0 +1,2 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 100"><!-- Itinéraire : une ligne pointillée entre deux escales, tracée pour le thème (CC0) -->
+<g fill="none" stroke="#000" stroke-linecap="round"><path d="M14 80 C 110 -10, 260 120, 386 22" stroke-width="3.5" stroke-dasharray="2 11"/></g><g fill="#000"><circle cx="14" cy="80" r="8"/><circle cx="386" cy="22" r="8"/></g><g fill="#fff"><circle cx="14" cy="80" r="3.5"/><circle cx="386" cy="22" r="3.5"/></g></svg>

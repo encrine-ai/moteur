@@ -1,0 +1,219 @@
+/* L'habillage du thème « tour-du-monde » — le carnet de voyage.
+ *
+ * Le thème habille, il ne restructure pas : chaque règle part d'un composant
+ * que le moteur nomme (data-composant, data-orne, .fiche, .pastille, .btn) et
+ * ne touche que ses parties documentées (skill charte-graphique). Sur le
+ * papier, il ne change que l'apparence ; ses ornements sont en position
+ * absolue. scripts/verifier-theme.py le contrôle.
+ *
+ * Trois objets du voyage, et pas un de plus : le timbre (la frise, le numéro
+ * de période), le tampon de la poste (l'accueil, les couvertures) et
+ * l'étiquette de bagage (les cahiers à imprimer, la couverture, la consigne).
+ * Les ornements sont des tracés : aucun dessin d'objet ni d'animal.
+ */
+
+/* ════════════════════════ L'écran ════════════════════════ */
+
+/* Le papier pointé du carnet */
+body[data-support="ecran"] { background-image: url("motifs/grille.svg"); background-size: 22px 22px; }
+
+/* — Bandeau — */
+[data-composant="bandeau"] { border-bottom: 2px dashed var(--trait); }
+[data-composant="bandeau"] .marque-titre { font-weight: 800; letter-spacing: 0; }
+[data-composant="bandeau"] .marque-sous { font-family: var(--police-etiquette); font-size: 13px; }
+
+/* — En-tête de l'accueil : le tampon de la poste au bout de l'itinéraire — */
+[data-composant="accueil-tete"] { padding-right: 230px; }
+[data-composant="accueil-tete"] h1 { font-weight: 800; letter-spacing: -.015em; line-height: 1.02; }
+[data-composant="accueil-tete"] .surtitre { font-family: var(--police-etiquette); letter-spacing: .14em; font-size: 14px; }
+[data-orne="accueil"] {
+  display: block; position: absolute; z-index: -1; right: 0; top: 10px; width: 250px; height: 190px;
+}
+[data-orne="accueil"]::before {           /* l'itinéraire pointillé */
+  content: ""; position: absolute; left: 0; bottom: 18px; width: 170px; height: 70px;
+  background: var(--trait-fort);
+  -webkit-mask: url("motifs/itineraire.svg") center / contain no-repeat;
+          mask: url("motifs/itineraire.svg") center / contain no-repeat;
+  opacity: .7;
+}
+[data-orne="accueil"]::after {            /* le tampon, et ses ondes */
+  content: ""; position: absolute; right: 8px; top: 0; width: 130px; height: 130px;
+  background: var(--sapin); transform: rotate(-14deg); opacity: .78;
+  -webkit-mask: url("motifs/tampon.svg") center / contain no-repeat;
+          mask: url("motifs/tampon.svg") center / contain no-repeat;
+}
+
+/* — Les blocs : des feuilles collées au ruban adhésif — */
+[data-composant="bloc"] { border-color: var(--trait); box-shadow: 0 1px 0 var(--trait), 0 6px 18px rgba(80, 60, 30, .06); }
+[data-composant="bloc"]::before {
+  content: ""; position: absolute; top: -11px; left: 50%; width: 118px; height: 24px;
+  transform: translateX(-50%) rotate(-2.5deg); background: var(--t-ruban);
+  border-left: 2px dotted rgba(255, 255, 255, .6); border-right: 2px dotted rgba(255, 255, 255, .6);
+}
+[data-composant="bloc"][data-bloc="materiel"]::before { transform: translateX(-50%) rotate(2deg); left: 30%; }
+[data-composant="bloc"][data-bloc="documents"]::before { transform: translateX(-50%) rotate(-1deg); left: 72%; }
+[data-composant="bloc"] .zone-badge { font-family: var(--police-etiquette); border: 1.5px dashed var(--sapin); background: transparent; }
+
+/* — La frise : cinq timbres, dentelés, oblitérés — */
+[data-composant="frise"] .frise-bande {
+  border-radius: 3px; height: 62px;
+  background:
+    radial-gradient(circle, var(--feuille) 2.6px, transparent 3.1px) 1px -4px / 9px 8px repeat-x,
+    radial-gradient(circle, var(--feuille) 2.6px, transparent 3.1px) 1px calc(100% + 4px) / 9px 8px repeat-x,
+    radial-gradient(circle, var(--feuille) 2.6px, transparent 3.1px) -4px 1px / 8px 9px repeat-y,
+    radial-gradient(circle, var(--feuille) 2.6px, transparent 3.1px) calc(100% + 4px) 1px / 8px 9px repeat-y,
+    var(--periode);
+  box-shadow: inset 0 0 0 7px var(--periode), inset 0 0 0 8.5px rgba(255, 255, 255, .55);
+}
+[data-composant="frise"] .frise-periode.en-cours .frise-bande {
+  box-shadow: inset 0 0 0 7px var(--periode), inset 0 0 0 8.5px rgba(255, 255, 255, .55),
+              0 0 0 3px var(--feuille), 0 0 0 6px var(--bouton-dor);
+}
+[data-orne="frise"] {
+  display: block; position: absolute; z-index: -1; right: 6px; top: 12px; bottom: 12px; width: 58%;
+  background: var(--sur-periode); opacity: .22;
+  -webkit-mask: url("motifs/obliteration.svg") right center / auto 100% no-repeat;
+          mask: url("motifs/obliteration.svg") right center / auto 100% no-repeat;
+}
+[data-composant="frise"] .frise-num { font-family: var(--police-etiquette); font-size: 23px; }
+[data-composant="frise"] .frise-milieu { font-weight: 700; font-size: 18px; }
+
+/* — Le matériel : des étiquettes de bagage — */
+[data-composant="materiel"] { border-radius: 6px 22px 22px 6px; border-width: 1.5px; }
+[data-composant="materiel"] .materiel-tete { border-bottom: 2px dashed var(--periode-trait); padding-right: 56px; }
+[data-composant="materiel"] .materiel-num { font-family: var(--police-etiquette); letter-spacing: .12em; }
+[data-orne="materiel"] {
+  display: block; position: absolute; right: 20px; top: 50%; width: 18px; height: 18px; margin-top: -9px;
+  border-radius: 50%; background: var(--feuille); box-shadow: 0 0 0 4px var(--periode-trait), 0 0 0 5px var(--periode);
+}
+
+/* — Les documents, la pastille, les boutons — */
+[data-composant="documents"] h3 { font-family: var(--police-etiquette); letter-spacing: .12em; }
+.pastille { font-family: var(--police-etiquette); box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .5); }
+.btn { border-radius: 8px; }
+[data-composant="document"] h1 { font-weight: 800; }
+[data-composant="menu"] .groupe { font-family: var(--police-etiquette); letter-spacing: .12em; }
+
+@media (max-width: 760px) {
+  [data-composant="frise"] .frise-bande { height: 100%; }
+}
+@media (max-width: 640px) {
+  [data-composant="accueil-tete"] { padding-right: 0; padding-top: var(--esp-6); }
+  [data-orne="accueil"] { width: 110px; height: 96px; top: 64px; right: -4px; opacity: .6; }
+  [data-orne="accueil"]::after { width: 74px; height: 74px; }
+  [data-orne="accueil"]::before { display: none; }
+  [data-composant="bloc"]::before { width: 84px; height: 20px; top: -9px; }
+}
+
+/* ════════════════════════ Le papier ════════════════════════
+   L'apparence seulement : la pagination ne bouge pas. Peu d'encre : des
+   traits et des teintes pâles, l'aplat va à la couverture. */
+
+/* — La fiche élève : un billet, une étiquette — */
+.fiche .entete .cartouche {
+  background:
+    radial-gradient(circle at 0 0, #fff 2mm, transparent 2.1mm),
+    radial-gradient(circle at 0 100%, #fff 2mm, transparent 2.1mm),
+    linear-gradient(var(--periode) 55%, transparent 0) 0 0 / .7pt 2.2mm repeat-y,
+    var(--periode-pale);
+}
+.fiche .entete .cartouche .ref { font-family: var(--police-etiquette); letter-spacing: .06em; }
+.fiche .titre {
+  text-decoration: underline; text-decoration-style: dashed; text-decoration-color: var(--periode-trait);
+  text-decoration-thickness: 1.4pt; text-underline-offset: 2.5pt;
+}
+.fiche .titre::after {                    /* le tampon de l'étape, à l'encre pâle */
+  content: ""; position: absolute; right: 0; top: -2.5mm; width: 26mm; height: 11mm;
+  background: var(--periode-trait);
+  -webkit-mask: url("motifs/tampon.svg") right center / 11mm 11mm no-repeat, url("motifs/obliteration.svg") left center / 17mm 7mm no-repeat;
+          mask: url("motifs/tampon.svg") right center / 11mm 11mm no-repeat, url("motifs/obliteration.svg") left center / 17mm 7mm no-repeat;
+}
+.fiche .exo .num { font-family: var(--police-etiquette); }
+.fiche .pied-fiche .codage { font-family: var(--police-etiquette); border-style: dashed; }
+
+/* — Les planches : l'en-tête tapé à la machine — */
+[data-composant="entete-planche"] { font-family: var(--police-etiquette); }
+
+/* — Les cartes : quatre coins photo, comme dans un album — */
+[data-composant="carte-imagier"] .photo::before, [data-composant="carte-imagier"] .photo::after,
+[data-composant="carte-corpus"] .visuel::before, [data-composant="carte-corpus"] .visuel::after,
+[data-composant="carte-imagier"]::before, [data-composant="carte-imagier"]::after,
+[data-composant="carte-corpus"]::before, [data-composant="carte-corpus"]::after {
+  content: ""; position: absolute; z-index: 1; width: 6mm; height: 6mm; background: var(--periode-trait);
+}
+[data-composant="carte-imagier"] .photo::before, [data-composant="carte-corpus"] .visuel::before {
+  left: 0; top: 0; clip-path: polygon(0 0, 100% 0, 0 100%);
+}
+[data-composant="carte-imagier"] .photo::after, [data-composant="carte-corpus"] .visuel::after {
+  right: 0; bottom: 0; clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+[data-composant="carte-imagier"]::before, [data-composant="carte-corpus"]::before {
+  right: 2mm; top: 2mm; clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+[data-composant="carte-imagier"]::after, [data-composant="carte-corpus"]::after {
+  left: 2mm; top: 58mm; clip-path: polygon(0 0, 0 100%, 100% 100%);
+}
+
+/* — Les étiquettes de tri : des étiquettes de bagage, œillet compris — */
+[data-composant="etiquette-tri"] { border-style: dashed; }
+[data-composant="etiquette-tri"]::before {
+  content: ""; position: absolute; left: 5mm; top: 50%; width: 4.5mm; height: 4.5mm; margin-top: -2.25mm;
+  border-radius: 50%; border: .9pt solid var(--periode); background: #fff;
+}
+
+/* — La page de garde : l'itinéraire, en haut à droite — */
+[data-composant="garde"] .sous-titre { font-family: var(--police-etiquette); }
+[data-orne="garde"] {
+  display: block; position: absolute; right: 0; top: 0; width: 46mm; height: 12mm;
+  background: var(--periode-trait);
+  -webkit-mask: url("motifs/itineraire.svg") center / contain no-repeat;
+          mask: url("motifs/itineraire.svg") center / contain no-repeat;
+}
+[data-composant="credits"] h2 { font-family: var(--police-titre); }
+
+/* — La couverture : l'étiquette du bagage, tamponnée — */
+[data-composant="couverture"] {
+  background: url("motifs/grille.svg") 0 0 / 7mm 7mm, var(--t-kraft);
+  border-color: var(--encre); border-style: solid;
+}
+[data-composant="couverture"] .couverture-tete { font-family: var(--police-etiquette); color: var(--encre); letter-spacing: .1em; }
+[data-composant="couverture"] .couverture-centre {
+  position: relative; margin: 0 6mm 0 14mm; padding: 22mm 14mm 18mm 24mm;
+  background: #fffdf8; border: 1.2pt solid var(--encre); border-radius: 5mm;
+  transform: rotate(-2.2deg); text-align: left;
+  box-shadow: inset 0 0 0 4mm #fffdf8, inset 0 0 0 4.5mm var(--periode-trait);
+}
+[data-composant="couverture"] .couverture-cahier {
+  font-family: var(--police-etiquette); font-size: 13pt; letter-spacing: .12em; text-transform: uppercase; color: var(--periode);
+}
+[data-composant="couverture"] .couverture-titre { text-align: left; }
+[data-composant="couverture"] .couverture-sous { margin-left: 0; font-size: 12.5pt; color: var(--encre-douce); }
+[data-orne="couverture-embleme"] {         /* l'œillet de l'étiquette */
+  display: block; position: absolute; left: 7mm; top: 50%; width: 8mm; height: 8mm; margin-top: -4mm;
+  border-radius: 50%; background: var(--t-kraft); box-shadow: 0 0 0 1.6mm var(--periode-trait), 0 0 0 2mm var(--periode);
+}
+[data-orne="couverture-fond"] {           /* la ficelle */
+  display: block; position: absolute; left: 4mm; top: 52mm; width: 40mm; height: 70mm;
+  background: var(--encre-douce); opacity: .8;
+  -webkit-mask: url("motifs/ficelle.svg") center / contain no-repeat;
+          mask: url("motifs/ficelle.svg") center / contain no-repeat;
+}
+[data-orne="couverture-tampon"] {         /* le tampon de la période, et ses ondes */
+  display: block; position: absolute; right: 12mm; top: 30mm; width: 92mm; height: 46mm;
+  background: var(--periode); opacity: .85; transform: rotate(-9deg);
+  -webkit-mask: url("motifs/tampon.svg") right center / 46mm 46mm no-repeat, url("motifs/obliteration.svg") left center / 52mm 26mm no-repeat;
+          mask: url("motifs/tampon.svg") right center / 46mm 46mm no-repeat, url("motifs/obliteration.svg") left center / 52mm 26mm no-repeat;
+}
+[data-composant="couverture"] .couverture-pied { border-top: 1.2pt dashed var(--encre); }
+[data-composant="couverture"] .couverture-periode { font-family: var(--police-etiquette); text-transform: uppercase; letter-spacing: .1em; color: var(--encre); }
+[data-composant="couverture"] .couverture-num {           /* le timbre du continent */
+  width: 16mm; height: 19mm; border-radius: 0; border: 0; color: var(--sur-periode); font-size: 20pt;
+  background:
+    radial-gradient(circle, var(--t-kraft) 1mm, transparent 1.15mm) .5mm -1.1mm / 2.6mm 2.2mm repeat-x,
+    radial-gradient(circle, var(--t-kraft) 1mm, transparent 1.15mm) .5mm calc(100% + 1.1mm) / 2.6mm 2.2mm repeat-x,
+    radial-gradient(circle, var(--t-kraft) 1mm, transparent 1.15mm) -1.1mm .5mm / 2.2mm 2.6mm repeat-y,
+    radial-gradient(circle, var(--t-kraft) 1mm, transparent 1.15mm) calc(100% + 1.1mm) .5mm / 2.2mm 2.6mm repeat-y,
+    var(--periode);
+  box-shadow: inset 0 0 0 2mm var(--periode), inset 0 0 0 2.4mm rgba(255, 255, 255, .6);
+}
+[data-composant="couverture"] .couverture-projet { font-family: var(--police-titre); font-size: 14pt; color: var(--sapin); }

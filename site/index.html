@@ -13,8 +13,9 @@
   <link rel="stylesheet" href="charte/charte.css">
   <link rel="stylesheet" href="app.css">
 </head>
-<body>
-  <header class="bandeau">
+<body data-support="ecran">
+  <header class="bandeau" data-composant="bandeau">
+    <span class="orne" data-orne="bandeau" aria-hidden="true"></span>
     <button id="menu-toggle" class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="sidebar">
       <svg class="ic" aria-hidden="true"><use href="charte/icones.svg#i-menu"/></svg>
     </button>
@@ -34,9 +35,9 @@
   </header>
 
   <div class="layout">
-    <nav id="sidebar" class="sidebar" aria-label="Documents de l'année"></nav>
+    <nav id="sidebar" class="sidebar" data-composant="menu" aria-label="Documents de l'année"></nav>
     <main class="page">
-      <div class="toolbar">
+      <div class="toolbar" data-composant="barre">
         <div id="fil" class="fil"></div>
         <div class="boutons">
           <a id="btn-pdf" class="btn btn-principal" hidden title="PDF prêt à imprimer, avec les dates des vacances de la classe">
@@ -52,10 +53,10 @@
         </div>
       </div>
       <div id="periodes-print" class="periodes-print" hidden></div>
-      <article id="contenu" class="contenu" aria-live="polite">
+      <article id="contenu" class="contenu" data-composant="document" aria-live="polite">
         <p class="chargement">Chargement…</p>
       </article>
-      <footer class="pied"></footer>
+      <footer class="pied" data-composant="pied"></footer>
     </main>
   </div>
 

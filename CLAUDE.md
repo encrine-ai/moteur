@@ -19,7 +19,7 @@ commentaires et les messages de commit.
 |---|---|
 | `01-…`, `02-…`, `03-progressions/`, `04-evaluations/` | les documents de l'enseignant, en Markdown |
 | `site/` | l'application web (JS sans cadriciel), publiée sur GitHub Pages |
-| `site/charte/` | la charte, en deux couches : `socle.css` (Andika, espacements, mécanique des périodes, commun à toutes les classes) et `themes/<thème>/theme.css` (couleurs et polices du thème de la classe ; `demo` dans le modèle), assemblés dans `charte.css` par `classe.py` — la seule source des couleurs (skill `charte-graphique`) |
+| `site/charte/` | le design system : `socle.css` (Andika sur tout mot de l'enfant, contrastes, espacements, mécanique des périodes — commun à toutes les classes, non négociable), `composants.css` (la couverture des cahiers) et `themes/<thème>/` (le style propre à la classe : jetons, polices, arrondis, habillage des composants nommés, motifs, déclarés dans `theme.yml` ; `demo` est le neutre de départ), assemblés dans `charte.css` par `classe.py` ; `scripts/verifier-theme.py` tient le thème à son contrat (skill `charte-graphique`) |
 | `site/fiches/` | les fiches élève imprimables, une page A4 par fiche |
 | `site/imagier/` | l'imagier Montessori, un cahier de cartes par période |
 | `site/cartes-corpus/` | les cartes-corpus de vocabulaire, un cahier par période |

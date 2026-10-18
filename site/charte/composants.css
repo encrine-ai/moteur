@@ -1,0 +1,47 @@
+/* Les composants communs du moteur — ce que plusieurs cahiers partagent et
+ * qu'aucune feuille de cahier ne porte seule : la couverture.
+ *
+ * Rangés dans la couche « moteur », comme les feuilles des cahiers : le thème
+ * de la classe les habille (themes/<thème>/habillage.css) sans surenchère de
+ * sélecteurs. Assemblé dans charte.css par scripts/classe.py, entre le socle
+ * et le thème. La structure HTML est fabriquée par classe.couverture().
+ */
+@layer moteur {
+
+/* ——— La couverture d'un cahier : une page A4, la première du PDF ———
+   Le seul papier qui puisse porter un aplat sombre (règle du socle : les
+   fiches élève restent à l'encre légère). Sans thème : un cadre à la couleur
+   de la période, le nom du milieu en grand, en Andika — l'enfant le lit. */
+.planche.couverture {
+  position: relative; isolation: isolate; overflow: hidden;
+  /* 277 mm de page utile : 6 mm de tolérance d'arrondi, sinon la
+     couverture pousse le cahier d'une page (skill imprimer-pdf) */
+  height: 271mm; display: flex; flex-direction: column; justify-content: space-between;
+  padding: 14mm 12mm; border: 1.2pt solid var(--periode); border-radius: 4mm;
+  background: var(--feuille);
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.couverture-tete {
+  display: flex; justify-content: space-between; gap: 6mm;
+  font: 700 9.5pt/1.3 var(--police-texte); color: var(--encre-douce);
+  text-transform: uppercase; letter-spacing: .06em;
+}
+.couverture-centre { text-align: center; }
+.couverture-cahier { font: 700 16pt/1.2 var(--police-titre); color: var(--periode); margin: 0 0 5mm; }
+.couverture-titre {
+  font-family: var(--police-enfant); font-size: 46pt; font-weight: 700; line-height: 1.08;
+  color: var(--encre); margin: 0; text-wrap: balance;
+}
+.couverture-sous { font: 400 12pt/1.4 var(--police-texte); color: var(--encre-douce); margin: 5mm auto 0; max-width: 130mm; }
+.couverture-pied {
+  display: flex; justify-content: space-between; align-items: center; gap: 6mm;
+  border-top: .8pt solid var(--periode-trait); padding-top: 4mm;
+  font: 400 10pt/1.3 var(--police-texte); color: var(--encre-douce);
+}
+.couverture-periode { display: inline-flex; align-items: center; gap: 3mm; font: 700 12pt/1 var(--police-etiquette); color: var(--periode); }
+.couverture-num {
+  display: inline-grid; place-items: center; width: 12mm; height: 12mm; border-radius: 50%;
+  border: 1.2pt solid var(--periode); font-size: 16pt;
+}
+
+} /* fin de la couche moteur */

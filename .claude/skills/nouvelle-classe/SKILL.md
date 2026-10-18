@@ -188,12 +188,45 @@ Un cahier entre dans `materiel` (classe.yml) quand sa page existe — pas avant 
 une période encore vide n'est annoncée nulle part, et les générateurs la sautent
 en le disant.
 
-Le style des cahiers est **celui du thème**, pas celui du moteur : couleurs
-des périodes, polices de titre, icônes des milieux (skill
-**charte-graphique**). La police des mots de l'enfant (Andika) et les règles
-d'impression ne changent pas.
+Le style des cahiers est **celui de la classe** (étape 5), pas celui du
+moteur. La police des mots de l'enfant (Andika) et les règles d'impression
+ne changent pas.
 
-## Étape 5 — Finir par le PDF
+## Étape 5 — Le style
+
+Chaque classe a **son** design system, fait avec l'enseignant (décidé le
+18 octobre 2026) : la galerie doit montrer des classes vraiment
+différentes. La marche complète, et le contrat du thème, sont dans le skill
+**charte-graphique** (« Créer le design system d'une classe ») ; ici,
+l'essentiel de l'entretien.
+
+1. **Une question** (une seule, `AskUserQuestion`) : l'univers qui lui
+   ressemble, tiré du thème de l'année, avec deux ou trois exemples
+   concrets — pour le tour du monde : « un carnet de voyage, avec tampons et
+   étiquettes de bagage », « l'affiche d'une gare, avec ses billets »,
+   « l'album de cartes postales ». Jamais le cliché du thème (la carte au
+   trésor, l'ancre marine) ; chercher les objets qu'un enfant de cinq ans
+   manipule. Ses goûts déclarés (couleurs, « pas trop chargé ») passent
+   avant.
+2. **Deux ou trois directions nettement distinctes** — polices, ornements,
+   couverture, frise différents, pas trois palettes du même gabarit —,
+   chacune dans `site/charte/themes/<nom>/`, acceptée par
+   `python3 scripts/verifier-theme.py <nom>`.
+3. **Les montrer en captures, sur de vraies pages** : l'accueil (1280 et
+   390 px), une fiche, une carte d'imagier, une couverture — et la fiche et
+   la couverture **au PDF**, aussi en niveaux de gris (la photocopie).
+   Tant que la classe n'a pas de cahier, les montrer sur le contenu d'une
+   autre classe, assemblé dans le scratchpad. Dire en une phrase ce que
+   chaque direction a pour elle.
+4. **L'enseignant choisit, puis ajuste** (une retouche à la fois, montrée
+   aussitôt). Le style s'écrit dans `themes/<thème>/` — le verdict dans
+   `theme.yml` et le message de commit —, `theme: <thème>` dans
+   `classe.yml`, et les directions écartées sortent du dépôt.
+
+S'il ne veut pas s'en occuper maintenant : garder le thème neutre (`demo`)
+et le dire ; le style peut venir plus tard, sans rien refaire d'autre.
+
+## Étape 6 — Finir par le PDF
 
 Skill **imprimer-pdf** : fabriquer les PDF, puis
 `python3 scripts/verifier-pagination.py` — une page par fiche et par
@@ -201,7 +234,7 @@ planche. **Le HTML ne prouve rien** : les pires défauts de ce matériel
 n'existaient qu'imprimés. Montrer ensuite à l'enseignant une planche de
 chaque cahier, et écrire son verdict dans le message de commit.
 
-## Étape 6 — Mettre le site en ligne
+## Étape 7 — Mettre le site en ligne
 
 Skill **site-et-calendrier**. Réécrire la tête du `README.md` avec le nom de
 la classe et le lien de son site, tiré du remote. Rappeler à l'enseignant,
@@ -231,7 +264,8 @@ déploiement échoue.
 
 **nouvelle-classe** → site-et-calendrier (dates) → progressions-programme
 (couverture verte) → fiches-eleve + fiches-illustrations → imagier-photos →
-cartes-corpus → charte-graphique (style du thème) → imprimer-pdf → mettre
+cartes-corpus → charte-graphique (le style : deux ou trois directions, le choix de
+l'enseignant) → imprimer-pdf → mettre
 le site en ligne → **capitaliser**. Ensuite, la vie de la classe :
 **retours-enseignant** (les retours, une question à la fois),
 **remonter-au-moteur** (ce qui vaut pour toutes les classes),

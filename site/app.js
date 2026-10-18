@@ -9,6 +9,12 @@
   var etat = { doc: 'accueil' };
   var cacheMd = {};
 
+  /* Un point d'accroche du thème : un élément vide, que le thème de la classe
+   * peut remplir d'un motif (skill charte-graphique). */
+  function orne(nom) {
+    return '<span class="orne" data-orne="' + nom + '" aria-hidden="true"></span>';
+  }
+
   function icone(nom) {
     return '<svg class="ic" aria-hidden="true"><use href="charte/icones.svg#i-' + nom + '"/></svg>';
   }
@@ -55,6 +61,7 @@
   function rendDocument(doc) {
     var contenu = document.getElementById('contenu');
     contenu.className = 'contenu';
+    contenu.dataset.composant = 'document';
     if (doc.fiches) contenu.dataset.periode = doc.fiches; else delete contenu.dataset.periode;
     contenu.innerHTML = '<p class="chargement">Chargement…</p>';
     chargeMd(doc).then(function (md) {
@@ -91,13 +98,13 @@
   /* La frise de l'année : cinq bandes, larges de leur nombre de semaines. */
   function frise(ps, pj, prochaine) {
     var total = ps.reduce(function (s, p) { return s + p.sem; }, 0);
-    return '<ol class="frise" aria-label="Les cinq périodes de l’année, zone ' + GS.ZONE + '">' +
+    return '<ol class="frise" data-composant="frise" aria-label="Les cinq périodes de l’année, zone ' + GS.ZONE + '">' +
       ps.map(function (p) {
         var enCours = pj && pj.n === p.n;
         var aVenir = !pj && prochaine && prochaine.n === p.n;
         return '<li class="frise-periode' + (enCours || aVenir ? ' en-cours' : '') + '" data-periode="' + p.n + '" style="flex-grow:' + p.sem + '">' +
           '<a href="#/' + docDe(p.n) + '">' +
-          '<span class="frise-bande">' + icone(GS.ICONES_MILIEU[p.n - 1]) + '<span class="frise-num">P' + p.n + '</span></span>' +
+          '<span class="frise-bande">' + orne('frise') + icone(GS.ICONES_MILIEU[p.n - 1]) + '<span class="frise-num">P' + p.n + '</span></span>' +
           '<span class="frise-milieu">' + GS.THEMES[p.n - 1] + '</span>' +
           '<span class="frise-dates">' + GS.fmtCourt(p.debut) + ' → ' + GS.fmtCourt(p.fin) + '</span>' +
           '<span class="frise-sem">' + p.sem + ' semaines</span>' +
@@ -120,8 +127,8 @@
     var cahiers = cahiersDe(n).map(function (m) {
       return [m.icone, m.titre, m.desc, pdfDe(m, n), GS.CLASSE.niveau.code + '-' + (m.fichier || m.nom) + '-periode-' + n + '.pdf'];
     });
-    return '<section class="materiel' + (statut ? ' en-cours' : '') + '" data-periode="' + n + '">' +
-      '<header class="materiel-tete">' + icone(GS.ICONES_MILIEU[n - 1]) +
+    return '<section class="materiel' + (statut ? ' en-cours' : '') + '" data-composant="materiel" data-periode="' + n + '">' +
+      '<header class="materiel-tete">' + orne('materiel') + icone(GS.ICONES_MILIEU[n - 1]) +
       '<div><div class="materiel-num">Période ' + n + (statut ? ' · ' + statut : '') + '</div>' +
       '<h3>' + GS.THEMES[n - 1] + '</h3></div></header>' +
       '<ul class="materiel-liste">' + cahiers.map(function (c) {
@@ -151,6 +158,7 @@
   function rendAccueil() {
     var contenu = document.getElementById('contenu');
     contenu.className = 'contenu accueil';
+    contenu.dataset.composant = 'accueil';
     delete contenu.dataset.periode;
     var ps = GS.periodes();
     var pj = periodeDuJour(ps);
@@ -182,26 +190,26 @@
       (groupes[doc.groupe] = groupes[doc.groupe] || []).push(doc);
     });
     var docs = Object.keys(groupes).map(function (g) {
-      return '<div class="docs-groupe"><h3>' + g + '</h3><ul class="docs">' + groupes[g].map(function (doc) {
+      return '<div class="docs-groupe" data-composant="documents"><h3>' + g + '</h3><ul class="docs">' + groupes[g].map(function (doc) {
         return '<li><a href="#/' + doc.id + '">' + icone(doc.ic) + '<span><strong>' + doc.titre + '</strong><small>' + doc.desc + '</small></span></a></li>';
       }).join('') + '</ul></div>';
     }).join('');
 
     contenu.innerHTML =
-      '<div class="accueil-tete">' +
+      '<div class="accueil-tete" data-composant="accueil-tete">' + orne('accueil') +
       '<p class="surtitre">' + C.niveau.libelle + ' · année ' + C.annee + '</p>' +
       '<h1>' + C.projet + '</h1>' +
       '<p class="chapo">' + C.accroche + '</p>' +
       '</div>' +
-      '<section class="bloc"><div class="bloc-tete"><h2>L’année en ' + nombre(ps.length) + ' ' + (C.periodes_nom || 'périodes') + '</h2><span class="zone-badge">zone ' + GS.ZONE + '</span></div>' +
+      '<section class="bloc" data-composant="bloc" data-bloc="annee"><div class="bloc-tete"><h2>L’année en ' + nombre(ps.length) + ' ' + (C.periodes_nom || 'périodes') + '</h2><span class="zone-badge">zone ' + GS.ZONE + '</span></div>' +
       frise(ps, pj, tete) +
       '<ul class="vacances">' + vac + '</ul>' +
       '<p class="note">' + ponts + 'Les dates sont celles de la zone ' + GS.ZONE + ' ; ' +
       'chaque document se télécharge en PDF prêt à imprimer, dates comprises.</p></section>' +
-      (ordre.length ? '<section class="bloc"><div class="bloc-tete"><h2>À imprimer pour la classe</h2></div>' +
+      (ordre.length ? '<section class="bloc" data-composant="bloc" data-bloc="materiel"><div class="bloc-tete"><h2>À imprimer pour la classe</h2></div>' +
       '<p class="note">' + noteMateriel(sortes, sortes.every(function (m) { return m.periodes.length === ps.length; })) + '</p>' +
       '<div class="materiels">' + ordre.map(function (n) { return materiel(n, tete && tete.n === n ? (pj ? 'en cours' : 'à venir') : ''); }).join('') + '</div></section>' : '') +
-      '<section class="bloc"><div class="bloc-tete"><h2>Mes documents</h2></div>' + docs + '</section>';
+      '<section class="bloc" data-composant="bloc" data-bloc="documents"><div class="bloc-tete"><h2>Mes documents</h2></div>' + docs + '</section>';
     window.scrollTo(0, 0);
   }
 

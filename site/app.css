@@ -2,6 +2,12 @@
  * Toutes les valeurs viennent de charte/charte.css (le socle, puis le thème de la classe).
  * Mise en page : un bandeau, un menu à gauche, une feuille posée sur le papier.
  */
+
+/* La feuille du moteur est rangée dans la couche « moteur » : l'habillage du
+   thème de la classe (charte.css, hors couche) l'emporte sur elle sans
+   surenchère de sélecteurs, et un style écrit dans la page (une fiche
+   resserrée à la main) l'emporte sur les deux. Skill charte-graphique. */
+@layer moteur {
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
@@ -27,7 +33,7 @@ a { color: inherit; }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--feuille); }
 .bandeau {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
-  display: flex; align-items: center; gap: var(--esp-4);
+  display: flex; align-items: center; gap: var(--esp-4); isolation: isolate;
   background: var(--feuille); border-bottom: 1px solid var(--trait);
   padding-block: var(--esp-3);
   padding-left: max(var(--esp-5), env(safe-area-inset-left, 0px));
@@ -45,16 +51,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .marque-texte { display: flex; flex-direction: column; min-width: 0; }
 .marque-titre { font: 700 20px/1.1 var(--police-titre); letter-spacing: -.01em; color: var(--sapin); }
 .marque-sous { font-size: 13px; color: var(--encre-douce); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-.zone-picker { display: flex; align-items: center; gap: var(--esp-3); }
-.zone-label { font-size: 13px; font-weight: 600; color: var(--encre-douce); text-transform: uppercase; letter-spacing: .06em; }
-.segments { display: flex; padding: 3px; gap: 2px; background: var(--feuille-creuse); border: 1px solid var(--trait); border-radius: var(--rayon-pilule); }
-.zone-btn {
-  min-width: 40px; height: 34px; padding: 0 var(--esp-3); border: 0; border-radius: var(--rayon-pilule); cursor: pointer;
-  background: transparent; color: var(--encre-douce); font: 700 15px/1 var(--police-titre);
-}
-.zone-btn:hover { color: var(--encre); }
-.zone-btn[aria-pressed="true"] { background: var(--sapin); color: var(--sur-sapin); }
 
 /* — Mise en page — */
 .layout { display: flex; min-height: calc(100dvh - 65px); }
@@ -153,12 +149,12 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
 /* — Accueil — */
 .contenu.accueil { padding: 0; background: none; border: 0; border-radius: 0; max-width: 1040px; }
-.accueil-tete { padding: var(--esp-5) 0 var(--esp-6); }
+.accueil-tete { position: relative; isolation: isolate; padding: var(--esp-5) 0 var(--esp-6); }
 .surtitre { margin: 0 0 var(--esp-2); font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--encre-douce); }
 .accueil .accueil-tete h1 { font: 800 clamp(36px, 6vw, 64px)/1 var(--police-titre); letter-spacing: -.035em; color: var(--sapin); max-width: 14ch; margin: 0 0 var(--esp-4); }
 .chapo { font-size: 19px; line-height: 1.55; color: var(--encre-douce); max-width: 60ch; margin: 0; }
 
-.bloc { background: var(--feuille); border: 1px solid var(--trait); border-radius: var(--rayon-l); padding: clamp(20px, 3vw, 36px); margin-bottom: var(--esp-5); }
+.bloc { position: relative; background: var(--feuille); border: 1px solid var(--trait); border-radius: var(--rayon-l); padding: clamp(20px, 3vw, 36px); margin-bottom: var(--esp-5); }
 .bloc-tete { display: flex; align-items: center; flex-wrap: wrap; gap: var(--esp-2) var(--esp-3); margin-bottom: var(--esp-4); }
 .accueil .bloc-tete h2 { margin: 0; padding: 0; border: 0; font: 700 26px/1.2 var(--police-titre); letter-spacing: -.015em; }
 .bloc-tete .zone-badge { margin-left: 0; }
@@ -172,6 +168,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   display: flex; align-items: center; justify-content: space-between; gap: var(--esp-2);
   height: 56px; padding: 0 var(--esp-3); margin-bottom: var(--esp-2);
   border-radius: var(--rayon-m); background: var(--periode); color: var(--sur-periode);
+  position: relative; isolation: isolate; overflow: hidden;
 }
 .frise-bande .ic { width: 24px; height: 24px; }
 .frise-num { font: 800 22px/1 var(--police-titre); font-variant-numeric: tabular-nums; }
@@ -197,7 +194,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .materiel:first-child .materiel-liste { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .materiel { border: 1px solid var(--trait); border-radius: var(--rayon-m); overflow: hidden; background: var(--feuille); }
 .materiel.en-cours { border-color: var(--periode); box-shadow: 0 0 0 1px var(--periode); }
-.materiel-tete { display: flex; align-items: center; gap: var(--esp-3); padding: var(--esp-3) var(--esp-4); background: var(--periode-pale); color: var(--periode); }
+.materiel-tete { position: relative; isolation: isolate; display: flex; align-items: center; gap: var(--esp-3); padding: var(--esp-3) var(--esp-4); background: var(--periode-pale); color: var(--periode); }
 .materiel-tete .ic { width: 28px; height: 28px; }
 .materiel-num { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; }
 .materiel h3 { margin: 0; font: 700 20px/1.2 var(--police-titre); color: var(--encre); }
@@ -248,8 +245,6 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   .bandeau { gap: var(--esp-3); padding-left: max(var(--esp-4), env(safe-area-inset-left, 0px)); padding-right: max(var(--esp-4), env(safe-area-inset-right, 0px)); }
   .marque-frise { display: none; }
   .marque-titre { font-size: 17px; }
-  .zone-label { display: none; }
-  .zone-btn { min-width: 34px; height: 32px; padding: 0 var(--esp-2); }
   .page { padding-block: var(--esp-3) var(--esp-6); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
   .toolbar { flex-direction: column; align-items: stretch; gap: var(--esp-2); }
   .fil { order: 2; }
@@ -274,3 +269,5 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   .contenu table, .contenu tr { break-inside: avoid; }
   a { text-decoration: none; }
 }
+
+} /* fin de la couche moteur */

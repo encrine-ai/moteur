@@ -1,0 +1,20 @@
+# Le thème « demo » : le style neutre de départ, que le skill nouvelle-classe
+# remplace par le design system de la classe (skill charte-graphique,
+# « Créer le design system d'une classe »). Il n'habille aucun composant :
+# pas de habillage.css, pas de motif.
+nom: Neutre
+description: Le style de départ du moteur — un papier clair, une encre de sapin, cinq couleurs de période.
+polices:
+  - famille: Bricolage Grotesque
+    role: titres de l'adulte (--police-titre)
+    fichiers: [polices/bricolage-grotesque-latin.woff2, polices/bricolage-grotesque-latin-ext.woff2]
+    licence: OFL-1.1
+    auteur: The Bricolage Grotesque Project Authors
+    source: https://github.com/ateliertriay/bricolage
+  - famille: Atkinson Hyperlegible Next
+    role: texte de l'adulte (--police-texte)
+    fichiers: [polices/atkinson-next-latin.woff2, polices/atkinson-next-latin-ext.woff2, polices/atkinson-next-latin-italic.woff2]
+    licence: OFL-1.1
+    auteur: Braille Institute of America
+    source: https://www.brailleinstitute.org/freefont/
+motifs: []

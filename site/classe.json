@@ -9,7 +9,7 @@
   "sous_titre": "classe de démonstration",
   "accroche": "Une classe de démonstration en cours d’écriture : un continent par période. Les documents et les cahiers arriveront période par période.",
   "conformite": "Conforme au programme officiel de l'école maternelle (cycle 1, 2024-2026) et au programme d'éducation à la vie affective et relationnelle.",
-  "theme": "demo",
+  "theme": "tour-du-monde",
   "ton": "tu",
   "moteur": {
     "depot": "encrine-ai/moteur",

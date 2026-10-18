@@ -1,4 +1,10 @@
 /* Mise en page des PDF de documents (générés avec le navigateur en mode impression). */
+
+/* La feuille du moteur est rangée dans la couche « moteur » : l'habillage du
+   thème de la classe (charte.css, hors couche) l'emporte sur elle sans
+   surenchère de sélecteurs, et un style écrit dans la page (une fiche
+   resserrée à la main) l'emporte sur les deux. Skill charte-graphique. */
+@layer moteur {
 @page { size: A4; margin: 13mm 12mm; }
 * { box-sizing: border-box; }
 /* Couleurs et polices : charte/charte.css. Un extrait de période
@@ -36,3 +42,5 @@ tr { break-inside: avoid; }
   border: .8pt solid var(--trait-fort); border-radius: 999px; padding: 0 2.5mm; margin-left: 2.5mm; white-space: nowrap;
 }
 a { color: inherit; text-decoration: none; }
+
+} /* fin de la couche moteur */
