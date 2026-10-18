@@ -1,0 +1,14 @@
+[
+{"query": "passe le site en 2027-2028", "should_trigger": true},
+{"query": "les dates des vacances d'hiver sont fausses pour la zone C", "should_trigger": true},
+{"query": "ajoute le document sur les sorties au menu du site", "should_trigger": true},
+{"query": "le site n'est pas à jour, je ne vois pas ma modification", "should_trigger": true},
+{"query": "le bouton Télécharger le PDF mène à une page introuvable", "should_trigger": true},
+{"query": "la période en cours affichée sur l'accueil n'est pas la bonne", "should_trigger": true},
+{"query": "le nombre de semaines de la période 5 est faux", "should_trigger": true},
+{"query": "le déploiement GitHub Pages a échoué", "should_trigger": true},
+{"query": "le dessin de la poule est bizarre", "should_trigger": false},
+{"query": "rends les boutons plus jolis", "should_trigger": false},
+{"query": "ajoute une séance de danse en période 2", "should_trigger": false},
+{"query": "la fiche A6 déborde", "should_trigger": false}
+]

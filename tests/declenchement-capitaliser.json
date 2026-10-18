@@ -1,0 +1,12 @@
+[
+{"query": "retiens ça pour la prochaine fois : jamais de photo d'animal mort", "should_trigger": true},
+{"query": "il ne faut plus que ça arrive, note-le quelque part", "should_trigger": true},
+{"query": "mets à jour les skills avec ce qu'on vient d'apprendre", "should_trigger": true},
+{"query": "qu'est-ce qu'on a appris aujourd'hui ? garde-le dans le dépôt", "should_trigger": true},
+{"query": "cette source d'images est bloquée, consigne-le pour les prochaines sessions", "should_trigger": true},
+{"query": "le skill de l'imagier ne s'est pas ouvert alors qu'il aurait dû, corrige", "should_trigger": true},
+{"query": "ajoute le hérisson à l'imagier", "should_trigger": false},
+{"query": "refais les PDF", "should_trigger": false},
+{"query": "change la couleur de la forêt", "should_trigger": false},
+{"query": "ajoute une fiche sur les rimes", "should_trigger": false}
+]

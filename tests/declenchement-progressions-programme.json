@@ -1,0 +1,14 @@
+[
+{"query": "il faudrait travailler les rimes plus tôt dans l'année", "should_trigger": true},
+{"query": "ajoute la comptine jusqu'à 30 en période 2", "should_trigger": true},
+{"query": "on peut faire la ferme en période 5 plutôt qu'en 4 ?", "should_trigger": true},
+{"query": "est-ce qu'il manque quelque chose du programme dans l'année ?", "should_trigger": true},
+{"query": "remplace Le Gruffalo par un autre album pour la forêt", "should_trigger": true},
+{"query": "ajoute une fiche d'évaluation sur les solides en période 3", "should_trigger": true},
+{"query": "dans 03-progressions/02-mathematiques.md il manque les écarts en période 4", "should_trigger": true},
+{"query": "lance couverture.py et dis-moi ce qui manque", "should_trigger": true},
+{"query": "la fiche élève 2.4 déborde sur deux pages", "should_trigger": false},
+{"query": "la photo du chamois est trop chargée", "should_trigger": false},
+{"query": "le site n'est pas à jour", "should_trigger": false},
+{"query": "rends l'accueil plus joli", "should_trigger": false}
+]

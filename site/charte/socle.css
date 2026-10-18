@@ -1,0 +1,51 @@
+/* Le socle de la charte — ce que toutes les classes partagent, quel que soit
+ * leur thème.
+ *
+ *  - Andika, la police de tout mot qu'un enfant lit (a et g à un étage, l et I
+ *    distincts) : elle ne dépend pas du thème, parce qu'elle sert la lecture ;
+ *  - les espacements (pas de 4 px) et les rayons ;
+ *  - la mécanique des périodes : data-periode="1".."5" pose --periode,
+ *    --periode-trait et --periode-pale à partir des --pN que fournit le thème.
+ *
+ * Le thème de la classe (site/charte/themes/<thème>/theme.css, choisi par
+ * classe.yml) fournit le reste : couleurs, polices de l'adulte, ombre.
+ * scripts/classe.py generer assemble les deux dans site/charte/charte.css,
+ * le seul fichier que chargent les pages. Ne pas éditer charte.css à la main.
+ */
+
+/* ——— Police de l'enfant (auto-hébergée : le PDF se fabrique sans réseau) ——— */
+@font-face { font-family: "Andika"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url("polices/andika-latin-400.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Andika"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url("polices/andika-latin-ext-400.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Andika"; font-style: normal; font-weight: 700; font-display: swap;
+  src: url("polices/andika-latin-700.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Andika"; font-style: normal; font-weight: 700; font-display: swap;
+  src: url("polices/andika-latin-ext-700.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+
+/* ——— Jetons communs ——— */
+:root {
+  /* La police des mots de l'enfant : la même pour toutes les classes */
+  --police-enfant: "Andika", "Century Gothic", Verdana, sans-serif;
+
+  /* Espacements (pas de 4 px) */
+  --esp-1: 4px; --esp-2: 8px; --esp-3: 12px; --esp-4: 16px;
+  --esp-5: 24px; --esp-6: 32px; --esp-7: 48px; --esp-8: 64px;
+
+  /* Rayons */
+  --rayon-s: 6px;     /* boutons, champs, pastilles carrées */
+  --rayon-m: 12px;    /* cartes, encadrés */
+  --rayon-l: 20px;    /* le document, les grands panneaux */
+  --rayon-pilule: 999px;
+}
+
+/* La période d'un bloc : data-periode="1".."5" pose --periode, --periode-trait et --periode-pale. */
+[data-periode="1"] { --periode: var(--p1); --periode-trait: var(--p1-trait); --periode-pale: var(--p1-pale); }
+[data-periode="2"] { --periode: var(--p2); --periode-trait: var(--p2-trait); --periode-pale: var(--p2-pale); }
+[data-periode="3"] { --periode: var(--p3); --periode-trait: var(--p3-trait); --periode-pale: var(--p3-pale); }
+[data-periode="4"] { --periode: var(--p4); --periode-trait: var(--p4-trait); --periode-pale: var(--p4-pale); }
+[data-periode="5"] { --periode: var(--p5); --periode-trait: var(--p5-trait); --periode-pale: var(--p5-pale); }

@@ -1,0 +1,58 @@
+name: Déploiement du site
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Polices emoji et outils PDF
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq fonts-noto-color-emoji poppler-utils
+      - name: La classe vient de classe.yml, et de nulle part ailleurs
+        run: pip install -q pyyaml && python3 scripts/classe.py verifier
+      - name: Assembler le site (application + contenus)
+        run: |
+          mkdir -p _site/content
+          cp -r site/. _site/
+          cp 01-projet-annuel.md 02-programmation-annuelle.md _site/content/
+          for d in 03-progressions 04-evaluations; do [ -d "$d" ] && cp -r "$d" _site/content/ || true; done
+      # Le modèle ne publie que sa classe de démonstration, sans PDF : elle n'a
+      # pas encore de cahiers. Une classe créée depuis le modèle n'est pas un
+      # modèle : elle fabrique ses PDF et vérifie la pagination.
+      - name: Générer les PDF (documents × zones + cahiers)
+        if: ${{ !github.event.repository.is_template }}
+        run: bash scripts/generer-pdf.sh _site
+      - name: Une page par fiche, une page par planche
+        if: ${{ !github.event.repository.is_template }}
+        run: python3 scripts/verifier-pagination.py _site
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

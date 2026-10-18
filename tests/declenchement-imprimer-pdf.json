@@ -1,0 +1,14 @@
+[
+{"query": "la fiche 3.5 déborde sur deux pages quand j'imprime", "should_trigger": true},
+{"query": "vérifie que tout s'imprime bien avant que je photocopie les cahiers de la période 2", "should_trigger": true},
+{"query": "le pied de page de la garde de l'imagier est tout seul sur une feuille", "should_trigger": true},
+{"query": "refais tous les PDF du site", "should_trigger": true},
+{"query": "il y a une page blanche à la fin du PDF des cartes-corpus de la période 4", "should_trigger": true},
+{"query": "les étiquettes passent par-dessus les crédits dans le PDF", "should_trigger": true},
+{"query": "j'ai changé la police des fiches, est-ce que ça casse l'impression ?", "should_trigger": true},
+{"query": "le PDF du langage en zone C a l'air coupé", "should_trigger": true},
+{"query": "change l'image du hérisson", "should_trigger": false},
+{"query": "ajoute un mot au corpus de la forêt", "should_trigger": false},
+{"query": "le menu du site ne s'ouvre pas sur téléphone", "should_trigger": false},
+{"query": "est-ce que l'année couvre tout le programme ?", "should_trigger": false}
+]

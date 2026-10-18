@@ -1,0 +1,13 @@
+[
+{"query": "j'ai plusieurs retours sur les fiches de la période 2", "should_trigger": true},
+{"query": "ma collègue a testé le matériel, elle a des remarques", "should_trigger": true},
+{"query": "on fait le point sur ce qui ne va pas dans la période 3", "should_trigger": true},
+{"query": "j'ai une idée pour le matériel, ce serait bien que l'outil sache faire des cartes-chiffres", "should_trigger": true},
+{"query": "plusieurs choses ne vont pas : les cases sont petites, la consigne est floue, et une image est bizarre", "should_trigger": true},
+{"query": "/retours-enseignant", "should_trigger": true},
+{"query": "c'est tout pour les retours, merci", "should_trigger": true},
+{"query": "change l'image du hérisson", "should_trigger": false},
+{"query": "passe le site en 2027-2028", "should_trigger": false},
+{"query": "crée une classe de moyenne section à partir de ce dépôt", "should_trigger": false},
+{"query": "mets l'outil à jour avec la nouvelle version du moteur", "should_trigger": false}
+]

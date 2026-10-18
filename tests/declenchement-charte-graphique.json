@@ -1,0 +1,14 @@
+[
+{"query": "l'accueil du site est vraiment moche, tu peux le rendre plus beau ?", "should_trigger": true},
+{"query": "la couleur de la montagne ne va pas sur le site, on ne la distingue pas de la mer", "should_trigger": true},
+{"query": "je voudrais que le site passe en mode sombre le soir sur ma tablette", "should_trigger": true},
+{"query": "le titre de l'accueil est énorme sur mon téléphone, réduis-le", "should_trigger": true},
+{"query": "ajoute une icône pour le document des sorties dans le menu", "should_trigger": true},
+{"query": "mets à jour la charte dans Claude Design, j'ai foncé le vert", "should_trigger": true},
+{"query": "dans site/app.css le bouton secondaire n'a pas assez de contraste", "should_trigger": true},
+{"query": "les numéros d'exercice des fiches devraient être de la couleur de la période", "should_trigger": true},
+{"query": "la photo du renard dans l'imagier est floue", "should_trigger": false},
+{"query": "il me faut un pictogramme de tracteur pour la fiche 4.2", "should_trigger": false},
+{"query": "passe le calendrier en 2027-2028", "should_trigger": false},
+{"query": "ajoute la comptine jusqu'à 30 en période 2", "should_trigger": false}
+]

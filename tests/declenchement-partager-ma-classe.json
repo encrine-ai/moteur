@@ -1,0 +1,12 @@
+[
+{"query": "je voudrais partager ma classe avec d'autres enseignants", "should_trigger": true},
+{"query": "on peut mettre ma classe dans la galerie ?", "should_trigger": true},
+{"query": "je suis assez fière de mon année sur les contes, d'autres pourraient s'en servir", "should_trigger": true},
+{"query": "montre ma classe aux autres maîtresses", "should_trigger": true},
+{"query": "retire ma classe de la galerie, s'il te plaît", "should_trigger": true},
+{"query": "vérifie qu'il n'y a aucun prénom d'élève avant que je partage", "should_trigger": true},
+{"query": "je voudrais partir de la classe des contes de la galerie", "should_trigger": false},
+{"query": "transmets ce problème à l'outil pour que les autres classes en profitent", "should_trigger": false},
+{"query": "mets le site de ma classe en ligne", "should_trigger": false},
+{"query": "la fiche 3.4 déborde sur deux pages", "should_trigger": false}
+]

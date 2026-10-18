@@ -1,0 +1,174 @@
+/* Fiches élève — mise en page A4, une fiche par page.
+   Les fiches à grand format (lettres, bandes, appariements) utilisent
+   la classe .paysage : leur page passe en orientation paysage. */
+@page { size: A4 portrait; margin: 10mm 12mm; }
+@page paysage { size: A4 landscape; margin: 10mm 12mm; }
+.fiche.paysage { page: paysage; }
+* { box-sizing: border-box; }
+/* Les couleurs et les polices viennent de ../charte/charte.css. La couleur
+   d'une fiche est celle de sa période (<body data-periode="N">) ; sans
+   période, le sapin de la maison. */
+:root { --periode: var(--sapin); --periode-trait: var(--trait); --periode-pale: var(--sapin-pale); }
+body {
+  margin: 0; color: var(--encre);
+  font-family: var(--police-texte);
+  font-size: 12pt; line-height: 1.45;
+  /* retrait de sécurité : les bordures droites des tableaux (à cheval sur
+     le bord du bloc avec border-collapse) étaient rognées par certains
+     lecteurs PDF */
+  padding-right: 1.2mm;
+}
+.fiche { page-break-after: always; padding-top: 2mm; }
+.fiche:last-child { page-break-after: auto; }
+
+/* — En-tête de fiche — */
+.entete { display: flex; gap: 4mm; align-items: stretch; border: 1.2pt solid #333; border-radius: 3mm; overflow: hidden; margin-bottom: 4mm; }
+.entete .idext { flex: 1; padding: 2.5mm 4mm; font-size: 11pt; }
+.entete .idext .champ { display: inline-block; margin-right: 8mm; }
+.entete .idext .trait { display: inline-block; min-width: 45mm; border-bottom: 1pt solid #333; }
+.entete .cartouche { background: var(--periode-pale); padding: 2.5mm 4mm; text-align: right; min-width: 58mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.entete .cartouche .ref { font-size: 8.5pt; color: var(--periode); font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
+.entete .cartouche .dom { font-size: 8pt; color: #444; }
+.titre { font-family: var(--police-titre); font-size: 14pt; font-weight: 700; color: var(--periode); margin: 0 0 2mm; }
+.consigne {
+  border: 1pt dashed #b08d2f; background: #fdf6e0; border-radius: 2mm;
+  padding: 2mm 4mm; font-size: 9.5pt; color: #4a3f1d; margin-bottom: 4mm;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.consigne strong { color: #7a5c10; }
+.pied-fiche { margin-top: 4mm; font-size: 8pt; color: #666; display: flex; justify-content: space-between; gap: 4mm; }
+.pied-fiche .codage { border: .8pt solid #999; border-radius: 2mm; padding: .5mm 3mm; }
+
+/* — Images pédagogiques (remplacent les émojis) — */
+.pic { height: 9.5mm; max-width: 16mm; object-fit: contain; vertical-align: middle; margin: 0 .5mm .3mm; }
+.case .img .pic { height: 12mm; max-width: 20mm; }
+td.img .pic, .tab .pic, .item .pic { height: 8.5mm; max-width: 14mm; }
+.quadrillage .pic { height: 10.5mm; max-width: 12mm; }
+.consigne .pic { height: 6.5mm; max-width: 10mm; }
+
+/* — Crédits des images (dernière page du cahier) — */
+.credits { font-size: 7pt; color: #555; line-height: 1.5; }
+.credits h2 { font-size: 10pt; color: var(--periode); }
+.credits ul { columns: 2; column-gap: 8mm; padding-left: 4mm; margin: 2mm 0; }
+.credits li { break-inside: avoid; }
+
+/* — Exercices — */
+.exo { margin: 4mm 0; }
+.exo .num { display: inline-block; width: 7mm; height: 7mm; line-height: 7mm; text-align: center; background: var(--periode); color: var(--sur-periode); border-radius: 50%; font-weight: 700; font-size: 10.5pt; margin-right: 2mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.exo .enonce { font-size: 10pt; color: #333; }
+
+.grille { display: grid; gap: 3mm; margin-top: 3mm; }
+.g2 { grid-template-columns: repeat(2, 1fr); }
+.g3 { grid-template-columns: repeat(3, 1fr); }
+.g4 { grid-template-columns: repeat(4, 1fr); }
+.g5 { grid-template-columns: repeat(5, 1fr); }
+.g6 { grid-template-columns: repeat(6, 1fr); }
+
+.case { border: 1pt solid #333; border-radius: 2mm; text-align: center; padding: 2mm 1mm; }
+.case .img { font-size: 26pt; line-height: 1.2; display: block; }
+.case .rep { margin: 2mm auto 0; height: 11mm; width: 85%; border: .8pt solid #888; border-radius: 1.5mm; }
+.case.sans-bord { border: none; }
+
+.chiffre-case { display: inline-block; width: 13mm; height: 15mm; border: 1.2pt solid #333; border-radius: 1.5mm; vertical-align: middle; }
+.lettre-case { display: inline-block; width: 10mm; height: 12mm; border: 1pt solid #333; border-radius: 1.5mm; vertical-align: middle; margin-right: 1mm; }
+
+.ligne-ecriture {
+  height: 13mm; margin: 3mm 0; position: relative;
+  background:
+    linear-gradient(to bottom, transparent 0, transparent 3.9mm, #c9d6e4 3.9mm, #c9d6e4 4.2mm, transparent 4.2mm),
+    linear-gradient(to bottom, transparent 0, transparent 8.4mm, #333 8.4mm, #333 8.7mm, transparent 8.7mm);
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.modele { border: 1pt dashed #888; border-radius: 2mm; padding: 1mm 3mm; color: #777; font-size: 8.5pt; min-height: 12mm; }
+.trace { color: #b9c4cf; font-weight: 700; letter-spacing: .35em; font-size: 26pt; }
+
+table.tab { border-collapse: collapse; width: 100%; margin-top: 2mm; }
+table.tab th, table.tab td { border: 1pt solid #333; padding: 2mm; text-align: center; font-size: 10.5pt; }
+table.tab th { background: var(--periode-pale); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+table.tab .img { font-size: 20pt; }
+td.coche { width: 22mm; height: 12mm; }
+
+.bande { display: flex; gap: 0; margin-top: 3mm; }
+.bande .c { width: 14mm; height: 14mm; border: 1.2pt solid #333; margin-left: -1.2pt; display: flex; align-items: center; justify-content: center; font-size: 14pt; font-weight: 700; }
+.bande .vide { background: #f2f6f9; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+
+.motif { display: flex; gap: 2.5mm; align-items: center; margin: 3mm 0; flex-wrap: wrap; }
+.motif svg { flex-shrink: 0; }
+.slot { width: 11mm; height: 11mm; border: 1pt dashed #999; border-radius: 1.5mm; }
+
+.quadrillage { border-collapse: collapse; margin-top: 3mm; }
+.quadrillage td { width: 14mm; height: 14mm; border: 1.2pt solid #333; text-align: center; font-size: 16pt; }
+
+.deuxcol { display: flex; gap: 6mm; }
+.deuxcol > div { flex: 1; }
+.appariement { display: flex; justify-content: space-between; gap: 10mm; margin-top: 3mm; }
+.appariement .col { display: flex; flex-direction: column; gap: 3mm; flex: 1; }
+.appariement .item { border: 1pt solid #333; border-radius: 2mm; text-align: center; padding: 1.5mm; font-size: 16pt; }
+.grand-espace { min-height: 30mm; border: 1pt solid #333; border-radius: 2mm; margin-top: 2mm; }
+.rond-a-dessiner { font-size: 15pt; letter-spacing: 2mm; }
+
+/* — Discrimination visuelle en ligne continue (entourer dans une bande) — */
+.bande-lettres {
+  border: 1pt solid #333; border-radius: 2mm; padding: 2.5mm 3mm;
+  font-size: 17pt; font-weight: 600; letter-spacing: .45em; line-height: 1.9;
+  word-break: break-all; margin-top: 2mm; font-family: Verdana, "DejaVu Sans", sans-serif;
+}
+.bande-lettres .cible { margin-right: 4mm; padding: .5mm 2mm; border: 1.2pt solid var(--periode); border-radius: 2mm; letter-spacing: .1em; }
+
+/* — Dominos des compléments — */
+.dominos { display: flex; flex-wrap: wrap; gap: 4mm 6mm; margin-top: 3mm; }
+.domino { display: flex; flex-direction: column; align-items: center; gap: 1mm; }
+.domino .total { font-size: 13pt; font-weight: 700; border: 1pt solid #333; border-radius: 1.5mm; padding: 0 2.5mm; }
+.domino .plaque { display: flex; }
+.domino .dcase { width: 17mm; height: 17mm; border: 1.3pt solid #333; display: flex; align-items: center; justify-content: center; }
+.domino .dcase + .dcase { border-left-width: 2.2pt; }
+.domino .dcase img { height: 14mm; width: 14mm; }
+
+/* — Alphabet à entourer / associer — */
+.alphabet { display: grid; grid-template-columns: repeat(13, 1fr); gap: 1.5mm; margin-top: 2mm; }
+.alphabet .al { border: 1pt solid #333; border-radius: 1.5mm; text-align: center; font-size: 14pt; font-weight: 700; padding: 1mm 0; }
+
+/* — Bandes de graphisme à continuer — */
+.graphisme { display: flex; align-items: center; border: 1pt solid #333; border-radius: 2mm; margin-top: 2.5mm; min-height: 15mm; overflow: hidden; }
+.graphisme .depart { flex-shrink: 0; padding: 1mm 2mm; border-right: 1pt dashed #999; }
+.graphisme .suite { flex: 1; }
+
+/* — Sériation (coller du plus petit au plus grand) — */
+.seriation { display: flex; gap: 3mm; margin-top: 2mm; align-items: stretch; }
+.seriation .sc { flex: 1; min-height: 26mm; border: 1pt solid #333; border-radius: 2mm; display: flex; align-items: flex-end; justify-content: center; padding: 1mm; }
+
+/* — Niveaux et défis — */
+.niveau { display: inline-block; font-size: 8pt; font-weight: 700; border-radius: 999px; padding: .4mm 3mm; margin-left: 2mm; vertical-align: middle; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.niveau.n1 { background: var(--periode-pale); color: var(--periode); border: .8pt solid var(--periode-trait); }
+.niveau.n2 { background: #e8f1fa; color: #1c4f80; border: .8pt solid #7fa8cd; }
+.sous-objectif { font-size: 8.5pt; color: #1c4f80; background: #eef4fb; border-left: 3pt solid #7fa8cd; padding: 1.5mm 3mm; margin: 0 0 3mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.defi { border: 1.2pt solid #b0762f; background: #fdf1e0; border-radius: 2mm; padding: 2mm 4mm; margin-top: 4mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.defi .etoile { font-weight: 700; color: #9a5f14; }
+
+/* — Grandes lettres et cases à découper (format paysage) — */
+.lettres-decoupe { display: flex; gap: 3.5mm; flex-wrap: wrap; margin-top: 2.5mm; }
+.lettres-decoupe .carte-lettre {
+  width: 20mm; height: 23mm; border: 1.2pt dashed #555; border-radius: 2mm;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30pt; font-weight: 700;
+}
+.grandes-cases { display: flex; gap: 2.5mm; margin-top: 2mm; flex-wrap: wrap; }
+.grandes-cases .gc { width: 20mm; height: 23mm; border: 1.4pt solid #333; border-radius: 2mm; }
+.mot-grand { font-size: 30pt; font-weight: 700; letter-spacing: .25em; }
+.ciseaux { font-size: 9pt; color: #666; }
+
+/* Compactage des fiches paysage (hauteur utile réduite) */
+.paysage .exo { margin: 2mm 0; }
+.paysage .consigne { margin-bottom: 2mm; padding: 1.5mm 3.5mm; }
+.paysage .entete { margin-bottom: 2mm; }
+.paysage .ligne-ecriture { margin: 2mm 0; }
+.paysage .titre { font-size: 13pt; margin-bottom: 1.5mm; }
+.paysage .sous-objectif { margin-bottom: 2mm; padding: 1mm 3mm; }
+.paysage .pied-fiche { margin-top: 2mm; }
+.paysage .lettres-decoupe .carte-lettre, .paysage .grandes-cases .gc { height: 21mm; }
+
+/* — Les mots que l'enfant lit : en script, avec la police Andika (a et g à un
+   étage, l et I distincts), comme sur les cartes de l'imagier. La consigne,
+   l'en-tête et le pied, qui s'adressent à l'adulte, restent en Atkinson. — */
+.case, .appariement .item, .alphabet .al, .bande .c, .carte-lettre, .plaque,
+.bande-lettres, .mot-grand, .quadrillage td, .trace, .modele { font-family: var(--police-enfant); }

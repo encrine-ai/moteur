@@ -1,0 +1,14 @@
+[
+{"query": "je voudrais faire ma propre classe avec tout ce matériel", "should_trigger": true},
+{"query": "crée une classe de moyenne section à partir de ce dépôt", "should_trigger": true},
+{"query": "adapte tout pour ma grande section de l'an prochain, je suis en zone B", "should_trigger": true},
+{"query": "je veux le même matériel mais sur le thème des contes", "should_trigger": true},
+{"query": "j'ai une classe de MS-GS, tu peux me faire ma version ?", "should_trigger": true},
+{"query": "/nouvelle-classe", "should_trigger": true},
+{"query": "on repart de zéro pour une autre école, avec ses propres périodes", "should_trigger": true},
+{"query": "une collègue voudrait sa version pour sa petite section", "should_trigger": true},
+{"query": "ajoute une séance de danse en période 2", "should_trigger": false},
+{"query": "change l'image du hérisson", "should_trigger": false},
+{"query": "passe le site en 2027-2028", "should_trigger": false},
+{"query": "la fiche 3.4 déborde sur deux pages", "should_trigger": false}
+]

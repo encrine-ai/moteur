@@ -1,0 +1,22 @@
+[
+{"query":"la carte du hérisson dans l'imagier, on voit rien du tout, l'animal est minuscule au milieu de l'herbe. tu peux me trouver mieux ?","should_trigger":true},
+{"query":"Sur la planche de la période 3 il y a deux marmottes sur la même carte, les enfants ne savent pas laquelle je nomme. Corrige.","should_trigger":true},
+{"query":"j'aimerais ajouter le lynx boréal dans les cartes de nomenclature de la montagne, avec une photo qui remplit bien la carte","should_trigger":true},
+{"query":"Refais toutes les images de la période 5 (la mer), plusieurs ne sont pas terribles : l'hippocampe se confond avec le fond et le crabe est caché dans les cailloux.","should_trigger":true},
+{"query":"le cochon de la période 4 c'est un sanglier en fait non ? ça m'étonnerait qu'une photo de sanglier soit légendée le cochon","should_trigger":true},
+{"query":"je veux changer la photo de la pâquerette, elle est trop chargée, il y a tout un gazon plein de fleurs on ne sait pas ce qu'on regarde","should_trigger":true},
+{"query":"vérifie que les 90 photos de l'imagier sont bien de la bonne espèce et qu'elles ont toutes un auteur et une licence avant que je publie","should_trigger":true},
+{"query":"dans classe/imagier.py je voudrais remplacer le mélèze par le pin sylvestre pour la période montagne","should_trigger":true},
+{"query":"les images de l'imagier ont des bandes blanches sur les côtés quand je les imprime, elles ne remplissent pas la carte","should_trigger":true},
+{"query":"faut que je trouve une photo libre de droits d'un blaireau européen pour les cartes de la forêt, en CC BY si possible","should_trigger":true},
+{"query":"les pictogrammes ARASAAC des fiches élève sont en licence NC, il faut les remplacer par des équivalents libres","should_trigger":false},
+{"query":"sur la fiche d'entraînement de la période 2, le dessin du sapin ne ressemble à rien, tu peux en trouver un autre dans site/fiches/img ?","should_trigger":false},
+{"query":"les cartes de l'imagier sont trop serrées sur la page, je n'arrive pas à passer le massicot entre deux. augmente un peu la gouttière dans le CSS","should_trigger":false},
+{"query":"le PDF de l'imagier période 2 ne se génère plus au déploiement, le job GitHub Actions passe mais le fichier est absent","should_trigger":false},
+{"query":"ajoute une séance sur les traces d'animaux dans la progression découverte du monde de la période 2","should_trigger":false},
+{"query":"la police Andika ne s'affiche pas dans le PDF de l'imagier, les noms sortent en Times","should_trigger":false},
+{"query":"il me faudrait une fiche d'évaluation supplémentaire sur le dénombrement jusqu'à 10 pour la période 4","should_trigger":false},
+{"query":"le mode d'emploi en première page de l'imagier déborde sur une deuxième page A4, resserre le texte","should_trigger":false},
+{"query":"est-ce que la programmation annuelle couvre bien les 159 attendus du programme ? lance le contrôle de couverture","should_trigger":false},
+{"query":"sur la page d'accueil du site, le bouton Imagier PDF n'apparaît pas quand on est sur une page de progression","should_trigger":false}
+]

@@ -1,0 +1,14 @@
+[
+{"query": "il faudrait une fiche d'entraînement sur les rimes en période 3", "should_trigger": true},
+{"query": "la consigne de la fiche élève 3.4 n'est pas claire pour les parents", "should_trigger": true},
+{"query": "ajoute un exercice de dénombrement jusqu'à 10 sur la fiche des écureuils", "should_trigger": true},
+{"query": "les cases pour écrire les lettres sont trop petites pour mes élèves", "should_trigger": true},
+{"query": "fais une version plus facile de la fiche B2 de la période 1", "should_trigger": true},
+{"query": "dans site/fiches/entrainement-periode-4.html ajoute un défi à la fiche A3", "should_trigger": true},
+{"query": "le codage A EC NE manque sur une fiche de la période 5", "should_trigger": true},
+{"query": "il me faut une fiche pour la reconstitution du mot TOMATE", "should_trigger": true},
+{"query": "la photo de la taupe dans l'imagier est sombre", "should_trigger": false},
+{"query": "passe le site en zone B par défaut", "should_trigger": false},
+{"query": "le mot écume n'a pas de carte dans le corpus", "should_trigger": false},
+{"query": "le vert du site est trop fade", "should_trigger": false}
+]

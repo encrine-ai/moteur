@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Impression</title>
+  <link rel="stylesheet" href="charte/charte.css">
+  <link rel="stylesheet" href="impression.css">
+</head>
+<body>
+  <div id="bandeau" class="bandeau"></div>
+  <article id="contenu"></article>
+  <script src="marked.min.js"></script>
+  <script src="classe.js"></script>
+  <script src="commun.js"></script>
+  <script>
+    (function () {
+      'use strict';
+      var params = new URLSearchParams(location.search);
+      var id = params.get('doc') || 'projet-annuel';
+      var zone = params.get('zone') || 'A';
+      var periode = parseInt(params.get('periode') || '0', 10);
+      if (['A', 'B', 'C'].indexOf(zone) === -1) zone = 'A';
+      var doc = GS.DOCS.find(function (x) { return x.id === id; });
+      if (!doc || !doc.md) { document.getElementById('contenu').textContent = 'Document inconnu.'; return; }
+
+      var suffixe = periode ? ' · Période ' + periode : '';
+      if (periode) document.body.dataset.periode = periode;
+      else if (doc.fiches) document.body.dataset.periode = doc.fiches;
+      var C = GS.CLASSE;
+      document.title = C.niveau.code + ' ' + C.annee + ' — ' + doc.titre + suffixe + ' (zone ' + zone + ')';
+      document.getElementById('bandeau').innerHTML =
+        '<span>' + C.niveau.libelle + ' ' + C.annee + ' · ' + C.projet + '</span>' +
+        '<span>' + (doc.groupe ? doc.groupe + ' · ' : '') + doc.titre + suffixe + ' — Zone ' + zone + '</span>';
+
+      marked.use({ gfm: true, breaks: false });
+      fetch(doc.md).then(function (r) { return r.text(); }).then(function (md) {
+        var contenu = document.getElementById('contenu');
+        contenu.innerHTML = marked.parse(GS.nettoieMarkdown(md));
+
+        if (periode) {
+          // Extrait pour l'affichage en classe : titre du document + la
+          // section « Période N » (du h2 correspondant jusqu'au h2 suivant).
+          var re = new RegExp('P[ée]riode\\s*' + periode + '\\b', 'i');
+          var garder = [];
+          var dansSection = false;
+          Array.prototype.forEach.call(contenu.children, function (el) {
+            if (el.tagName === 'H1') { garder.push(el); return; }
+            if (el.tagName === 'H2') { dansSection = re.test(el.textContent); }
+            if (dansSection) garder.push(el);
+          });
+          if (garder.length > 1) {
+            contenu.innerHTML = '';
+            garder.forEach(function (el) { contenu.appendChild(el); });
+          }
+        }
+
+        GS.annoteTitres(contenu, zone);
+        document.body.dataset.pret = '1';
+      });
+    })();
+  </script>
+</body>
+</html>

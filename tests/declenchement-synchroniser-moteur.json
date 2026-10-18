@@ -1,0 +1,12 @@
+[
+{"query": "mets l'outil à jour", "should_trigger": true},
+{"query": "récupère les nouveautés du moteur dans ma classe", "should_trigger": true},
+{"query": "il paraît qu'il y a une nouvelle version du moteur, on la prend ?", "should_trigger": true},
+{"query": "synchronise ma classe avec le dépôt modèle", "should_trigger": true},
+{"query": "mon idée de cartes-chiffres a été intégrée, je voudrais l'avoir", "should_trigger": true},
+{"query": "/synchroniser-moteur", "should_trigger": true},
+{"query": "passe le site en 2027-2028", "should_trigger": false},
+{"query": "signale ce problème au moteur", "should_trigger": false},
+{"query": "le site n'est pas à jour", "should_trigger": false},
+{"query": "refais les PDF", "should_trigger": false}
+]

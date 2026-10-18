@@ -1,0 +1,205 @@
+# Référentiel du programme — cycle 1, repères « à partir de 5 ans » (GS)
+#
+# Chaque exigence du programme devient une ligne avec un identifiant stable.
+# C'est ce qui permet de la compter, de la citer, et de constater qu'elle
+# manque. Les séances s'y accrochent dans `classe/annotations.yml`.
+#
+# ⚠ SOURCE. Ces entrées sont la décomposition des sections « Attendus
+# travaillés en GS (rappel du programme) » des sept progressions de ce
+# dépôt — c'est-à-dire d'une lecture déjà faite du programme, et non du
+# texte officiel. Chaque entrée doit être relue contre le BO n°19 du
+# 7 mai 2026 et le BO n°41 du 31 octobre 2024, et porter sa référence
+# exacte. Un référentiel approximatif rendrait le contrôle faux.
+
+source: >-
+  Programme d'enseignement de l'école maternelle (cycle 1), BO n°19 du
+  7 mai 2026 et BO n°41 du 31 octobre 2024 (EVAR), tels que repris dans les
+  progressions de ce dépôt.
+statut: decompose-a-relire
+
+attendus:
+
+  # ───────────────────────────── LANGAGE ─────────────────────────────
+  - {id: lang.voc.corpus,          domaine: Langage, sous_domaine: Vocabulaire, libelle: "Comprendre, mémoriser et réemployer les mots des 3 corpus de la période"}
+  - {id: lang.voc.categories,      domaine: Langage, sous_domaine: Vocabulaire, libelle: "Organiser les mots en catégories (hyperonymes)"}
+  - {id: lang.voc.reseaux,         domaine: Langage, sous_domaine: Vocabulaire, libelle: "Construire des réseaux de mots : dérivations, synonymes, contraires"}
+  - {id: lang.voc.sens-figure,     domaine: Langage, sous_domaine: Vocabulaire, libelle: "Distinguer le sens propre et le sens figuré"}
+  - {id: lang.voc.emotions,        domaine: Langage, sous_domaine: Vocabulaire, libelle: "Employer les mots des émotions et des états mentaux"}
+  - {id: lang.voc.proches,         domaine: Langage, sous_domaine: Vocabulaire, libelle: "Distinguer des mots phonologiquement proches"}
+  - {id: lang.synt.pronoms,        domaine: Langage, sous_domaine: Syntaxe, libelle: "Employer les pronoms nous et vous"}
+  - {id: lang.synt.temps-passe,    domaine: Langage, sous_domaine: Syntaxe, libelle: "Employer l'imparfait et le plus-que-parfait"}
+  - {id: lang.synt.futur,          domaine: Langage, sous_domaine: Syntaxe, libelle: "Employer le futur simple et le futur antérieur"}
+  - {id: lang.synt.complexite,     domaine: Langage, sous_domaine: Syntaxe, libelle: "Employer les introducteurs de complexité (où, quand, pour que, si, comme)"}
+  - {id: lang.art.ch-s,            domaine: Langage, sous_domaine: Articulation, libelle: "Prononcer les couples ch/s, ch/j, ch/z"}
+  - {id: lang.art.doubles,         domaine: Langage, sous_domaine: Articulation, libelle: "Prononcer les doubles consonnes br, cr, bl, pl, sl"}
+  - {id: lang.art.phonemes-36,     domaine: Langage, sous_domaine: Articulation, libelle: "Prononcer les 36 phonèmes avec exactitude"}
+  - {id: lang.disc.decrire-action, domaine: Langage, sous_domaine: Discours, libelle: "Décrire l'action menée par un autre"}
+  - {id: lang.disc.adulte-absent,  domaine: Langage, sous_domaine: Discours, libelle: "Se faire comprendre d'un adulte qui n'a pas vécu la situation"}
+  - {id: lang.disc.conversation,   domaine: Langage, sous_domaine: Discours, libelle: "Participer à une conversation et reformuler"}
+  - {id: lang.disc.hypothese,      domaine: Langage, sous_domaine: Discours, libelle: "Émettre une hypothèse"}
+  - {id: lang.disc.memorisation,   domaine: Langage, sous_domaine: Discours, libelle: "Mémoriser un texte par semaine"}
+  - {id: lang.phono.syllabes,      domaine: Langage, sous_domaine: Phonologie, libelle: "Supprimer, ajouter, remplacer, inverser, fusionner des syllabes"}
+  - {id: lang.phono.rimes,         domaine: Langage, sous_domaine: Phonologie, libelle: "Repérer et produire des rimes et des assonances"}
+  - {id: lang.phono.phonemes,      domaine: Langage, sous_domaine: Phonologie, libelle: "Entendre, discriminer et manipuler des phonèmes"}
+  - {id: lang.let.trois-graphies,  domaine: Langage, sous_domaine: Lettres, libelle: "Nommer toutes les lettres dans les 3 graphies"}
+  - {id: lang.let.valeur-sonore,   domaine: Langage, sous_domaine: Lettres, libelle: "Connaître la valeur sonore des lettres (hors occlusives)"}
+  - {id: lang.let.proches,         domaine: Langage, sous_domaine: Lettres, libelle: "Distinguer les lettres proches (b/d, p/q)"}
+  - {id: lang.let.epeler,          domaine: Langage, sous_domaine: Lettres, libelle: "Épeler un mot connu"}
+  - {id: lang.ecr.types,           domaine: Langage, sous_domaine: Écrits, libelle: "Différencier les types d'écrits et repérer leur structure"}
+  - {id: lang.ecr.archetypes,      domaine: Langage, sous_domaine: Écrits, libelle: "Reconnaître des personnages archétypaux"}
+  - {id: lang.ecr.emotions-perso,  domaine: Langage, sous_domaine: Écrits, libelle: "Identifier émotions, intentions et sentiments des personnages"}
+  - {id: lang.ecr.raconter,        domaine: Langage, sous_domaine: Écrits, libelle: "Raconter une histoire connue sans support"}
+  - {id: lang.geste.pince,         domaine: Langage, sous_domaine: Geste d'écriture, libelle: "Tenir son crayon en pince"}
+  - {id: lang.geste.ligatures,     domaine: Langage, sous_domaine: Geste d'écriture, libelle: "Réaliser les ligatures"}
+  - {id: lang.geste.cursive,       domaine: Langage, sous_domaine: Geste d'écriture, libelle: "Écrire en cursive"}
+  - {id: lang.geste.prenom,        domaine: Langage, sous_domaine: Geste d'écriture, libelle: "Écrire son prénom en cursive sans modèle"}
+  - {id: lang.geste.mots,          domaine: Langage, sous_domaine: Geste d'écriture, libelle: "Écrire des mots transparents en cursive"}
+  - {id: lang.prod.segmenter,      domaine: Langage, sous_domaine: Production d'écrits, libelle: "Segmenter l'oral en mots, syllabes et phonèmes"}
+  - {id: lang.prod.encoder,        domaine: Langage, sous_domaine: Production d'écrits, libelle: "Encoder des mots transparents"}
+  - {id: lang.prod.phonie-graphie, domaine: Langage, sous_domaine: Production d'écrits, libelle: "Utiliser les rapports phonie-graphie simples"}
+  - {id: lang.prod.norme,          domaine: Langage, sous_domaine: Production d'écrits, libelle: "Comprendre la norme de l'écrit (ponctuation, majuscules, mise en page)"}
+  - {id: lang.prod.dictee,         domaine: Langage, sous_domaine: Production d'écrits, libelle: "Participer à une dictée à l'adulte hebdomadaire"}
+
+  # ─────────────────────────── MATHÉMATIQUES ──────────────────────────
+  - {id: math.qte.collections,     domaine: Mathématiques, sous_domaine: Quantités, libelle: "Dénombrer des collections jusqu'à 10 et au-delà"}
+  - {id: math.qte.enumeration,     domaine: Mathématiques, sous_domaine: Quantités, libelle: "Dénombrer par énumération organisée, sans oubli ni double comptage"}
+  - {id: math.qte.decompositions,  domaine: Mathématiques, sous_domaine: Quantités, libelle: "Composer et décomposer les nombres"}
+  - {id: math.qte.comparaison,     domaine: Mathématiques, sous_domaine: Quantités, libelle: "Comparer des collections : plus que, moins que, autant que"}
+  - {id: math.qte.surcomptage,     domaine: Mathématiques, sous_domaine: Quantités, libelle: "Surcompter à partir d'un nombre"}
+  - {id: math.qte.ecriture,        domaine: Mathématiques, sous_domaine: Quantités, libelle: "Écrire les chiffres de 1 à 10"}
+  - {id: math.qte.comptine-30,     domaine: Mathématiques, sous_domaine: Quantités, libelle: "Dire la suite orale des nombres jusqu'à 30"}
+  - {id: math.qte.rebours,         domaine: Mathématiques, sous_domaine: Quantités, libelle: "Dire la suite à rebours de 10 à 1"}
+  - {id: math.qte.deux-en-deux,    domaine: Mathématiques, sous_domaine: Quantités, libelle: "Dire la suite de 2 en 2 jusqu'à 20"}
+  - {id: math.qte.depart-donne,    domaine: Mathématiques, sous_domaine: Quantités, libelle: "Dire la suite à partir d'un nombre donné"}
+  - {id: math.rang.ordinaux,       domaine: Mathématiques, sous_domaine: Rang et position, libelle: "Employer premier, dernier, deuxième, avant-dernier"}
+  - {id: math.rang.jusqu-10,       domaine: Mathématiques, sous_domaine: Rang et position, libelle: "Repérer un rang jusqu'à 10 en changeant le point de départ"}
+  - {id: math.rang.bande,          domaine: Mathématiques, sous_domaine: Rang et position, libelle: "Utiliser et compléter la bande numérique jusqu'à 10"}
+  - {id: math.rang.deplacement,    domaine: Mathématiques, sous_domaine: Rang et position, libelle: "Comprendre l'effet d'un déplacement (ajout/avancement, retrait/recul)"}
+  - {id: math.pb.parties-tout,     domaine: Mathématiques, sous_domaine: Problèmes, libelle: "Résoudre des problèmes parties-tout (2 puis 3 parties)"}
+  - {id: math.pb.ajout-retrait,    domaine: Mathématiques, sous_domaine: Problèmes, libelle: "Résoudre des problèmes d'ajout et de retrait"}
+  - {id: math.pb.position,         domaine: Mathématiques, sous_domaine: Problèmes, libelle: "Résoudre des problèmes de position initiale et finale"}
+  - {id: math.pb.ecarts,           domaine: Mathématiques, sous_domaine: Problèmes, libelle: "Résoudre des problèmes d'écart, y compris à énoncé discordant"}
+  - {id: math.pb.groupements,      domaine: Mathématiques, sous_domaine: Problèmes, libelle: "Résoudre des problèmes de groupement"}
+  - {id: math.pb.partage,          domaine: Mathématiques, sous_domaine: Problèmes, libelle: "Partager équitablement, avec reste"}
+  - {id: math.for.solides,         domaine: Mathématiques, sous_domaine: Solides et formes, libelle: "Décrire cube, pavé, boule, pyramide, cylindre, cône"}
+  - {id: math.for.figures,         domaine: Mathématiques, sous_domaine: Solides et formes, libelle: "Reconnaître, trier, nommer carré, rectangle, triangle, disque dans toutes les orientations"}
+  - {id: math.for.assemblages,     domaine: Mathématiques, sous_domaine: Solides et formes, libelle: "Reproduire des assemblages (5 solides, 8 formes)"}
+  - {id: math.for.regle,           domaine: Mathématiques, sous_domaine: Solides et formes, libelle: "Utiliser la règle comme outil de tracé"}
+  - {id: math.gr.long-indirecte,   domaine: Mathématiques, sous_domaine: Grandeurs, libelle: "Comparer des longueurs par comparaison indirecte (bande témoin)"}
+  - {id: math.gr.long-ordonner,    domaine: Mathématiques, sous_domaine: Grandeurs, libelle: "Ordonner 5 objets selon leur longueur"}
+  - {id: math.gr.long-produire,    domaine: Mathématiques, sous_domaine: Grandeurs, libelle: "Produire une longueur donnée"}
+  - {id: math.gr.masse-roberval,   domaine: Mathématiques, sous_domaine: Grandeurs, libelle: "Comparer des masses à la balance de Roberval"}
+  - {id: math.gr.masse-ordonner,   domaine: Mathématiques, sous_domaine: Grandeurs, libelle: "Ordonner 3 objets selon leur masse ; égalité et transitivité"}
+  - {id: math.mot.repetitifs,      domaine: Mathématiques, sous_domaine: Motifs organisés, libelle: "Reproduire et prolonger un motif répétitif"}
+  - {id: math.mot.evolutifs,       domaine: Mathématiques, sous_domaine: Motifs organisés, libelle: "Reconnaître et prolonger un motif évolutif"}
+  - {id: math.mot.decrire,         domaine: Mathématiques, sous_domaine: Motifs organisés, libelle: "Décrire la structure d'un motif"}
+  - {id: math.mot.transcrire,      domaine: Mathématiques, sous_domaine: Motifs organisés, libelle: "Transcrire un motif avec d'autres éléments"}
+  - {id: math.mot.creer,           domaine: Mathématiques, sous_domaine: Motifs organisés, libelle: "Créer un motif et le faire reproduire"}
+
+  # ────────────────────────── ACTIVITÉS PHYSIQUES ─────────────────────
+  - {id: eps.dep.lancer,           domaine: Activités physiques, sous_domaine: Se déplacer, libelle: "Lancer loin et avec précision"}
+  - {id: eps.dep.courir-longtemps, domaine: Activités physiques, sous_domaine: Se déplacer, libelle: "Courir de plus en plus longtemps sans s'arrêter"}
+  - {id: eps.dep.courir-vite,      domaine: Activités physiques, sous_domaine: Se déplacer, libelle: "Courir vite et franchir un obstacle"}
+  - {id: eps.dep.sauter,           domaine: Activités physiques, sous_domaine: Se déplacer, libelle: "Coordonner ses actions pour sauter haut ou loin"}
+  - {id: eps.dep.orientation,      domaine: Activités physiques, sous_domaine: Se déplacer, libelle: "Se situer dans un milieu moins connu grâce à des indices"}
+  - {id: eps.eq.combinaisons,      domaine: Activités physiques, sous_domaine: Construire des équilibres, libelle: "Combiner des actions : sauter, quadrupédie, se suspendre, se balancer"}
+  - {id: eps.eq.glisser,           domaine: Activités physiques, sous_domaine: Construire des équilibres, libelle: "Glisser (patins, skis, vélo)"}
+  - {id: eps.eq.aquatique,         domaine: Activités physiques, sous_domaine: Construire des équilibres, libelle: "Explorer le milieu aquatique"}
+  - {id: eps.eq.securite,          domaine: Activités physiques, sous_domaine: Construire des équilibres, libelle: "Respecter les règles de sécurité pour soi et pour les autres (guide, parade)"}
+  - {id: eps.exp.geste-danse,      domaine: Activités physiques, sous_domaine: S'exprimer avec son corps, libelle: "Enrichir le geste dansé, arts du cirque inclus"}
+  - {id: eps.exp.espace-scenique,  domaine: Activités physiques, sous_domaine: S'exprimer avec son corps, libelle: "Explorer l'espace scénique avec des inducteurs variés"}
+  - {id: eps.exp.choregraphie,     domaine: Activités physiques, sous_domaine: S'exprimer avec son corps, libelle: "Danser à plusieurs en respectant une chorégraphie simple"}
+  - {id: eps.exp.spectateur,       domaine: Activités physiques, sous_domaine: S'exprimer avec son corps, libelle: "Être spectateur actif et formuler un conseil"}
+  - {id: eps.coop.strategies,      domaine: Activités physiques, sous_domaine: Coopérer et s'opposer, libelle: "Élaborer des stratégies pour gagner"}
+  - {id: eps.coop.roles,           domaine: Activités physiques, sous_domaine: Coopérer et s'opposer, libelle: "Exercer les rôles d'attaquant, de défenseur et d'arbitre"}
+  - {id: eps.coop.equipe,          domaine: Activités physiques, sous_domaine: Coopérer et s'opposer, libelle: "Accepter les contraintes d'une stratégie d'équipe"}
+
+  # ───────────────────────── ACTIVITÉS ARTISTIQUES ────────────────────
+  - {id: arts.des.modele,          domaine: Activités artistiques, sous_domaine: Dessiner, libelle: "Dessiner d'après un modèle ou d'après nature"}
+  - {id: arts.des.representer,     domaine: Activités artistiques, sous_domaine: Dessiner, libelle: "Représenter un personnage ou un événement fictif"}
+  - {id: arts.des.collective,      domaine: Activités artistiques, sous_domaine: Dessiner, libelle: "Participer à une œuvre collective"}
+  - {id: arts.des.vocabulaire,     domaine: Activités artistiques, sous_domaine: Dessiner, libelle: "Employer le vocabulaire spécifique du dessin"}
+  - {id: arts.gra.detourner,       domaine: Activités artistiques, sous_domaine: Graphisme, libelle: "Transformer et détourner des motifs du répertoire"}
+  - {id: arts.gra.creer,           domaine: Activités artistiques, sous_domaine: Graphisme, libelle: "Créer de nouveaux motifs et les nommer"}
+  - {id: arts.gra.contraintes,     domaine: Activités artistiques, sous_domaine: Graphisme, libelle: "Composer avec plusieurs contraintes"}
+  - {id: arts.pla.combiner,        domaine: Activités artistiques, sous_domaine: Compositions plastiques, libelle: "Choisir et combiner matériaux, techniques et procédés"}
+  - {id: arts.pla.expression,      domaine: Activités artistiques, sous_domaine: Compositions plastiques, libelle: "Se familiariser avec différentes formes d'expression, dont le détournement d'objets"}
+  - {id: arts.img.types,           domaine: Activités artistiques, sous_domaine: Images, libelle: "Différencier portrait, paysage et nature morte"}
+  - {id: arts.img.elements,        domaine: Activités artistiques, sous_domaine: Images, libelle: "Identifier et nommer des éléments esthétiques"}
+  - {id: arts.voix.inventivite,    domaine: Activités artistiques, sous_domaine: Voix et chant, libelle: "Explorer sa voix, faire preuve d'inventivité vocale"}
+  - {id: arts.voix.collectif,      domaine: Activités artistiques, sous_domaine: Voix et chant, libelle: "Trouver sa place dans un collectif chantant"}
+  - {id: arts.voix.repertoire,     domaine: Activités artistiques, sous_domaine: Voix et chant, libelle: "Connaître au moins 10 comptines ou chants"}
+  - {id: arts.voix.memoire,        domaine: Activités artistiques, sous_domaine: Voix et chant, libelle: "Chanter de mémoire sans l'aide de l'adulte"}
+  - {id: arts.ins.son-geste,       domaine: Activités artistiques, sous_domaine: Instruments, libelle: "Faire le lien entre le son et le geste"}
+  - {id: arts.ins.paysage,         domaine: Activités artistiques, sous_domaine: Instruments, libelle: "Créer un paysage sonore"}
+  - {id: arts.ins.collective,      domaine: Activités artistiques, sous_domaine: Instruments, libelle: "Participer à une production musicale collective"}
+  - {id: arts.eco.dessin,          domaine: Activités artistiques, sous_domaine: Écoute, libelle: "Traduire la musique en dessin"}
+  - {id: arts.eco.elements,        domaine: Activités artistiques, sous_domaine: Écoute, libelle: "Repérer des éléments musicaux (tempo, nuances, timbres)"}
+  - {id: arts.eco.patrimoine,      domaine: Activités artistiques, sous_domaine: Écoute, libelle: "Connaître au moins 3 œuvres patrimoniales"}
+  - {id: arts.spec.emotions,       domaine: Activités artistiques, sous_domaine: Spectacle vivant, libelle: "Enchaîner des émotions par le corps et la voix"}
+  - {id: arts.spec.scene,          domaine: Activités artistiques, sous_domaine: Spectacle vivant, libelle: "Jouer dans un espace scénique, utiliser les coulisses"}
+  - {id: arts.spec.spectateur,     domaine: Activités artistiques, sous_domaine: Spectacle vivant, libelle: "Être spectateur de genres théâtraux variés"}
+
+  # ───────────────────────── SE REPÉRER — TEMPS ET ESPACE ─────────────
+  - {id: te.tps.semaine,           domaine: Temps et espace, sous_domaine: Temps, libelle: "Situer un événement dans la semaine"}
+  - {id: te.tps.date,              domaine: Temps et espace, sous_domaine: Temps, libelle: "Énoncer la date (jour et mois)"}
+  - {id: te.tps.mois,              domaine: Temps et espace, sous_domaine: Temps, libelle: "Nommer la plupart des mois"}
+  - {id: te.tps.saisons,           domaine: Temps et espace, sous_domaine: Temps, libelle: "Connaître les quatre saisons et leurs caractéristiques"}
+  - {id: te.tps.chronologie,       domaine: Temps et espace, sous_domaine: Temps, libelle: "Ordonner les étapes d'un processus"}
+  - {id: te.tps.relations,         domaine: Temps et espace, sous_domaine: Temps, libelle: "Exprimer antériorité, simultanéité et postériorité avec les temps verbaux"}
+  - {id: te.tps.durees,            domaine: Temps et espace, sous_domaine: Temps, libelle: "Comparer des durées"}
+  - {id: te.tps.organiser,         domaine: Temps et espace, sous_domaine: Temps, libelle: "Organiser son activité dans un temps imparti"}
+  - {id: te.tps.temps-long,        domaine: Temps et espace, sous_domaine: Temps, libelle: "Appréhender le temps long (avant notre naissance)"}
+  - {id: te.esp.assemblages,       domaine: Temps et espace, sous_domaine: Espace, libelle: "Réaliser des assemblages complexes (puzzles, pavages, tangrams)"}
+  - {id: te.esp.situer,            domaine: Temps et espace, sous_domaine: Espace, libelle: "Situer des objets dans un ensemble ordonné et par rapport à soi"}
+  - {id: te.esp.gauche-droite,     domaine: Temps et espace, sous_domaine: Espace, libelle: "Distinguer la gauche et la droite"}
+  - {id: te.esp.trajets,           domaine: Temps et espace, sous_domaine: Espace, libelle: "Réaliser et représenter des trajets"}
+  - {id: te.esp.page,              domaine: Temps et espace, sous_domaine: Espace, libelle: "Utiliser une page selon les normes de l'écrit"}
+  - {id: te.esp.planisphere,       domaine: Temps et espace, sous_domaine: Espace, libelle: "Reconnaître mer et terre, continents et océans sur un planisphère ou un globe"}
+  - {id: te.esp.parcours-plan,     domaine: Temps et espace, sous_domaine: Espace, libelle: "Reproduire un parcours sur une représentation plane"}
+  - {id: te.esp.coder,             domaine: Temps et espace, sous_domaine: Espace, libelle: "Coder un déplacement avec des flèches"}
+  - {id: te.esp.plan,              domaine: Temps et espace, sous_domaine: Espace, libelle: "Dessiner un plan"}
+  - {id: te.env.ecole,             domaine: Temps et espace, sous_domaine: Environnement proche, libelle: "Reconnaître les espaces proches de l'école et leurs usages"}
+  - {id: te.env.milieux,           domaine: Temps et espace, sous_domaine: Environnement proche, libelle: "Découvrir des espaces moins familiers par l'observation et les documentaires"}
+  - {id: te.env.architecture,      domaine: Temps et espace, sous_domaine: Environnement proche, libelle: "Identifier des éléments architecturaux"}
+
+  # ──────────────── EXPLORER LE MONDE DU VIVANT, DE LA MATIÈRE ────────
+  - {id: monde.viv.morphologie,    domaine: Monde du vivant, sous_domaine: Animaux et végétaux, libelle: "Identifier des éléments morphologiques spécifiques à une espèce"}
+  - {id: monde.viv.etapes,         domaine: Monde du vivant, sous_domaine: Animaux et végétaux, libelle: "Reconnaître les étapes de la vie d'un animal ou d'une plante"}
+  - {id: monde.viv.besoins,        domaine: Monde du vivant, sous_domaine: Animaux et végétaux, libelle: "Décrire les besoins essentiels du vivant"}
+  - {id: monde.viv.classer,        domaine: Monde du vivant, sous_domaine: Animaux et végétaux, libelle: "Classer selon les caractéristiques (poils, plumes, écailles)"}
+  - {id: monde.viv.deplacement,    domaine: Monde du vivant, sous_domaine: Animaux et végétaux, libelle: "Associer mode de déplacement et éléments anatomiques"}
+  - {id: monde.viv.biodiversite,   domaine: Monde du vivant, sous_domaine: Animaux et végétaux, libelle: "Contribuer à une action collective favorable à la biodiversité"}
+  - {id: monde.corps.articulations, domaine: Monde du vivant, sous_domaine: Corps humain et santé, libelle: "Identifier et nommer quelques articulations et la segmentation des membres"}
+  - {id: monde.corps.mouvement,    domaine: Monde du vivant, sous_domaine: Corps humain et santé, libelle: "Se représenter avec un corps articulé en mouvement"}
+  - {id: monde.corps.etapes-vie,   domaine: Monde du vivant, sous_domaine: Corps humain et santé, libelle: "Connaître quelques étapes de la vie d'un enfant jusqu'à six ans"}
+  - {id: monde.mat.eau,            domaine: Monde du vivant, sous_domaine: Matière, libelle: "Identifier et nommer l'état de l'eau selon les situations"}
+  - {id: monde.mat.air,            domaine: Monde du vivant, sous_domaine: Matière, libelle: "Identifier la présence de l'air"}
+  - {id: monde.mat.dissolution,    domaine: Monde du vivant, sous_domaine: Matière, libelle: "Distinguer les solides qui se dissolvent dans l'eau"}
+  - {id: monde.mat.environnement,  domaine: Monde du vivant, sous_domaine: Matière, libelle: "Agir de manière autonome pour le respect de l'environnement"}
+  - {id: monde.mat.risques,        domaine: Monde du vivant, sous_domaine: Matière, libelle: "Prendre en compte les risques : pictogrammes, alerter un adulte"}
+  - {id: monde.obj.fonction,       domaine: Monde du vivant, sous_domaine: Objets, libelle: "Associer une solution technique à une fonction"}
+  - {id: monde.obj.fabriquer,      domaine: Monde du vivant, sous_domaine: Objets, libelle: "Fabriquer un objet en exploitant des propriétés physiques"}
+  - {id: monde.obj.flottabilite,   domaine: Monde du vivant, sous_domaine: Objets, libelle: "Explorer la flottabilité"}
+  - {id: monde.obj.recette,        domaine: Monde du vivant, sous_domaine: Objets, libelle: "Suivre une recette ou une fiche technique"}
+  - {id: monde.obj.instructions,   domaine: Monde du vivant, sous_domaine: Objets, libelle: "Élaborer une suite de 3 à 5 instructions"}
+  - {id: monde.obj.risques,        domaine: Monde du vivant, sous_domaine: Objets, libelle: "Identifier et prévenir les risques liés aux objets"}
+
+  # ────────────────────────────── EVAR ────────────────────────────────
+  - {id: evar.corps.sensations,    domaine: EVAR, sous_domaine: Se connaître, libelle: "Connaître son corps, ses sensations et ses émotions"}
+  - {id: evar.rel.sentiments,      domaine: EVAR, sous_domaine: Rencontrer les autres, libelle: "Identifier différents types de sentiments dans la relation à l'autre"}
+  - {id: evar.soc.differences,     domaine: EVAR, sous_domaine: Trouver sa place, libelle: "Découvrir les ressemblances et les différences entre soi et les autres"}
+  - {id: evar.soc.respect,         domaine: EVAR, sous_domaine: Trouver sa place, libelle: "Respecter les autres dans leur différence et être respecté"}
+  - {id: evar.soc.protection,      domaine: EVAR, sous_domaine: Trouver sa place, libelle: "Identifier les adultes de confiance (protection de l'enfance)"}
+
+regles:
+  - {id: evar.seances,       libelle: "Au moins 3 séances spécifiques d'éducation à la vie affective", controle: evar_seances, minimum: 3}
+  - {id: eps.unites.duree,   libelle: "Unités d'apprentissage de 6 à 8 séances", controle: eps_unites}
+  - {id: voc.corpus,         libelle: "3 corpus de vocabulaire par période, soit 15 sur l'année", controle: corpus_par_periode, minimum: 15}
+  - {id: arts.oeuvres,       libelle: "Au moins 3 œuvres musicales patrimoniales", controle: oeuvres_patrimoniales, minimum: 3}
+  - id: lang.textes.hebdo
+    libelle: "Un texte mémorisé par semaine, au moins 10 comptines ou chants"
+    controle: non_verifiable
+    raison: >-
+      les chants sont cités en prose, dans une colonne de tableau, sans liste
+      structurée : on ne peut ni les compter ni vérifier le rythme hebdomadaire.

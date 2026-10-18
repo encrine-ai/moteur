@@ -1,0 +1,167 @@
+/* Fabriqué par scripts/classe.py : socle.css, puis le thème « demo » (themes/demo/theme.css).
+   Ne pas modifier à la main : éditer ces deux fichiers, puis relancer  python3 scripts/classe.py generer */
+
+/* Le socle de la charte — ce que toutes les classes partagent, quel que soit
+ * leur thème.
+ *
+ *  - Andika, la police de tout mot qu'un enfant lit (a et g à un étage, l et I
+ *    distincts) : elle ne dépend pas du thème, parce qu'elle sert la lecture ;
+ *  - les espacements (pas de 4 px) et les rayons ;
+ *  - la mécanique des périodes : data-periode="1".."5" pose --periode,
+ *    --periode-trait et --periode-pale à partir des --pN que fournit le thème.
+ *
+ * Le thème de la classe (site/charte/themes/<thème>/theme.css, choisi par
+ * classe.yml) fournit le reste : couleurs, polices de l'adulte, ombre.
+ * scripts/classe.py generer assemble les deux dans site/charte/charte.css,
+ * le seul fichier que chargent les pages. Ne pas éditer charte.css à la main.
+ */
+
+/* ——— Police de l'enfant (auto-hébergée : le PDF se fabrique sans réseau) ——— */
+@font-face { font-family: "Andika"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url("polices/andika-latin-400.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Andika"; font-style: normal; font-weight: 400; font-display: swap;
+  src: url("polices/andika-latin-ext-400.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Andika"; font-style: normal; font-weight: 700; font-display: swap;
+  src: url("polices/andika-latin-700.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Andika"; font-style: normal; font-weight: 700; font-display: swap;
+  src: url("polices/andika-latin-ext-700.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+
+/* ——— Jetons communs ——— */
+:root {
+  /* La police des mots de l'enfant : la même pour toutes les classes */
+  --police-enfant: "Andika", "Century Gothic", Verdana, sans-serif;
+
+  /* Espacements (pas de 4 px) */
+  --esp-1: 4px; --esp-2: 8px; --esp-3: 12px; --esp-4: 16px;
+  --esp-5: 24px; --esp-6: 32px; --esp-7: 48px; --esp-8: 64px;
+
+  /* Rayons */
+  --rayon-s: 6px;     /* boutons, champs, pastilles carrées */
+  --rayon-m: 12px;    /* cartes, encadrés */
+  --rayon-l: 20px;    /* le document, les grands panneaux */
+  --rayon-pilule: 999px;
+}
+
+/* La période d'un bloc : data-periode="1".."5" pose --periode, --periode-trait et --periode-pale. */
+[data-periode="1"] { --periode: var(--p1); --periode-trait: var(--p1-trait); --periode-pale: var(--p1-pale); }
+[data-periode="2"] { --periode: var(--p2); --periode-trait: var(--p2-trait); --periode-pale: var(--p2-pale); }
+[data-periode="3"] { --periode: var(--p3); --periode-trait: var(--p3-trait); --periode-pale: var(--p3-pale); }
+[data-periode="4"] { --periode: var(--p4); --periode-trait: var(--p4-trait); --periode-pale: var(--p4-pale); }
+[data-periode="5"] { --periode: var(--p5); --periode-trait: var(--p5-trait); --periode-pale: var(--p5-pale); }
+
+/* Le thème « demo » — un style neutre pour la classe de démonstration.
+ *
+ * Un thème porte les couleurs (clair, sombre, impression), les cinq couleurs
+ * de période et les polices de l'adulte ; le socle (../../socle.css) porte le
+ * reste. Le skill charte-graphique dit comment en écrire un pour un thème
+ * choisi ; celui-ci sert de point de départ.
+ */
+
+/* ——— Polices du thème (auto-hébergées) ——— */
+@font-face { font-family: "Bricolage Grotesque"; font-style: normal; font-weight: 200 800; font-display: swap;
+  src: url("themes/demo/polices/bricolage-grotesque-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Bricolage Grotesque"; font-style: normal; font-weight: 200 800; font-display: swap;
+  src: url("themes/demo/polices/bricolage-grotesque-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Atkinson Hyperlegible Next"; font-style: normal; font-weight: 200 800; font-display: swap;
+  src: url("themes/demo/polices/atkinson-next-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Atkinson Hyperlegible Next"; font-style: normal; font-weight: 200 800; font-display: swap;
+  src: url("themes/demo/polices/atkinson-next-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Atkinson Hyperlegible Next"; font-style: italic; font-weight: 200 800; font-display: swap;
+  src: url("themes/demo/polices/atkinson-next-latin-italic.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+/* ——— Jetons du thème ——— */
+:root {
+  /* Fonds et traits */
+  --papier: #f6f7f2;          /* fond de page de l'application */
+  --feuille: #ffffff;         /* surfaces posées sur le papier : document, carte, menu */
+  --feuille-creuse: #eef1ea;  /* zone en retrait : barre d'outils, ligne paire d'un tableau */
+  --trait: #d8ddd3;           /* filets, séparateurs */
+  --trait-fort: #7f8b7c;      /* bord d'un contrôle (3:1 sur papier et feuille) */
+
+  /* Encres */
+  --encre: #1c2a22;           /* texte courant */
+  --encre-douce: #55625a;     /* métadonnées, légendes */
+  --sapin: #1f5a40;           /* la couleur de la maison : titres, action principale, état actif */
+  --sapin-pale: #e2eee6;      /* fond teinté derrière du sapin */
+  --sur-sapin: #ffffff;       /* texte posé sur un aplat sapin */
+  --bouton-dor: #f4c542;      /* mise en avant : la période en cours, l'étoile du défi */
+  --sur-bouton-dor: #1c2a22;
+  --coquelicot: #b3361f;      /* erreur, alerte — jamais décoratif */
+  --anneau: #1f5a40;          /* anneau de focus clavier */
+
+  /* Les cinq milieux : une couleur par période. Ce sont les filets de
+     l'imagier et des cartes-corpus, dont le mode d'emploi nomme la couleur
+     (« la barquette repérée par le filet bleu ») : changer une teinte de
+     famille obligerait les classes à relabelliser leurs barquettes. */
+  --p1: #2a6aa3; --p1-trait: #b9d1e8; --p1-pale: #e7f0f9;   /* la ville — bleu */
+  --p2: #28744a; --p2-trait: #b4dcc4; --p2-pale: #e6f3eb;   /* la forêt — vert */
+  --p3: #6d5a9c; --p3-trait: #cdc3e4; --p3-pale: #f1eef8;   /* la montagne — violet */
+  --p4: #95600f; --p4-trait: #e8cf9e; --p4-pale: #fbf1dc;   /* la campagne — ocre */
+  --p5: #0f7189; --p5-trait: #a9d9e4; --p5-pale: #e6f4f7;   /* la mer — turquoise */
+  --sur-periode: #ffffff;
+
+  /* Polices */
+  --police-titre: "Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --police-texte: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+
+  /* Ombres : une seule, pour ce qui flotte (menu ouvert, carte survolée) */
+  --ombre-flotte: 0 1px 2px rgba(28, 42, 34, .06), 0 8px 24px rgba(28, 42, 34, .10);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --papier: #121a16; --feuille: #1a241f; --feuille-creuse: #16201b;
+    --trait: #2c3832; --trait-fort: #6b7a70;
+    --encre: #e8eee9; --encre-douce: #a7b4ab;
+    --sapin: #7cc79d; --sapin-pale: #1e3328; --sur-sapin: #0e1a14;
+    --bouton-dor: #f4c542; --sur-bouton-dor: #1c2a22;
+    --coquelicot: #f08a74; --anneau: #f4c542;
+    --p1: #86b4e8; --p1-trait: #2f4a66; --p1-pale: #1b2a3d;
+    --p2: #7fcb9d; --p2-trait: #2c5039; --p2-pale: #1a3324;
+    --p3: #b9a8e8; --p3-trait: #463d66; --p3-pale: #2a2440;
+    --p4: #e2b25a; --p4-trait: #5a4720; --p4-pale: #352a12;
+    --p5: #6fcbe0; --p5-trait: #245459; --p5-pale: #12302f; --sur-periode: #0e1a14;
+    --ombre-flotte: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .35);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --papier: #121a16; --feuille: #1a241f; --feuille-creuse: #16201b;
+  --trait: #2c3832; --trait-fort: #6b7a70;
+  --encre: #e8eee9; --encre-douce: #a7b4ab;
+  --sapin: #7cc79d; --sapin-pale: #1e3328; --sur-sapin: #0e1a14;
+  --bouton-dor: #f4c542; --sur-bouton-dor: #1c2a22;
+  --coquelicot: #f08a74; --anneau: #f4c542;
+  --p1: #86b4e8; --p1-trait: #2f4a66; --p1-pale: #1b2a3d;
+  --p2: #7fcb9d; --p2-trait: #2c5039; --p2-pale: #1a3324;
+  --p3: #b9a8e8; --p3-trait: #463d66; --p3-pale: #2a2440;
+  --p4: #e2b25a; --p4-trait: #5a4720; --p4-pale: #352a12;
+  --p5: #6fcbe0; --p5-trait: #245459; --p5-pale: #12302f; --sur-periode: #0e1a14;
+  --ombre-flotte: 0 1px 2px rgba(0, 0, 0, .3), 0 8px 24px rgba(0, 0, 0, .35);
+  color-scheme: dark;
+}
+
+/* Le papier imprimé reste clair, quel que soit le thème de l'écran. */
+@media print {
+  :root, :root[data-theme="dark"], :root:not([data-theme="light"]) {
+    --papier: #ffffff; --feuille: #ffffff; --feuille-creuse: #f1f3ee;
+    --trait: #c9cfc5; --trait-fort: #6f7a6c;
+    --encre: #1c2a22; --encre-douce: #4a564e;
+    --sapin: #1f5a40; --sapin-pale: #e2eee6; --sur-sapin: #ffffff;
+    --p1: #2a6aa3; --p1-trait: #b9d1e8; --p1-pale: #e7f0f9;
+    --p2: #28744a; --p2-trait: #b4dcc4; --p2-pale: #e6f3eb;
+    --p3: #6d5a9c; --p3-trait: #cdc3e4; --p3-pale: #f1eef8;
+    --p4: #95600f; --p4-trait: #e8cf9e; --p4-pale: #fbf1dc;
+    --p5: #0f7189; --p5-trait: #a9d9e4; --p5-pale: #e6f4f7; --sur-periode: #ffffff;
+    color-scheme: light;
+  }
+}

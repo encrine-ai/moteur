@@ -1,0 +1,22 @@
+[
+{"query":"le dessin du trottoir, on ne comprend pas ce qu'on regarde, on dirait juste une rue. tu peux le refaire ?","should_trigger":true},
+{"query":"Il manque le mot « brouette » dans le corpus de la campagne, il faudrait une carte pour aller avec.","should_trigger":true},
+{"query":"le pictogramme de la ferme montre une porte fermée, c'est l'adjectif pas le bâtiment. corrige","should_trigger":true},
+{"query":"Refais les cartes de vocabulaire de la période 2, plusieurs images ne veulent rien dire pour des GS.","should_trigger":true},
+{"query":"j'aimerais une carte pour la mairie dans les mots de la ville, avec un dessin libre de droits","should_trigger":true},
+{"query":"sur la planche des mots de la campagne, le veau et la vache se ressemblent trop, les enfants confondent","should_trigger":true},
+{"query":"vérifie que tous les mots des trois corpus ont bien leur carte et qu'aucune image n'est en licence NC avant que j'imprime","should_trigger":true},
+{"query":"dans classe/corpus.py je voudrais remplacer le pictogramme de la glace, c'est un dessert alors que c'est la glace du glacier","should_trigger":true},
+{"query":"il faut ajouter les étiquettes de tri pour la fiche 3.1, les trois boîtes-catégories de la montagne","should_trigger":true},
+{"query":"le mot « écume » n'a pas d'image, tu peux en dessiner une qui soit lisible sur une carte de 9 cm ?","should_trigger":true},
+{"query":"la carte du hérisson dans l'imagier, on voit rien du tout, l'animal est minuscule au milieu de l'herbe","should_trigger":false},
+{"query":"j'aimerais ajouter le lynx boréal dans les cartes de nomenclature de l'imagier de la montagne","should_trigger":false},
+{"query":"les cartes-corpus sont trop serrées sur la page, je n'arrive pas à passer le massicot entre deux. augmente la gouttière dans le CSS","should_trigger":false},
+{"query":"le PDF des cartes-corpus période 2 ne se génère plus au déploiement, le fichier est absent de pdf/","should_trigger":false},
+{"query":"ajoute une séance sur les traces d'animaux dans la progression découverte du monde de la période 2","should_trigger":false},
+{"query":"la police Andika ne s'affiche pas dans le PDF des cartes-corpus, les mots sortent en Times","should_trigger":false},
+{"query":"il me faudrait une fiche d'évaluation supplémentaire sur le dénombrement jusqu'à 10 pour la période 4","should_trigger":false},
+{"query":"le bouton des cartes-corpus n'apparaît pas sur la page d'accueil du site, regarde app.js","should_trigger":false},
+{"query":"est-ce que la programmation annuelle couvre bien les 159 attendus du programme ? lance le contrôle de couverture","should_trigger":false},
+{"query":"ajoute deux verbes au corpus 1 de la période 5, « amarrer » et « accoster », dans le projet annuel","should_trigger":true}
+]

@@ -1,0 +1,22 @@
+[
+{"query":"sur la fiche d'entraînement de la période 2, le dessin du sapin ne ressemble à rien, tu peux en trouver un autre ?","should_trigger":true},
+{"query":"il me faudrait un pictogramme de tracteur pour un nouvel exercice de la fiche de la ferme","should_trigger":true},
+{"query":"l'image de la poule sur les fiches élève est bizarre, on dirait un poulet rôti, change-la","should_trigger":true},
+{"query":"ajoute une illustration devant chaque mot de l'exercice de vocabulaire de la fiche 5.2","should_trigger":true},
+{"query":"les pictogrammes ARASAAC des fiches élève sont en licence NC, est-ce qu'on peut les remplacer par des équivalents libres ?","should_trigger":true},
+{"query":"je veux une image de moulin à vent dans site/fiches/img pour la période 4","should_trigger":true},
+{"query":"cette image de pirate fait un peu peur pour des enfants de cinq ans, trouve autre chose","should_trigger":true},
+{"query":"dans l'exercice de comptage des flocons, l'image n'est pas comptable, il y a plusieurs flocons dessus","should_trigger":true},
+{"query":"vérifie que toutes les images des fiches ont bien leur auteur et leur licence dans credits.json","should_trigger":true},
+{"query":"remplace les émojis qui restent dans les fiches d'évaluation par de vraies images","should_trigger":true},
+{"query":"la carte du hérisson dans l'imagier, on voit rien du tout, l'animal est minuscule au milieu de l'herbe. tu peux me trouver mieux ?","should_trigger":false},
+{"query":"j'aimerais ajouter le lynx boréal dans les cartes de nomenclature de la montagne, avec une photo qui remplit bien la carte","should_trigger":false},
+{"query":"les fiches d'entraînement sont trop légères, ajoute un exercice de plus sur chaque fiche de maths","should_trigger":false},
+{"query":"la consigne de la fiche 2.3 n'est pas claire, reformule-la pour les parents","should_trigger":false},
+{"query":"le PDF des fiches élève de la période 3 est tronqué sur le bord droit à l'impression","should_trigger":false},
+{"query":"ajoute une séance sur les traces d'animaux dans la progression découverte du monde de la période 2","should_trigger":false},
+{"query":"les cases d'écriture des fiches sont trop petites pour des GS, agrandis les réglures dans fiches.css","should_trigger":false},
+{"query":"refais les images de la période 3 de l'imagier, le chamois et la marmotte sont flous","should_trigger":false},
+{"query":"le bouton de téléchargement des fiches élève ne marche plus sur le site","should_trigger":false},
+{"query":"est-ce que la programmation annuelle couvre bien les 159 attendus du programme ? lance le contrôle de couverture","should_trigger":false}
+]

@@ -1,0 +1,38 @@
+/* Mise en page des PDF de documents (générés avec le navigateur en mode impression). */
+@page { size: A4; margin: 13mm 12mm; }
+* { box-sizing: border-box; }
+/* Couleurs et polices : charte/charte.css. Un extrait de période
+   (<body data-periode="N">) prend la couleur de son milieu. */
+:root { --periode: var(--sapin); --periode-pale: var(--sapin-pale); --periode-trait: var(--trait); }
+body {
+  margin: 0; color: var(--encre);
+  font-family: var(--police-texte);
+  font-size: 10.5pt; line-height: 1.5;
+  /* retrait de sécurité : bordures droites des tableaux rognées par
+     certains lecteurs PDF (border-collapse à cheval sur le bord du bloc) */
+  padding-right: 1.2mm;
+}
+.bandeau {
+  display: flex; justify-content: space-between; gap: 1rem;
+  font-size: 8.5pt; color: var(--encre-douce); border-bottom: 2px solid var(--periode);
+  padding-bottom: 2mm; margin-bottom: 5mm;
+}
+h1 { font-family: var(--police-titre); font-size: 17pt; letter-spacing: -.01em; color: var(--periode); line-height: 1.3; margin: 0 0 4mm; }
+h2 { font-family: var(--police-titre); font-size: 12.5pt; color: var(--encre); border-bottom: 1.5pt solid var(--periode-trait); padding-bottom: 1mm; margin: 7mm 0 3mm; break-after: avoid; }
+h3 { font-family: var(--police-titre); font-size: 11pt; color: var(--periode); margin: 5mm 0 2mm; break-after: avoid; }
+p { margin: 2mm 0; }
+ul { margin: 2mm 0; padding-left: 6mm; }
+blockquote { margin: 3mm 0; padding: 2mm 4mm; background: var(--periode-pale); border-radius: 2mm; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+blockquote p { margin: 1mm 0; }
+code { background: var(--feuille-creuse); padding: 0 1mm; border-radius: 2px; font-size: 9.5pt; }
+hr { border: none; border-top: .8pt solid var(--trait); margin: 6mm 0; }
+table { border-collapse: collapse; width: 100%; margin: 3mm 0; font-size: 8.8pt; break-inside: auto; }
+thead th { background: var(--periode-pale); color: var(--encre); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+th, td { border: .8pt solid var(--trait-fort); padding: 1.4mm 2mm; vertical-align: top; text-align: left; }
+tbody tr:nth-child(even) { background: var(--feuille-creuse); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+tr { break-inside: avoid; }
+.zone-badge {
+  display: inline-block; font-size: 8pt; font-weight: 600; vertical-align: middle;
+  border: .8pt solid var(--trait-fort); border-radius: 999px; padding: 0 2.5mm; margin-left: 2.5mm; white-space: nowrap;
+}
+a { color: inherit; text-decoration: none; }

@@ -1,0 +1,12 @@
+[
+{"query": "transmets ce problème à l'outil pour que les autres classes en profitent", "should_trigger": true},
+{"query": "signale au moteur que le contrôle de pagination a laissé passer une fiche qui déborde", "should_trigger": true},
+{"query": "ce serait bien pour tout le monde, tu peux le faire remonter ?", "should_trigger": true},
+{"query": "on a amélioré le script des cartes ici, envoie la correction au dépôt modèle", "should_trigger": true},
+{"query": "ouvre une issue sur le moteur pour cette idée de cartes-chiffres", "should_trigger": true},
+{"query": "le skill des fiches m'a induit en erreur, il faut le signaler", "should_trigger": true},
+{"query": "ajoute une séance de danse en période 2", "should_trigger": false},
+{"query": "récupère les nouveautés du moteur", "should_trigger": false},
+{"query": "la fiche 3.4 déborde sur deux pages", "should_trigger": false},
+{"query": "retiens ça pour la prochaine fois", "should_trigger": false}
+]
