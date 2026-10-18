@@ -21,55 +21,20 @@
   <link rel="stylesheet" href="app.css">
 </head>
 <body data-support="ecran">
-  <header class="bandeau" data-composant="bandeau">
-    <span class="orne" data-orne="bandeau" aria-hidden="true"></span>
-    <button id="menu-toggle" class="menu-toggle" type="button" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="sidebar">
-      <svg class="ic" aria-hidden="true"><use href="charte/icones.svg#i-menu"/></svg>
-    </button>
-    <a class="marque" href="#/accueil">
-      <svg class="marque-frise" viewBox="0 0 30 30" aria-hidden="true">
-        <rect class="m1" x="0" y="0" width="30" height="5" rx="2.5"/>
-        <rect class="m2" x="0" y="6.25" width="30" height="5" rx="2.5"/>
-        <rect class="m3" x="0" y="12.5" width="30" height="5" rx="2.5"/>
-        <rect class="m4" x="0" y="18.75" width="30" height="5" rx="2.5"/>
-        <rect class="m5" x="0" y="25" width="30" height="5" rx="2.5"/>
-      </svg>
-      <span class="marque-texte">
-        <span class="marque-titre"></span>
-        <span class="marque-sous"></span>
-      </span>
-    </a>
-  </header>
-
-  <div class="layout">
-    <nav id="sidebar" class="sidebar" data-composant="menu" aria-label="Documents de l'année"></nav>
-    <main class="page">
-      <div class="toolbar" data-composant="barre">
-        <div id="fil" class="fil"></div>
-        <div class="boutons">
-          <a id="btn-pdf" class="btn btn-principal" hidden title="PDF prêt à imprimer, avec les dates des vacances de la classe">
-            <svg class="ic" aria-hidden="true"><use href="charte/icones.svg#i-download"/></svg>Télécharger le PDF</a>
-          <a id="btn-entrainement" class="btn" hidden title="Fiches d'entraînement avec sous-objectifs, 2 niveaux (★ / ★★)">
-            <svg class="ic" aria-hidden="true"><use href="charte/icones.svg#i-pencil"/></svg>Entraînement</a>
-          <a id="btn-fiches" class="btn" hidden title="Feuilles individuelles d'évaluation, à photocopier">
-            <svg class="ic" aria-hidden="true"><use href="charte/icones.svg#i-printer"/></svg>Fiches élève</a>
-          <a id="btn-imagier" class="btn" hidden title="Imagier Montessori : cartes de nomenclature en photographies, à découper et à plastifier">
-            <svg class="ic" aria-hidden="true"><use href="charte/icones.svg#i-image"/></svg>Imagier</a>
-          <a id="btn-corpus" class="btn" hidden title="Cartes-corpus : les mots des trois corpus en cartes de nomenclature, et les étiquettes de tri des fiches X.1">
-            <svg class="ic" aria-hidden="true"><use href="charte/icones.svg#i-layers"/></svg>Cartes-corpus</a>
-        </div>
-      </div>
-      <div id="periodes-print" class="periodes-print" hidden></div>
-      <article id="contenu" class="contenu" data-composant="document" aria-live="polite">
-        <p class="chargement">Chargement…</p>
-      </article>
-      <footer class="pied" data-composant="pied"></footer>
-    </main>
-  </div>
+  <!-- Trois emplacements, que remplissent les gabarits (site/gabarits.js, ou
+       ceux du thème : charte/gabarits.js) à partir du modèle (modele.js) ;
+       app.js garde la logique : routage, documents, menu, focus. -->
+  <a class="saut" href="#contenu">Aller au contenu</a>
+  <header id="entete" data-composant="entete"></header>
+  <main id="contenu" data-composant="page" tabindex="-1"><p class="chargement">Chargement…</p></main>
+  <footer id="pied" data-composant="pied"></footer>
 
   <script src="marked.min.js"></script>
   <script src="classe.js"></script>
   <script src="commun.js"></script>
+  <script src="modele.js"></script>
+  <script src="gabarits.js"></script>
+  <script src="charte/gabarits.js"></script>
   <script src="app.js"></script>
   <script src="appli.js"></script>
 </body>

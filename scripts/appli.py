@@ -341,7 +341,8 @@ def precache(c):
     Ni les PDF, ni les cahiers, ni les photographies : ceux-là entrent en
     cache quand on les ouvre."""
     liste = ["./", "index.html", "imprimer.html", "app.css", "impression.css", "app.js",
-             "appli.js", "commun.js", "classe.js", "classe.json", "marked.min.js",
+             "appli.js", "commun.js", "modele.js", "gabarits.js", "charte/gabarits.js",
+             "classe.js", "classe.json", "marked.min.js",
              "manifest.webmanifest", "charte/charte.css", "charte/icones.svg",
              "favicon.ico", SVG] + [rel for rel, _, _ in PNG]
     liste += _polices_et_motifs(c)

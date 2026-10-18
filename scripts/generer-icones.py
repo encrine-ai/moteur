@@ -32,9 +32,14 @@ ICONES = [
     "download", "printer", "image", "layers", "pencil",
     # l'invitation à installer l'appli sur iPhone et iPad (appli.js)
     "share", "square-plus",
+    # les gabarits par défaut (site/gabarits.js) : sous-menus, page de période
+    "chevron-down", "arrow-right", "book-open", "music",
 ]
 # les milieux de la classe, dans l'ordre des périodes
-ICONES += [p["icone"] for p in classe.charger()["periodes"] if p["icone"] not in ICONES]
+_C = classe.charger()
+ICONES += [p["icone"] for p in _C["periodes"] if p["icone"] not in ICONES]
+# celles que demandent les gabarits du thème (theme.yml, `icones:`)
+ICONES += [i for i in classe.theme_yml(_C).get("icones") or [] if i not in ICONES]
 SORTIE = pathlib.Path(__file__).resolve().parent.parent / "site/charte/icones.svg"
 
 

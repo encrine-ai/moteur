@@ -12,6 +12,12 @@ var CLASSE = {
   "conformite": "Conforme au programme officiel de l'école maternelle (cycle 1, 2024-2026) et au programme d'éducation à la vie affective et relationnelle.",
   "theme": "demo",
   "ton": "tu",
+  "enseignant": {
+    "signature": "",
+    "mot": "",
+    "ecole": "",
+    "ville": ""
+  },
   "depot": "à définir",
   "moteur": {
     "depot": "encrine-ai/moteur",
@@ -28,7 +34,8 @@ var CLASSE = {
     "referentiel": "referentiel/cycle1-gs.yml",
     "annotations": "classe/annotations.yml",
     "imagier": "classe/imagier.py",
-    "corpus": "classe/corpus.py"
+    "corpus": "classe/corpus.py",
+    "projet": "classe/projet.yml"
   },
   "calendrier": {
     "zone": "C",
@@ -129,5 +136,27 @@ var CLASSE = {
     "nom": "Classe de démonstration — Le tour du monde",
     "nom_court": "Tour du monde",
     "initiale": "T"
-  }
+  },
+  "donnees_projet": {
+    "annee": {},
+    "periodes": {},
+    "images": []
+  },
+  "imagier": {},
+  "corpus": {},
+  "images_theme": [],
+  "polices_theme": [
+    {
+      "famille": "Bricolage Grotesque",
+      "auteur": "The Bricolage Grotesque Project Authors",
+      "licence": "OFL-1.1",
+      "source": "https://github.com/ateliertriay/bricolage"
+    },
+    {
+      "famille": "Atkinson Hyperlegible Next",
+      "auteur": "Braille Institute of America",
+      "licence": "OFL-1.1",
+      "source": "https://www.brailleinstitute.org/freefont/"
+    }
+  ]
 };

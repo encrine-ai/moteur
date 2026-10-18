@@ -1,0 +1,21 @@
+# Le projet de la classe, en données : ce que l'accueil et la page de chaque
+# période montrent (skill charte-graphique, « La page de période » ;
+# `classe.py verifier` en contrôle la forme). Il reprend les éléments du
+# projet annuel (01-projet-annuel.md) — il ne le remplace pas.
+#
+# annee:
+#   mascotte: {nom, texte, embleme}        # le fil rouge de l'année
+#   fils_rouges: [{nom, texte}, …]
+# periodes:
+#   <clé de la période>:                    # celles de classe.yml
+#     resume: ce qu'on y fait, en deux phrases
+#     fil_rouge: {nom, texte, message}       # ou mascotte
+#     albums / documentaires / textes / oeuvres / musique / sorties / spectacle:
+#       - un texte, ou {titre, auteur, note, etude: true, image}
+#     embleme: une image déclarée ci-dessous ou du thème, ou {imagier: <slug>}
+#     theme: {…}                             # les données propres au thème
+# images:                                    # sous site/, avec leur licence
+#   - {fichier: projet/….jpg, titre, auteur, date, institution, source, licence}
+annee: {}
+periodes: {}
+images: []

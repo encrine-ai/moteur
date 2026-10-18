@@ -14,7 +14,9 @@ Ces fichiers sont versionnés, comme les cahiers.
 
 Usage :
   python3 scripts/classe.py generer    # écrit site/classe.json, site/classe.js,
-                                       # site/charte/charte.css, et l'appli
+                                       # site/charte/charte.css,
+                                       # site/charte/gabarits.js (les gabarits
+                                       # du thème, s'il en a), et l'appli
                                        # installable (scripts/appli.py) :
                                        # site/manifest.webmanifest, site/sw.js,
                                        # site/icones/ et site/favicon.ico
@@ -25,12 +27,21 @@ Usage :
                                        # (site/*.js, *.html, *.css, scripts/),
                                        # ou si le thème enfreint son contrat
                                        # (scripts/verifier-theme.py), ou si
-                                       # `depot` ou `origine` sont mal formés,
+                                       # `depot`, `origine` ou `enseignant` sont
+                                       # mal formés, si classe/projet.yml
+                                       # (contenu.projet) n'a pas la bonne forme,
                                        # ou si le manifeste, les icônes ou
                                        # sw.js manquent ou sont périmés
   python3 scripts/classe.py estampiller <site>   # au déploiement : la version
                                        # de <site>/sw.js recalculée sur le site
                                        # assemblé (documents de content/ compris)
+
+Le mini-site : classe.json porte aussi ce que les gabarits affichent — le
+projet structuré (`donnees_projet`, lu dans classe/projet.yml), l'imagier
+(espèces, photographie, crédit) et les corpus (lus dans leurs manifestes),
+les images et les polices du thème (`images_theme`, `polices_theme`, lues
+dans theme.yml) et la signature de l'enseignant (`enseignant`). Skill
+charte-graphique, « Les gabarits ».
 
 L'identité de la classe : `depot` (« propriétaire/dépôt », le dépôt GitHub de
 cette classe) et, si elle est partie d'une autre classe par « Use this
@@ -213,7 +224,92 @@ def en_tete(c=None):
     return "%s %s — « %s »" % (c["nom"], c["annee"], c["projet"])
 
 
+# ——— Les données du site ——————————————————————————————————————————————
+# classe.json porte, en plus de classe.yml, ce que les gabarits affichent :
+# le projet structuré (classe/projet.yml), l'imagier et les corpus (lus dans
+# leurs manifestes), les images et les polices du thème, avec leurs crédits.
+# Skill charte-graphique, « Les gabarits » ; skill site-et-calendrier.
+
+def projet(c=None):
+    """classe/projet.yml (contenu.projet de classe.yml), ou {} s'il n'y en a pas."""
+    c = c or charger()
+    rel = (c.get("contenu") or {}).get("projet")
+    if not rel or not (RACINE / rel).is_file():
+        return {}
+    return _iso(yaml.safe_load((RACINE / rel).read_text(encoding="utf-8")) or {})
+
+
+def theme_yml(c):
+    f = CHARTE / "themes" / c["theme"] / "theme.yml"
+    return (yaml.safe_load(f.read_text(encoding="utf-8")) or {}) if f.is_file() else {}
+
+
+def _imagier_site(c):
+    """{n: {faune: [espèce], flore: [espèce]}} — chaque espèce avec sa photo et son crédit."""
+    if "imagier" not in (c.get("contenu") or {}) or not chemin("imagier", c).is_file():
+        return {}
+    imagier = manifeste("imagier").get("IMAGIER") or {}
+    f = RACINE / "site" / "imagier" / "img" / "credits.json"
+    credits = json.loads(f.read_text(encoding="utf-8")) if f.is_file() else {}
+    out = {}
+    for n, groupes in sorted(imagier.items()):
+        especes = {}
+        for g in ("faune", "flore"):
+            for e in groupes.get(g) or []:
+                slug, nom = e[0], e[1]
+                cr = credits.get(slug) or {}
+                fichier = cr.get("fichier") or slug + ".jpg"
+                if not (RACINE / "site" / "imagier" / "img" / fichier).is_file():
+                    continue
+                especes.setdefault(g, []).append({
+                    "slug": slug, "nom": nom, "chemin": "imagier/img/" + fichier,
+                    "auteur": cr.get("auteur", ""), "licence": cr.get("licence", ""),
+                    "observation": cr.get("observation", "")})
+        if especes:
+            out[str(n)] = {"faune": especes.get("faune", []), "flore": especes.get("flore", [])}
+    return out
+
+
+def _corpus_site(c):
+    """{n: {corpus: [{groupe, titre, mots}], sans_carte: [...]}} — les mots des trois corpus."""
+    if "corpus" not in (c.get("contenu") or {}) or not chemin("corpus", c).is_file():
+        return {}
+    ns = manifeste("corpus")
+    titres, cartes = ns.get("CORPUS") or {}, ns.get("CARTES") or {}
+    groupes = ns.get("GROUPES") or ("milieu", "faune", "flore")
+    sans = ns.get("NON_ILLUSTRES") or {}
+    out = {}
+    for n in sorted(cartes):
+        liste = []
+        for i, g in enumerate(groupes):
+            mots = [e[1] for e in cartes[n].get(g) or []]
+            if mots:
+                t = titres.get(n) or ()
+                liste.append({"groupe": g, "titre": t[i] if i < len(t) else g, "mots": mots})
+        if liste:
+            out[str(n)] = {"corpus": liste, "sans_carte": list(sans.get(n) or ())}
+    return out
+
+
+def donnees_site(c):
+    """Ce que classe.json ajoute à classe.yml pour les gabarits."""
+    t = theme_yml(c)
+    prefixe = "charte/themes/%s/" % c["theme"]
+    images = [dict(im, chemin=prefixe + im["fichier"]) for im in t.get("images") or [] if im.get("fichier")]
+    p = projet(c)
+    for im in p.get("images") or []:
+        im.setdefault("chemin", im.get("fichier"))
+    polices = [{k: x.get(k) for k in ("famille", "auteur", "licence", "source")} for x in t.get("polices") or []]
+    ens = c.get("enseignant") or {}
+    return {
+        "enseignant": {k: (ens.get(k) or "") for k in ("signature", "mot", "ecole", "ville")},
+        "donnees_projet": p, "imagier": _imagier_site(c), "corpus": _corpus_site(c),
+        "images_theme": images, "polices_theme": polices,
+    }
+
+
 def _contenus(c):
+    c = dict(c, **donnees_site(c))
     texte = json.dumps(c, ensure_ascii=False, indent=2) + "\n"
     js = ("/* Fabriqué par scripts/classe.py depuis classe.yml : ne pas modifier à la main. */\n"
           "var CLASSE = " + texte.rstrip("\n") + ";\n")
@@ -247,6 +343,20 @@ def _charte(c):
             + (CHARTE / "composants.css").read_text(encoding="utf-8") + theme)
 
 
+GABARITS = CHARTE / "gabarits.js"
+
+
+def _gabarits(c):
+    """site/charte/gabarits.js : les gabarits du thème (themes/<thème>/gabarits.js),
+    que charge index.html après ceux du moteur (site/gabarits.js) ; un thème
+    qui n'en a pas garde les gabarits par défaut."""
+    f = CHARTE / "themes" / c["theme"] / "gabarits.js"
+    tete = ("/* Fabriqué par scripts/classe.py : ne pas modifier à la main.\n"
+            "   Les gabarits du thème « %s »%s — skill charte-graphique, « Les gabarits ». */\n"
+            % (c["theme"], "" if f.is_file() else " : il n'en a pas, ceux du moteur (site/gabarits.js) servent"))
+    return tete + (f.read_text(encoding="utf-8") if f.is_file() else "")
+
+
 def generer():
     c = charger()
     if calendrier(_iso(yaml.safe_load(SOURCE.read_text(encoding="utf-8")))) is None:
@@ -257,7 +367,9 @@ def generer():
     JSON.write_text(texte, encoding="utf-8")
     JS.write_text(js, encoding="utf-8")
     (CHARTE / "charte.css").write_text(_charte(c), encoding="utf-8")
-    print("site/classe.json, site/classe.js et site/charte/charte.css écrits depuis classe.yml")
+    GABARITS.write_text(_gabarits(c), encoding="utf-8")
+    print("site/classe.json, site/classe.js, site/charte/charte.css et site/charte/gabarits.js "
+          "écrits depuis classe.yml")
     appli.fabriquer(c)
 
 
@@ -374,6 +486,171 @@ def _verifier_identite(anomalies, avertissements):
         anomalies.append("origine.reprise_le : « %s » — une date AAAA-MM-JJ" % o["reprise_le"])
 
 
+# Ce que l'enseignant dit de lui : sa signature (« Claire Martin », « Mme
+# Martin », un prénom, ou rien) et un mot d'accueil ; l'école et la ville
+# seulement s'il y tient — le site est public (skill nouvelle-classe).
+CLES_ENSEIGNANT = {"signature", "mot", "ecole", "ville"}
+
+
+def _verifier_enseignant(c, anomalies, avertissements):
+    e = c.get("enseignant")
+    if e is None:
+        avertissements.append("enseignant : absent — `enseignant: {signature: …, mot: …}` signe la "
+                              "classe (vide pour ne pas signer ; skill nouvelle-classe)")
+        return
+    if not isinstance(e, dict):
+        anomalies.append("enseignant : il faut un bloc (signature, mot ; ecole et ville facultatives)")
+        return
+    for cle in sorted(set(e) - CLES_ENSEIGNANT):
+        anomalies.append("enseignant.%s : clé inconnue (%s)" % (cle, ", ".join(sorted(CLES_ENSEIGNANT))))
+    for cle in CLES_ENSEIGNANT & set(e):
+        if e[cle] is not None and not isinstance(e[cle], str):
+            anomalies.append("enseignant.%s : un texte (ou rien)" % cle)
+    if isinstance(e.get("signature"), str) and len(e["signature"]) > 60:
+        anomalies.append("enseignant.signature : %d signes — un nom, pas une phrase" % len(e["signature"]))
+    if isinstance(e.get("mot"), str) and len(e["mot"]) > 400:
+        anomalies.append("enseignant.mot : %d signes — un petit mot, 400 au plus" % len(e["mot"]))
+
+
+# classe/projet.yml : les données structurées du projet, que montrent
+# l'accueil et la page de chaque période. Ce fichier reprend les éléments du
+# projet annuel (01-projet-annuel.md), il ne le remplace pas.
+CLES_PROJET = {"annee", "periodes", "images"}
+CLES_PROJET_PERIODE = {"resume", "fil_rouge", "mascotte", "albums", "documentaires", "textes",
+                       "oeuvres", "musique", "sorties", "spectacle", "embleme", "theme"}
+LISTES_PROJET = {"albums", "documentaires", "textes", "oeuvres", "musique", "sorties", "spectacle"}
+CLES_OEUVRE = {"titre", "auteur", "note", "etude", "image", "lieu"}
+CLES_IMAGE = {"fichier", "titre", "auteur", "date", "institution", "source", "licence", "recadrage", "alt"}
+
+
+def _verifier_image(qui, im, anomalies, base, licences):
+    if not isinstance(im, dict) or not im.get("fichier"):
+        anomalies.append("%s : chaque image a `fichier`, `titre`, `auteur`, `source`, `licence`" % qui)
+        return
+    for cle in sorted(set(im) - CLES_IMAGE):
+        anomalies.append("%s « %s » : clé inconnue %s" % (qui, im["fichier"], cle))
+    for cle in ("titre", "auteur", "licence"):
+        if not im.get(cle):
+            anomalies.append("%s « %s » : `%s` manque (crédit dû)" % (qui, im["fichier"], cle))
+    if im.get("licence") and im["licence"] not in licences:
+        anomalies.append("%s « %s » : licence « %s » — seules %s" % (
+            qui, im["fichier"], im["licence"], ", ".join(sorted(licences))))
+    if not (base / im["fichier"]).is_file():
+        anomalies.append("%s « %s » : le fichier n'existe pas" % (qui, im["fichier"]))
+
+
+def _verifier_projet(c, anomalies):
+    rel = (c.get("contenu") or {}).get("projet")
+    if not rel:
+        return
+    f = RACINE / rel
+    if not f.is_file():
+        return  # « contenu.projet : … n'existe pas » est déjà dit
+    qui = rel
+    try:
+        p = yaml.safe_load(f.read_text(encoding="utf-8")) or {}
+    except yaml.YAMLError as e:
+        anomalies.append("%s : YAML illisible (%s)" % (qui, e))
+        return
+    if not isinstance(p, dict):
+        anomalies.append("%s : il faut un dictionnaire (annee, periodes, images)" % qui)
+        return
+    for cle in sorted(set(p) - CLES_PROJET):
+        anomalies.append("%s : clé inconnue « %s » (%s)" % (qui, cle, ", ".join(sorted(CLES_PROJET))))
+    sys.path.insert(0, str(RACINE / "scripts"))
+    import importlib
+    licences = importlib.import_module("verifier-theme").LICENCES_IMAGES
+    images = set()
+    for im in p.get("images") or []:
+        _verifier_image(qui + " images", im, anomalies, RACINE / "site", licences)
+        if isinstance(im, dict) and im.get("fichier"):
+            images.add(im["fichier"])
+    images_theme = {im.get("fichier") for im in theme_yml(c).get("images") or [] if isinstance(im, dict)}
+    especes = {e["slug"] for g in _imagier_site(c).values() for l in g.values() for e in l}
+
+    def embleme(ou, v):
+        if isinstance(v, dict) and set(v) == {"imagier"}:
+            if v["imagier"] not in especes:
+                anomalies.append("%s : embleme {imagier: %s} — pas une espèce de l'imagier qui a sa photo"
+                                 % (ou, v["imagier"]))
+        elif not (isinstance(v, str) and (v in images or v in images_theme)):
+            anomalies.append("%s : embleme « %s » — une image déclarée (images: de %s ou du thème) "
+                             "ou {imagier: <slug>}" % (ou, v, qui))
+
+    def fil(ou, v):
+        if not (isinstance(v, dict) and isinstance(v.get("nom"), str) and set(v) <= {"nom", "texte", "message", "embleme"}):
+            anomalies.append("%s : il faut {nom, texte} (message, embleme facultatifs)" % ou)
+        elif v.get("embleme"):
+            embleme(ou, v["embleme"])
+
+    annee = p.get("annee") or {}
+    if not isinstance(annee, dict) or set(annee) - {"mascotte", "fils_rouges"}:
+        anomalies.append("%s annee : {mascotte, fils_rouges}" % qui)
+    else:
+        if annee.get("mascotte"):
+            fil(qui + " annee.mascotte", annee["mascotte"])
+        for i, x in enumerate(annee.get("fils_rouges") or []):
+            fil("%s annee.fils_rouges[%d]" % (qui, i), x)
+    cles = [x["cle"] for x in c["periodes"]]
+    periodes = p.get("periodes") or {}
+    if not isinstance(periodes, dict):
+        anomalies.append("%s periodes : un dictionnaire, par clé de période (%s)" % (qui, ", ".join(cles)))
+        return
+    for cle, d in periodes.items():
+        ou = "%s periodes.%s" % (qui, cle)
+        if cle not in cles:
+            anomalies.append("%s : « %s » n'est pas une période de classe.yml (%s)" % (ou, cle, ", ".join(cles)))
+            continue
+        if not isinstance(d, dict):
+            anomalies.append("%s : un dictionnaire" % ou)
+            continue
+        for k in sorted(set(d) - CLES_PROJET_PERIODE):
+            anomalies.append("%s : clé inconnue « %s » (%s)" % (ou, k, ", ".join(sorted(CLES_PROJET_PERIODE))))
+        if "resume" in d and not isinstance(d["resume"], str):
+            anomalies.append("%s.resume : un texte" % ou)
+        for k in ("fil_rouge", "mascotte"):
+            if d.get(k):
+                fil("%s.%s" % (ou, k), d[k])
+        if d.get("embleme"):
+            embleme(ou + ".embleme", d["embleme"])
+        if "theme" in d and not isinstance(d["theme"], dict):
+            anomalies.append("%s.theme : les données propres au thème, un dictionnaire" % ou)
+        for k in LISTES_PROJET & set(d):
+            if not isinstance(d[k], list):
+                anomalies.append("%s.%s : une liste" % (ou, k))
+                continue
+            for i, x in enumerate(d[k]):
+                if isinstance(x, str):
+                    continue
+                if not (isinstance(x, dict) and isinstance(x.get("titre"), str)):
+                    anomalies.append("%s.%s[%d] : un texte, ou {titre, auteur, note, etude}" % (ou, k, i))
+                    continue
+                for cl in sorted(set(x) - CLES_OEUVRE):
+                    anomalies.append("%s.%s[%d] : clé inconnue « %s »" % (ou, k, i, cl))
+                if "etude" in x and not isinstance(x["etude"], bool):
+                    anomalies.append("%s.%s[%d].etude : true ou false" % (ou, k, i))
+                if x.get("image") and x["image"] not in images and x["image"] not in images_theme:
+                    anomalies.append("%s.%s[%d].image : « %s » n'est pas une image déclarée" % (ou, k, i, x["image"]))
+
+
+def images_creditees():
+    """Les images dont la licence est déclarée hors des banques à credits.json :
+    celles de classe/projet.yml (sous site/) et celles de chaque thème
+    (theme.yml). Pour scripts/verifier-partage.py."""
+    out = set()
+    c = charger()
+    for im in projet(c).get("images") or []:
+        if isinstance(im, dict) and im.get("fichier"):
+            out.add("site/" + im["fichier"])
+    for d in (CHARTE / "themes").iterdir():
+        f = d / "theme.yml"
+        if f.is_file():
+            for im in (yaml.safe_load(f.read_text(encoding="utf-8")) or {}).get("images") or []:
+                if isinstance(im, dict) and im.get("fichier"):
+                    out.add("site/charte/themes/%s/%s" % (d.name, im["fichier"]))
+    return out
+
+
 def verifier():
     anomalies = []
     avertissements = []
@@ -387,9 +664,14 @@ def verifier():
                              % chemin.relative_to(RACINE))
     if not (CHARTE / "themes" / c.get("theme", "") / "theme.css").is_file():
         anomalies.append("theme : site/charte/themes/%s/theme.css n'existe pas" % c.get("theme"))
-    elif (not (CHARTE / "charte.css").exists()
-          or (CHARTE / "charte.css").read_text(encoding="utf-8") != _charte(c)):
-        anomalies.append("site/charte/charte.css périmé : relancer  python3 scripts/classe.py generer")
+    else:
+        if (not (CHARTE / "charte.css").exists()
+                or (CHARTE / "charte.css").read_text(encoding="utf-8") != _charte(c)):
+            anomalies.append("site/charte/charte.css périmé : relancer  python3 scripts/classe.py generer")
+        if not GABARITS.exists() or GABARITS.read_text(encoding="utf-8") != _gabarits(c):
+            anomalies.append("site/charte/gabarits.js périmé : relancer  python3 scripts/classe.py generer")
+    _verifier_enseignant(c, anomalies, avertissements)
+    _verifier_projet(c, anomalies)
     if c.get("ton", "tu") not in ("tu", "vous"):
         anomalies.append("ton : « %s » — `tu` ou `vous`" % c.get("ton"))
     moteur = c.get("moteur")

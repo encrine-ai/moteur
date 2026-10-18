@@ -123,6 +123,14 @@ def images(racine):
     banques = {"site/fiches/img": _credites(racine / "site/fiches/img"),
                "site/imagier/img": _credites(racine / "site/imagier/img")}
     auto = _auto_fiches(racine)
+    # les images déclarées avec leur licence : celles des thèmes (theme.yml,
+    # `images:`) et celles du projet (classe/projet.yml), que contrôlent
+    # verifier-theme.py et classe.py verifier
+    try:
+        import classe
+        declarees = classe.images_creditees() if racine == classe.RACINE else set()
+    except Exception:
+        declarees = set()
     for f in sorted(racine.rglob("*")):
         rel = f.relative_to(racine)
         if not f.is_file() or rel.parts[0] in IGNORES:
@@ -139,6 +147,8 @@ def images(racine):
             if f.name not in banques[dossier] and f.stem not in auto:
                 anomalies.append("%s : image sans crédit dans la banque (photo de classe, "
                                  "scan ?)" % rel)
+        elif str(rel) in declarees:
+            pass
         elif dossier == "site/icones":
             pass   # l'icône de l'appli, fabriquée depuis le thème (scripts/appli.py)
         elif rel.parts[:2] == ("site", "charte") and ext == ".svg":

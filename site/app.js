@@ -1,313 +1,338 @@
-/* Application de consultation de la classe.
- * Les données de la classe viennent de classe.yml (via classe.js) ; les
- * fonctions partagées (calendrier, documents) sont dans commun.js (GS).
- * L'apparence suit la charte du thème de la classe (charte/charte.css).
+/* L'application de la classe : le routage, la lecture des documents, le
+ * comportement du menu — la logique, qui reste au moteur.
+ *
+ * La forme, elle, est au thème : chaque page est rendue par un GABARIT
+ * (site/gabarits.js par défaut, ou charte/gabarits.js, fabriqué depuis le
+ * thème de la classe par scripts/classe.py). Un gabarit reçoit le modèle
+ * (GS.modele(), site/modele.js) et la page, et rend du HTML ; il ne lit
+ * rien, ne calcule rien, ne réécrit pas cette logique. Skill
+ * charte-graphique, « Les gabarits ».
+ *
+ * Routes : #/accueil, #/<document>, #/periode/<clé>, #/credits.
  */
 (function () {
   'use strict';
 
-  var etat = { doc: 'accueil' };
   var cacheMd = {};
+  var modele;
+  var premiere = true;
 
-  /* Un point d'accroche du thème : un élément vide, que le thème de la classe
-   * peut remplir d'un motif (skill charte-graphique). */
-  function orne(nom) {
-    return '<span class="orne" data-orne="' + nom + '" aria-hidden="true"></span>';
+  /* Le gabarit `nom` : celui du thème s'il en a un, sinon celui du moteur. */
+  function gabarit(nom) {
+    var t = GS.gabarits.theme[nom];
+    return { fn: t || GS.gabarits.defaut[nom], source: t ? 'theme' : 'defaut' };
   }
 
-  function icone(nom) {
-    return '<svg class="ic" aria-hidden="true"><use href="charte/icones.svg#i-' + nom + '"/></svg>';
+  /* ——— Les pages ——— */
+  function route() {
+    var h = (location.hash || '').replace(/^#\/?/, '');
+    if (!h || h === 'accueil') return { type: 'accueil' };
+    if (h === 'credits') return { type: 'credits' };
+    var m = /^periode\/([\w-]+)$/.exec(h);
+    if (m) {
+      var p = modele.periodes.find(function (x) { return x.cle === m[1]; });
+      return p ? { type: 'periode', periode: p } : { type: 'introuvable' };
+    }
+    var doc = modele.documents.find(function (d) { return d.id === h; });
+    return doc ? { type: 'document', doc: doc, periode: modele.periode(doc.periode) } : { type: 'introuvable' };
   }
 
-  function pastille(n) {
-    return '<span class="pastille" data-periode="' + n + '">' + n + '</span>';
-  }
-
-  /* ——— Navigation ——— */
-  function construireMenu() {
-    var nav = document.getElementById('sidebar');
-    var html = '';
-    var groupeCourant;
-    GS.DOCS.forEach(function (doc, i) {
-      if (i === 0 || doc.groupe !== groupeCourant) {
-        if (i > 0) html += '</div>';
-        groupeCourant = doc.groupe;
-        html += '<div class="menu-groupe">' + (groupeCourant ? '<div class="groupe">' + groupeCourant + '</div>' : '');
-      }
-      var marque = doc.fiches ? pastille(doc.fiches) : icone(doc.ic);
-      var titre = doc.fiches ? GS.THEMES[doc.fiches - 1] : doc.titre;
-      html += '<a href="#/' + doc.id + '" data-doc="' + doc.id + '">' + marque + '<span>' + titre + '</span></a>';
-    });
-    nav.innerHTML = html + '</div>';
-  }
-
-  function majMenuActif() {
-    document.querySelectorAll('.sidebar a').forEach(function (a) {
-      var actif = a.dataset.doc === etat.doc;
-      a.classList.toggle('actif', actif);
-      if (actif) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
-    });
-  }
-
-  /* ——— Rendu des documents ——— */
-  function chargeMd(doc) {
-    if (cacheMd[doc.md]) return Promise.resolve(cacheMd[doc.md]);
-    return fetch(doc.md).then(function (r) {
+  function chargeMd(chemin) {
+    if (cacheMd[chemin]) return Promise.resolve(cacheMd[chemin]);
+    return fetch(chemin).then(function (r) {
       if (!r.ok) throw new Error(r.status);
       return r.text();
-    }).then(function (t) { cacheMd[doc.md] = t; return t; });
+    }).then(function (t) { cacheMd[chemin] = t; return t; });
   }
 
-  function rendDocument(doc) {
-    var contenu = document.getElementById('contenu');
-    contenu.className = 'contenu';
-    contenu.dataset.composant = 'document';
-    if (doc.fiches) contenu.dataset.periode = doc.fiches; else delete contenu.dataset.periode;
-    contenu.innerHTML = '<p class="chargement">Chargement…</p>';
-    chargeMd(doc).then(function (md) {
-      contenu.innerHTML = marked.parse(GS.nettoieMarkdown(md));
-      GS.annoteTitres(contenu);
-      window.scrollTo(0, 0);
-    }).catch(function () {
-      contenu.innerHTML = '<p>Impossible de charger ce document. Vérifiez votre connexion puis rechargez la page.</p>';
+  function slug(t) {
+    return t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60) || 'section';
+  }
+
+  /* Le Markdown d'un document, rendu et préparé pour le gabarit : le titre
+     (h1), le corps sans ce titre, les sections (h2) avec un identifiant et
+     leur période, et les badges de dates de la zone sur chaque « Période N ». */
+  function prepareDocument(page) {
+    return chargeMd(page.doc.md).then(function (md) {
+      var div = document.createElement('div');
+      div.innerHTML = marked.parse(GS.nettoieMarkdown(md));
+      var h1 = div.querySelector('h1');
+      var vus = {};
+      page.sections = [];
+      div.querySelectorAll('h2').forEach(function (h) {
+        var id = slug(h.textContent);
+        while (vus[id]) id += '-2';
+        vus[id] = true;
+        h.id = id;
+        var n = /P[ée]riode\s*(\d)/i.exec(h.textContent);
+        page.sections.push({ id: id, titre: h.textContent.trim(), periode: n ? parseInt(n[1], 10) : null });
+      });
+      GS.annoteTitres(div);
+      page.titre = h1 ? h1.textContent.trim() : page.doc.titre;
+      page.html = div.innerHTML;
+      if (h1) h1.remove();
+      page.corps = div.innerHTML;
+      return page;
     });
   }
 
-  function periodeDuJour(ps) {
-    var auj = new Date();
-    var t = Date.UTC(auj.getFullYear(), auj.getMonth(), auj.getDate());
-    for (var i = 0; i < ps.length; i++) {
-      if (t >= ps[i].debut.getTime() && t <= ps[i].fin.getTime()) return ps[i];
-    }
-    return null;
-  }
-
-  function prochainePeriode(ps) {
-    var auj = new Date();
-    var t = Date.UTC(auj.getFullYear(), auj.getMonth(), auj.getDate());
-    for (var i = 0; i < ps.length; i++) if (ps[i].debut.getTime() > t) return ps[i];
-    return null;
-  }
-
-  /* Le document de la période n (celui qui porte ses fiches), ou l'accueil. */
-  function docDe(n) {
-    var doc = GS.DOCS.find(function (x) { return x.fiches === n; });
-    return doc ? doc.id : 'accueil';
-  }
-
-  /* La frise de l'année : cinq bandes, larges de leur nombre de semaines. */
-  function frise(ps, pj, prochaine) {
-    var total = ps.reduce(function (s, p) { return s + p.sem; }, 0);
-    return '<ol class="frise" data-composant="frise" aria-label="Les cinq périodes de l’année, zone ' + GS.ZONE + '">' +
-      ps.map(function (p) {
-        var enCours = pj && pj.n === p.n;
-        var aVenir = !pj && prochaine && prochaine.n === p.n;
-        return '<li class="frise-periode' + (enCours || aVenir ? ' en-cours' : '') + '" data-periode="' + p.n + '" style="flex-grow:' + p.sem + '">' +
-          '<a href="#/' + docDe(p.n) + '">' +
-          '<span class="frise-bande">' + orne('frise') + icone(GS.ICONES_MILIEU[p.n - 1]) + '<span class="frise-num">P' + p.n + '</span></span>' +
-          '<span class="frise-milieu">' + GS.THEMES[p.n - 1] + '</span>' +
-          '<span class="frise-dates">' + GS.fmtCourt(p.debut) + ' → ' + GS.fmtCourt(p.fin) + '</span>' +
-          '<span class="frise-sem">' + p.sem + ' semaines</span>' +
-          (enCours ? '<span class="frise-ici">' + icone('map-pin') + 'Nous y sommes</span>' : '') +
-          (aVenir ? '<span class="frise-ici">' + icone('map-pin') + 'Reprise le ' + GS.fmtCourt(p.debut) + '</span>' : '') +
-          '</a></li>';
-      }).join('') + '</ol>' +
-      '<p class="frise-total">' + total + ' semaines de classe, du ' + GS.fmtLong(ps[0].debut) + ' au ' + GS.fmtLong(ps[4].fin) + '.</p>';
-  }
-
-  /* Les cahiers de la période n, tels que classe.yml les déclare (materiel). */
-  function cahiersDe(n) {
-    return GS.CLASSE.materiel.filter(function (m) { return m.periodes.indexOf(n) !== -1; });
-  }
-
-  function pdfDe(m, n) { return m.pdf.replace('{n}', n); }
-
-  /* Le matériel à imprimer d'une période : ses cahiers. */
-  function materiel(n, statut) {
-    var cahiers = cahiersDe(n).map(function (m) {
-      return [m.icone, m.titre, m.desc, pdfDe(m, n), GS.CLASSE.niveau.code + '-' + (m.fichier || m.nom) + '-periode-' + n + '.pdf'];
-    });
-    return '<section class="materiel' + (statut ? ' en-cours' : '') + '" data-composant="materiel" data-periode="' + n + '">' +
-      '<header class="materiel-tete">' + orne('materiel') + icone(GS.ICONES_MILIEU[n - 1]) +
-      '<div><div class="materiel-num">Période ' + n + (statut ? ' · ' + statut : '') + '</div>' +
-      '<h3>' + GS.THEMES[n - 1] + '</h3></div></header>' +
-      '<ul class="materiel-liste">' + cahiers.map(function (c) {
-        return '<li><a href="' + c[3] + '" download="' + c[4] + '">' + icone(c[0]) +
-          '<span><strong>' + c[1] + '</strong><small>' + c[2] + '</small></span>' + icone('download') + '</a></li>';
-      }).join('') + '</ul></section>';
-  }
-
-  var NOMBRES = ['zéro', 'un', 'deux', 'trois', 'quatre', 'cinq', 'six', 'sept', 'huit', 'neuf', 'dix'];
-  function nombre(k) { return NOMBRES[k] || String(k); }
-
-  /* « Pour chaque période, quatre cahiers en A4 : à photocopier (entraînement,
-   * évaluation) ou à découper et plastifier (imagier, cartes-corpus). » */
-  function noteMateriel(sortes, partout) {
-    var papier = { entrainement: 'photocopier', evaluation: 'photocopier', imagier: 'plastifier', 'cartes-corpus': 'plastifier' };
-    var aPhotocopier = sortes.filter(function (m) { return papier[m.cle] === 'photocopier'; });
-    var aPlastifier = sortes.filter(function (m) { return papier[m.cle] === 'plastifier'; });
-    var noms = function (ms) { return ms.map(function (m) { return m.titre.toLowerCase(); }).join(', '); };
-    var usages = [];
-    if (aPhotocopier.length) usages.push('à photocopier (' + noms(aPhotocopier) + ')');
-    if (aPlastifier.length) usages.push('à découper et plastifier (' + noms(aPlastifier) + ')');
-    var k = sortes.length;
-    return (partout ? 'Pour chaque période, ' : 'Pour les périodes prêtes, ') +
-      nombre(k) + (k > 1 ? ' cahiers' : ' cahier') + ' en A4 : ' + usages.join(' ou ') + '.';
-  }
-
-  function rendAccueil() {
-    var contenu = document.getElementById('contenu');
-    contenu.className = 'contenu accueil';
-    contenu.dataset.composant = 'accueil';
-    delete contenu.dataset.periode;
-    var ps = GS.periodes();
-    var pj = periodeDuJour(ps);
+  /* La page des crédits : les images du thème et du projet, les photographies
+     de l'imagier, les polices du thème — fabriquée ici, rendue par le gabarit
+     des documents. */
+  function prepareCredits(page) {
+    var esc = GS.outils.esc;
     var C = GS.CLASSE;
-    // « Pont de l’Ascension : pas de classe du jeudi 6 au dimanche 9 mai … »
-    var ponts = C.calendrier.ponts.map(function (p) {
-      return p.nom + ' : pas de classe du ' + GS.fmt(GS.d(p.du), { weekday: 'long', day: 'numeric' }) +
-        ' au ' + GS.fmt(GS.d(p.au), { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) + '. ';
+    var tete = '<thead><tr><th>Œuvre</th><th>Auteur</th><th>Source</th><th>Licence</th></tr></thead>';
+    function ligne(titre, auteur, href, source, licence) {
+      return '<tr><td>' + titre + '</td><td>' + esc(auteur) + '</td><td>' +
+        (href ? '<a href="' + esc(href) + '">' + esc(source) + '</a>' : esc(source)) + '</td><td>' + esc(licence) + '</td></tr>';
+    }
+    var lignes = modele.images.map(function (im) {
+      return ligne(esc(im.titre) + (im.recadrage ? '<br><small>' + esc(im.recadrage) + '</small>' : ''),
+        [im.auteur, im.date].filter(Boolean).join(', '), im.source, im.institution || 'source', im.licence);
     }).join('');
-    var vac = [
-      ['Toussaint', GS.CAL.toussaint], ['Noël', GS.CAL.noel],
-      ['Hiver', GS.CAL.hiver], ['Printemps', GS.CAL.printemps]
-    ].map(function (v) {
-      return '<li><strong>' + v[0] + '</strong><span>du ' + GS.fmtCourt(GS.d(v[1].debut)) + ' au ' + GS.fmtCourt(GS.veille(v[1].reprise)) +
-        '</span><span class="reprise">reprise le ' + GS.fmtCourt(GS.d(v[1].reprise)) + '</span></li>';
-    }).join('');
-
-    // Le matériel commence par la période en cours, ou par la prochaine
-    // pendant les vacances.
-    var tete = pj || prochainePeriode(ps);
-    var ordre = ps.map(function (p) { return p.n; });
-    if (tete) ordre = ordre.slice(tete.n - 1).concat(ordre.slice(0, tete.n - 1));
-    // Seules les périodes qui ont des cahiers : rien n'est annoncé qui n'existe pas.
-    ordre = ordre.filter(function (n) { return cahiersDe(n).length; });
-    var sortes = C.materiel.filter(function (m) { return m.periodes.length; });
-
-    var groupes = {};
-    GS.DOCS.filter(function (doc) { return doc.md && !doc.fiches; }).forEach(function (doc) {
-      (groupes[doc.groupe] = groupes[doc.groupe] || []).push(doc);
+    var photos = '';
+    Object.keys(modele.imagier).forEach(function (n) {
+      ['faune', 'flore'].forEach(function (g) {
+        (modele.imagier[n][g] || []).forEach(function (e) {
+          photos += ligne(esc(e.nom), e.auteur, e.observation, 'iNaturalist', e.licence);
+        });
+      });
     });
-    var docs = Object.keys(groupes).map(function (g) {
-      return '<div class="docs-groupe" data-composant="documents"><h3>' + g + '</h3><ul class="docs">' + groupes[g].map(function (doc) {
-        return '<li><a href="#/' + doc.id + '">' + icone(doc.ic) + '<span><strong>' + doc.titre + '</strong><small>' + doc.desc + '</small></span></a></li>';
-      }).join('') + '</ul></div>';
+    var polices = (C.polices_theme || []).map(function (p) {
+      return '<li><strong>' + esc(p.famille) + '</strong>, ' + esc(p.auteur) + ' (' + esc(p.licence) + ')</li>';
     }).join('');
+    page.titre = 'Crédits';
+    page.sections = [];
+    var corps = '<p>Les images de ce site sont du domaine public ou sous licence libre. Les cahiers imprimables portent leurs propres crédits.</p>';
+    if (lignes) { corps += '<h2 id="images">Les images du site</h2><table>' + tete + '<tbody>' + lignes + '</tbody></table>'; page.sections.push({ id: 'images', titre: 'Les images du site' }); }
+    if (photos) { corps += '<h2 id="imagier">Les photographies de l’imagier</h2><table>' + tete + '<tbody>' + photos + '</tbody></table>'; page.sections.push({ id: 'imagier', titre: 'Les photographies de l’imagier' }); }
+    corps += '<h2 id="polices">Les polices et les icônes</h2><ul>' + polices +
+      '<li><strong>Andika</strong>, SIL International (OFL-1.1) — les mots de l’enfant</li><li>Icônes : Lucide (ISC)</li></ul>';
+    page.sections.push({ id: 'polices', titre: 'Les polices et les icônes' });
+    page.corps = corps;
+    page.html = '<h1>Crédits</h1>' + corps;
+    page.doc = { id: 'credits', titre: 'Crédits', desc: '', icone: 'image', groupe: '', lien: '#/credits', pdf: null, extraits: [] };
+    return Promise.resolve(page);
+  }
 
-    contenu.innerHTML =
-      '<div class="accueil-tete" data-composant="accueil-tete">' + orne('accueil') +
-      '<p class="surtitre">' + C.niveau.libelle + ' · année ' + C.annee + '</p>' +
-      '<h1>' + C.projet + '</h1>' +
-      '<p class="chapo">' + C.accroche + '</p>' +
-      '</div>' +
-      '<section class="bloc" data-composant="bloc" data-bloc="annee"><div class="bloc-tete"><h2>L’année en ' + nombre(ps.length) + ' ' + (C.periodes_nom || 'périodes') + '</h2><span class="zone-badge">zone ' + GS.ZONE + '</span></div>' +
-      frise(ps, pj, tete) +
-      '<ul class="vacances">' + vac + '</ul>' +
-      '<p class="note">' + ponts + 'Les dates sont celles de la zone ' + GS.ZONE + ' ; ' +
-      'chaque document se télécharge en PDF prêt à imprimer, dates comprises.</p></section>' +
-      (ordre.length ? '<section class="bloc" data-composant="bloc" data-bloc="materiel"><div class="bloc-tete"><h2>À imprimer pour la classe</h2></div>' +
-      '<p class="note">' + noteMateriel(sortes, sortes.every(function (m) { return m.periodes.length === ps.length; })) + '</p>' +
-      '<div class="materiels">' + ordre.map(function (n) { return materiel(n, tete && tete.n === n ? (pj ? 'en cours' : 'à venir') : ''); }).join('') + '</div></section>' : '') +
-      '<section class="bloc" data-composant="bloc" data-bloc="documents"><div class="bloc-tete"><h2>Mes documents</h2></div>' + docs + '</section>';
-    window.scrollTo(0, 0);
+  /* ——— Le rendu ——— */
+  function poser(id, nom, page) {
+    var el = document.getElementById(id);
+    var g = gabarit(nom);
+    el.innerHTML = g.fn(modele, page);
+    el.dataset.gabarit = g.source;
   }
 
   function rend() {
-    var doc = GS.DOCS.find(function (x) { return x.id === etat.doc; }) || GS.DOCS[0];
-    etat.doc = doc.id;
-    majMenuActif();
-    document.getElementById('fil').textContent = doc.groupe ? doc.groupe + ' › ' + doc.titre : '';
-    document.querySelector('.toolbar').hidden = !doc.md;
+    var page = route();
+    var pret = page.type === 'document' ? prepareDocument(page)
+      : page.type === 'credits' ? prepareCredits(page) : Promise.resolve(page);
+    var contenu = document.getElementById('contenu');
+    contenu.setAttribute('aria-busy', 'true');
+    pret.catch(function () {
+      page.erreur = true;
+      page.titre = page.doc ? page.doc.titre : 'Page introuvable';
+      page.corps = page.html = '<p>Impossible de charger ce document. Vérifiez votre connexion puis rechargez la page.</p>';
+      page.sections = [];
+      return page;
+    }).then(function (page) {
+      fermeMenu(false);
+      document.body.dataset.page = page.type;
+      if (page.periode) document.body.dataset.periode = page.periode.n; else delete document.body.dataset.periode;
+      poser('entete', 'entete', page);
+      poser('contenu', page.type === 'credits' ? 'document' : page.type, page);
+      poser('pied', 'pied', page);
+      garantirPied();
+      marqueActifs();
+      document.title = titrePage(page);
+      contenu.removeAttribute('aria-busy');
+      var monter = GS.gabarits.theme.monter || GS.gabarits.defaut.monter;
+      if (monter) monter(document.body, modele, page);
+      if (!premiere) {
+        window.scrollTo(0, 0);
+        contenu.focus({ preventScroll: true });
+      }
+      premiere = false;
+      document.dispatchEvent(new CustomEvent('encrine:page', { detail: { type: page.type } }));
+    });
+  }
 
-    var btnPdf = document.getElementById('btn-pdf');
-    if (doc.md) {
-      btnPdf.hidden = false;
-      btnPdf.href = 'pdf/' + doc.id + '.pdf';
-      btnPdf.setAttribute('download', GS.PREFIXE + '-' + doc.id + '.pdf');
-    } else {
-      btnPdf.hidden = true;
+  function titrePage(page) {
+    var C = GS.CLASSE;
+    var fin = C.nom + ' ' + C.annee + ' · ' + C.projet;
+    if (page.type === 'accueil') return fin;
+    if (page.type === 'periode') return page.periode.milieu + ' · ' + fin;
+    if (page.doc) return page.doc.titre + ' · ' + fin;
+    return 'Page introuvable · ' + fin;
+  }
+
+  /* Ce que le pied doit toujours porter, quel que soit le gabarit : la
+     signature « Conçu avec Encrine », le lien des crédits, et le crédit de
+     la classe d'origine (CC BY et CC BY-SA l'exigent). Un gabarit qui les
+     oublie les reçoit ici, sous leur forme sobre. */
+  function garantirPied() {
+    var pied = document.getElementById('pied');
+    var esc = GS.outils.esc;
+    if (!pied.querySelector('a[href="' + GS.SIGNATURE.lien + '"]')) {
+      pied.insertAdjacentHTML('beforeend', '<p class="pied-signature"><a href="' + GS.SIGNATURE.lien + '">' + GS.SIGNATURE.texte + '</a></p>');
     }
-    // Les cahiers de la période : un bouton par cahier déclaré, aucun pour les autres.
-    var boutons = { evaluation: 'btn-fiches', entrainement: 'btn-entrainement', imagier: 'btn-imagier', 'cartes-corpus': 'btn-corpus' };
-    var presents = doc.fiches ? cahiersDe(doc.fiches) : [];
-    Object.keys(boutons).forEach(function (cle) {
-      var el = document.getElementById(boutons[cle]);
-      var m = presents.find(function (x) { return x.cle === cle; });
-      el.hidden = !m;
-      if (m) {
-        el.href = pdfDe(m, doc.fiches);
-        el.setAttribute('download', GS.PREFIXE + '-' + m.nom + '-periode-' + doc.fiches + '.pdf');
+    if (modele.images.length && !pied.querySelector('a[href="#/credits"]')) {
+      pied.insertAdjacentHTML('beforeend', '<p class="pied-credits"><a href="#/credits">Crédits des images</a></p>');
+    }
+    var org = modele.classe.origine;
+    if (org && !pied.querySelector('[data-origine]')) {
+      pied.insertAdjacentHTML('beforeend', '<p class="pied-origine" data-origine>Classe partie de « ' +
+        (org.site ? '<a href="' + esc(org.site) + '">' + esc(org.titre) + '</a>' : esc(org.titre)) + ' »' +
+        (org.auteur ? ', de ' + esc(org.auteur) : '') + ' (' + esc(org.licence) + ').</p>');
+    }
+  }
+
+  /* aria-current sur chaque lien de la page affichée ; data-actif sur le
+     bouton du sous-menu qui la contient. */
+  function marqueActifs() {
+    var ici = location.hash && location.hash.indexOf('#/') === 0 ? location.hash : '#/accueil';
+    document.querySelectorAll('a[href^="#/"]').forEach(function (a) {
+      if (a.getAttribute('href') === ici) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
+    });
+    document.querySelectorAll('[data-sous-menu]').forEach(function (b) {
+      var cible = document.getElementById(b.getAttribute('aria-controls'));
+      if (cible && cible.querySelector('[aria-current="page"]')) b.dataset.actif = '';
+      else delete b.dataset.actif;
+    });
+  }
+
+  /* ——— Le menu ———
+     Le gabarit de l'en-tête pose des accroches ; le moteur leur donne vie :
+       [data-sous-menu][aria-controls]   ouvre et ferme un sous-menu (un seul à
+                                         la fois ; Échap, un clic ailleurs ou
+                                         le focus qui s'en va le ferment) ;
+       [data-menu-ouvrir][aria-controls] ouvre le menu du téléphone,
+                                         [data-menu-panneau], un dialogue : le
+                                         focus y reste, Échap le ferme et le
+                                         rend au bouton ;
+       [data-menu-fermer]                le ferme. */
+  var ouvreur = null;
+
+  function panneau() { return document.querySelector('[data-menu-panneau]:not([hidden])'); }
+
+  function focusables(el) {
+    return Array.prototype.filter.call(
+      el.querySelectorAll('a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'),
+      function (x) { return x.getClientRects().length > 0; });
+  }
+
+  function ouvreMenu(bouton) {
+    var p = document.getElementById(bouton.getAttribute('aria-controls'));
+    if (!p) return;
+    fermeSousMenus();
+    ouvreur = bouton;
+    p.hidden = false;
+    bouton.setAttribute('aria-expanded', 'true');
+    document.body.dataset.menu = 'ouvert';
+    document.documentElement.style.overflow = 'hidden';
+    var actif = p.querySelector('[aria-current="page"]');
+    var f = focusables(p);
+    (actif || f[0] || p).focus();
+  }
+
+  function fermeMenu(rendreFocus) {
+    fermeSousMenus();
+    var p = panneau();
+    if (!p) return;
+    p.hidden = true;
+    delete document.body.dataset.menu;
+    document.documentElement.style.overflow = '';
+    document.querySelectorAll('[data-menu-ouvrir]').forEach(function (b) { b.setAttribute('aria-expanded', 'false'); });
+    if (rendreFocus !== false && ouvreur && document.contains(ouvreur)) ouvreur.focus();
+    ouvreur = null;
+  }
+
+  function fermeSousMenus(sauf) {
+    document.querySelectorAll('[data-sous-menu][aria-expanded="true"]').forEach(function (b) {
+      if (b === sauf) return;
+      b.setAttribute('aria-expanded', 'false');
+      var c = document.getElementById(b.getAttribute('aria-controls'));
+      if (c) c.hidden = true;
+    });
+  }
+
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-sous-menu]');
+    if (b) {
+      e.preventDefault();
+      var ouvert = b.getAttribute('aria-expanded') === 'true';
+      fermeSousMenus(b);
+      b.setAttribute('aria-expanded', String(!ouvert));
+      var c = document.getElementById(b.getAttribute('aria-controls'));
+      if (c) c.hidden = ouvert;
+      return;
+    }
+    var o = e.target.closest('[data-menu-ouvrir]');
+    if (o) { e.preventDefault(); ouvreMenu(o); return; }
+    if (e.target.closest('[data-menu-fermer]')) { e.preventDefault(); fermeMenu(); return; }
+    var a = e.target.closest('a[href^="#"]');
+    if (a) {
+      var href = a.getAttribute('href');
+      if (href.indexOf('#/') !== 0) {
+        // une ancre dans la page (sommaire, lien d'évitement) : on y va sans
+        // toucher à la route
+        var cible = href.length > 1 && document.getElementById(decodeURIComponent(href.slice(1)));
+        if (cible) {
+          e.preventDefault();
+          fermeMenu(false);
+          if (!cible.hasAttribute('tabindex')) cible.setAttribute('tabindex', '-1');
+          cible.scrollIntoView({ behavior: modele.mouvement ? 'smooth' : 'auto', block: 'start' });
+          cible.focus({ preventScroll: true });
+        }
+        return;
+      }
+      if (href === location.hash) { fermeMenu(false); window.scrollTo(0, 0); }
+    }
+    if (!e.target.closest('[data-sous-menu-panneau]')) fermeSousMenus();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      var ouvert = document.querySelector('[data-sous-menu][aria-expanded="true"]');
+      if (panneau()) { fermeMenu(); e.preventDefault(); }
+      else if (ouvert) { fermeSousMenus(); ouvert.focus(); e.preventDefault(); }
+      return;
+    }
+    if (e.key === 'Tab') {
+      var p = panneau();
+      if (!p) return;
+      var f = focusables(p);
+      if (!f.length) return;
+      var premier = f[0], dernier = f[f.length - 1];
+      if (e.shiftKey && (document.activeElement === premier || !p.contains(document.activeElement))) {
+        e.preventDefault(); dernier.focus();
+      } else if (!e.shiftKey && (document.activeElement === dernier || !p.contains(document.activeElement))) {
+        e.preventDefault(); premier.focus();
+      }
+    }
+  });
+
+  // un sous-menu se ferme quand le focus le quitte (au clavier)
+  document.addEventListener('focusin', function (e) {
+    document.querySelectorAll('[data-sous-menu][aria-expanded="true"]').forEach(function (b) {
+      var c = document.getElementById(b.getAttribute('aria-controls'));
+      if (e.target !== b && c && !c.contains(e.target)) {
+        b.setAttribute('aria-expanded', 'false');
+        c.hidden = true;
       }
     });
+  });
 
-    var pp = document.getElementById('periodes-print');
-    if (doc.parPeriode) {
-      pp.hidden = false;
-      pp.innerHTML = '<span>' + icone('printer') + 'L’extrait d’une période, pour l’afficher en classe :</span> ' +
-        GS.THEMES.map(function (_, i) { return i + 1; }).map(function (n) {
-          return '<a data-periode="' + n + '" href="pdf/' + doc.id + '-periode-' + n + '.pdf" ' +
-            'download="' + GS.PREFIXE + '-' + doc.id + '-periode-' + n + '.pdf">' + pastille(n) + GS.THEMES[n - 1] + '</a>';
-        }).join(' ');
-    } else {
-      pp.hidden = true;
-    }
-
-    if (doc.md) rendDocument(doc); else rendAccueil();
-    fermeMenu();
-  }
-
-  /* ——— Menu sur petit écran ——— */
-  function fermeMenu() {
-    document.getElementById('sidebar').classList.remove('ouvert');
-    document.getElementById('menu-toggle').setAttribute('aria-expanded', 'false');
-  }
-
-  /* ——— Démarrage ——— */
-  // Les textes de la classe dans l'en-tête, le titre et le pied de page.
-  function habilleClasse() {
-    var C = GS.CLASSE;
-    document.title = C.nom + ' ' + C.annee + ' · ' + C.projet;
-    document.querySelector('.marque-titre').textContent = C.nom;
-    document.querySelector('.marque-sous').textContent = C.annee + ' · ' + C.sous_titre;
-    var pied = document.querySelector('.pied');
-    pied.textContent = C.conformite + ' Dates des vacances : calendrier scolaire officiel ' + C.annee + ', zone ' + GS.ZONE + '.';
-    // La classe d'où celle-ci est partie : CC BY et CC BY-SA obligent à la créditer.
-    var o = C.origine;
-    if (o && o.titre) {
-      var credit = document.createElement('p');
-      credit.className = 'pied-origine';
-      credit.appendChild(document.createTextNode('Classe partie de « '));
-      var titre = credit.appendChild(document.createElement(o.site ? 'a' : 'span'));
-      titre.textContent = o.titre;
-      if (o.site) titre.href = o.site;
-      credit.appendChild(document.createTextNode(' »' + (o.auteur ? ', de ' + o.auteur : '') + ' (' + o.licence + ').'));
-      pied.appendChild(credit);
-    }
-  }
+  window.addEventListener('hashchange', function () {
+    if (!location.hash || location.hash.indexOf('#/') === 0) rend();
+  });
 
   document.addEventListener('DOMContentLoaded', function () {
     marked.use({ gfm: true, breaks: false });
-    habilleClasse();
-    construireMenu();
-
-    document.getElementById('menu-toggle').addEventListener('click', function (e) {
-      e.stopPropagation();
-      var sb = document.getElementById('sidebar');
-      var ouvert = sb.classList.toggle('ouvert');
-      this.setAttribute('aria-expanded', String(ouvert));
-    });
-    document.addEventListener('click', function (e) {
-      var sb = document.getElementById('sidebar');
-      if (sb.classList.contains('ouvert') && !sb.contains(e.target)) fermeMenu();
-    });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') fermeMenu(); });
-    window.addEventListener('hashchange', function () {
-      etat.doc = (location.hash || '#/accueil').replace('#/', '') || 'accueil';
-      rend();
-    });
-
-    etat.doc = (location.hash || '#/accueil').replace('#/', '') || 'accueil';
+    modele = GS.modele();
     rend();
   });
 })();

@@ -8,7 +8,7 @@
  *   ni à l'impression, et plus jamais une fois refermée ;
  * - en mode appli sur iOS, ouvre les PDF hors de l'appli (sinon le PDF
  *   s'affiche par-dessus l'appli, sans bouton pour en revenir) ;
- * - donne à la barre du système la couleur du bandeau (theme-color).
+ * - donne à la barre du système la couleur de l'en-tête (theme-color).
  * Les textes de la classe viennent de classe.js (CLASSE.appli).
  */
 (function () {
@@ -38,13 +38,18 @@
     return '<svg class="ic" aria-hidden="true"><use href="charte/icones.svg#i-' + nom + '"/></svg>';
   }
 
-  /* ——— La couleur de la barre du système : celle du bandeau ——— */
+  /* ——— La couleur de la barre du système : celle de l'en-tête ——— */
   function couleurBarre() {
     var meta = document.querySelector('meta[name="theme-color"]');
     if (!meta) return;
-    var bandeau = document.querySelector('.bandeau');
-    var fond = bandeau ? getComputedStyle(bandeau).backgroundColor : '';
-    if (fond && fond !== 'rgba(0, 0, 0, 0)') meta.setAttribute('content', fond);
+    // l'en-tête que dessine le gabarit : son emplacement, ou son premier élément
+    var entete = document.getElementById('entete');
+    var fond = '';
+    [entete, entete && entete.firstElementChild].forEach(function (el) {
+      var f = el ? getComputedStyle(el).backgroundColor : '';
+      if (!fond && f && f !== 'rgba(0, 0, 0, 0)') fond = f;
+    });
+    if (fond) meta.setAttribute('content', fond);
   }
 
   /* ——— Le service worker ——— */
@@ -115,7 +120,8 @@
     document.documentElement.toggleAttribute('data-appli', enAppli());
     var titre = document.querySelector('meta[name="apple-mobile-web-app-title"]');
     if (titre && A.nom_court) titre.setAttribute('content', A.nom_court);
-    couleurBarre();
+    // l'en-tête n'existe qu'une fois la première page rendue (app.js)
+    document.addEventListener('encrine:page', couleurBarre);
     if (window.matchMedia) {
       var sombre = window.matchMedia('(prefers-color-scheme: dark)');
       if (sombre.addEventListener) sombre.addEventListener('change', couleurBarre);

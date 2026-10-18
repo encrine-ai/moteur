@@ -15,7 +15,10 @@ sauf les PDF.
 | `referentiel/calendrier-AAAA-AAAA.yml` | **le calendrier officiel** d'une année scolaire, pour les trois zones : données nationales, communes à toutes les classes, qui font partie du moteur |
 | `scripts/classe.py` | `generer` fabrique `site/classe.json` et `site/classe.js` (versionnés), avec les dates de **la zone de la classe** seulement, tirées du calendrier de son année ; `verifier` sort en code 1 si ces fichiers sont périmés, si la zone n'est pas A, B ou C, si l'année n'a pas de fichier de calendrier, s'il reste des dates (les anciennes clés) dans `classe.yml`, ou si une donnée de la classe — l'année, le projet, un milieu — est écrite en dur dans le moteur. Le déploiement le refait |
 | `site/commun.js` | l'objet `GS`, bâti sur `CLASSE` : le calendrier de la classe (`CAL`, et sa zone `ZONE`), les milieux (`THEMES`, `ICONES_MILIEU`), les documents (`DOCS`), le préfixe des fichiers téléchargés, le calcul des périodes et le badge de dates. Partagé par l'application et la vue d'impression |
-| `site/app.js` | l'application : menu, accueil (frise, matériel, documents), rendu d'un document, boutons PDF (`pdf/<doc>.pdf`, `pdf/<doc>-periode-N.pdf`) ; aucun sélecteur de zone |
+| `site/index.html` | trois emplacements — `#entete`, `#contenu`, `#pied` — et le lien d'évitement ; le manifeste et les meta de l'appli ; charge `modele.js`, `gabarits.js`, puis `charte/gabarits.js` (ceux du thème) et `app.js` |
+| `site/modele.js` | `GS.modele()` : le modèle des pages — périodes datées pour la zone, « Nous y sommes » (une période, ou des vacances : « pendant les vacances de la Toussaint »), vacances, ponts, menu groupé, documents et leurs PDF, cahiers de chaque période, projet, imagier, corpus, images et crédits, signature. `?date=AAAA-MM-JJ` dans l'adresse simule un jour |
+| `site/app.js` | la logique : routes (`#/accueil`, `#/<document>`, `#/periode/<clé>`, `#/credits`), lecture et rendu du Markdown (titre, sections, badges de dates), menu (sous-menus, dialogue du téléphone, Échap, focus), crédits ; la **forme** vient des gabarits (skill charte-graphique, « Le mini-site ») ; aucun sélecteur de zone |
+| `site/gabarits.js` | les gabarits par défaut : l'en-tête et le menu, l'accueil, le document (boutons PDF `pdf/<doc>.pdf`, extraits `pdf/<doc>-periode-N.pdf`), la période, le pied |
 | `site/imprimer.html` | la vue que Chromium imprime : `?doc=…[&periode=N]`, aux dates de la zone de la classe |
 | `.github/workflows/pages.yml` | à chaque push sur `main` : contrôler `classe.yml`, assembler `_site/`, fabriquer les PDF (un par document et par extrait de période, plus les cahiers : 65 pour une classe de Grande Section complète), contrôler la pagination, publier |
 
@@ -55,7 +58,7 @@ réseau. Tout est fabriqué par `scripts/appli.py`, que lance
 
 | Fichier | Rôle |
 |---|---|
-| `site/manifest.webmanifest` | nom (`nom — projet`) et nom court (l'étiquette sous l'icône), tirés de `classe.yml` ; `start_url` et `scope` à `./` (le site vit dans un sous-dossier) ; **pas d'`id`** — résolu contre la seule origine, il ferait de deux classes d'un même domaine une seule appli ; `display: standalone`, `lang: fr` ; `theme_color` = `--feuille` (le bandeau), `background_color` = `--papier`, lus dans le bloc clair de `theme.css` |
+| `site/manifest.webmanifest` | nom (`nom — projet`) et nom court (l'étiquette sous l'icône), tirés de `classe.yml` ; `start_url` et `scope` à `./` (le site vit dans un sous-dossier) ; **pas d'`id`** — résolu contre la seule origine, il ferait de deux classes d'un même domaine une seule appli ; `display: standalone`, `lang: fr` ; `theme_color` = `--feuille` (l'en-tête), `background_color` = `--papier`, lus dans le bloc clair de `theme.css` |
 | `site/icones/` et `site/favicon.ico` | l'icône de la classe : les cinq bandes de ses périodes (`--p1`…`--p5`) et un disque `--feuille` portant son initiale en `--sapin`, dans la police des titres du thème — `appli.svg` (la lettre en contour, sans police), `appli-192.png`, `appli-512.png`, `appli-maskable-512.png` (le disque dans la zone sûre), `apple-touch-icon.png` (180, plein, iOS l'arrondit), `favicon-32.png`, `favicon.ico` (16, 32, 48). Aucun logo d'Encrine : c'est l'appli de la classe. Les PNG demandent Pillow, fontTools et brotli ; chaque icône porte l'empreinte de ce dont elle est faite, que `verifier` relit sans eux |
 | `site/sw.js` | le service worker, tiré de `scripts/modele-sw.js` : l'application, les polices, les icônes, `classe.json` et les documents Markdown du menu en cache à l'installation ; **réseau d'abord** pour les pages, documents, scripts et `classe.json` (la copie gardée si le réseau échoue ou tarde 4 s) ; PDF et images **à l'usage** seulement (40 PDF, 300 images au plus) ; un PDF jamais ouvert répond hors connexion par une page qui le dit. `VERSION` est l'empreinte du site : chaque publication qui change quelque chose remplace l'ancien cache. Caches préfixés par la portée : deux classes d'un même domaine ne s'effacent pas |
 | `site/appli.js` (moteur) | enregistre `sw.js` ; l'**invitation** (`data-composant="invitation"`) : « Installer » par `beforeinstallprompt` sur Android et Chrome, « Partager, puis Sur l'écran d'accueil » dans Safari d'iPhone et d'iPad ; refermée, elle ne revient plus (`localStorage`, par dossier de classe) ; jamais dans l'appli installée ni à l'impression. En mode appli sur iOS, les PDF s'ouvrent dans une feuille du navigateur (`target="_blank"`, sans `download`) ; la couleur de la barre et le titre iOS viennent du thème et de `classe.yml` |
@@ -152,6 +155,23 @@ le `README.md` et dans `01-projet-annuel.md`, s'ils en citent.
 4. Vérifier à l'écran : frise, semaines, badge d'un titre, période en cours
    pour une date simulée.
 
+## La page de chaque période
+
+`#/periode/<clé>` (la `cle` de la période dans `classe.yml`) existe pour
+chaque période, prête ou non, et le menu les liste (« Les continents », du
+nom de `periodes_nom`). Elle montre ses dates pour la zone et son statut
+(passée, en cours — « Nous y sommes » —, prochaine, à venir), **ses
+cahiers** (ceux que `materiel` déclare pour elle, avec leur PDF), **ses
+documents** (l'évaluation qui porte `fiches: N`, l'extrait de chaque
+progression `par_periode`), les **données du projet** (`classe/projet.yml` :
+ce qu'on y fait, le fil rouge, les albums, les œuvres, la musique, les
+sorties, les textes appris, l'emblème, et les données propres au thème),
+l'**imagier** de la période et les **mots de ses corpus**. Rien à déclarer
+pour qu'elle existe ; pour la remplir, écrire `classe/projet.yml` (skill
+charte-graphique, « La page de période ») — seulement ce que le projet
+annuel dit déjà. Le lien d'une ancienne adresse (`#/eval-p1`) marche
+toujours : c'est un document.
+
 ## Ajouter un document au menu
 
 Une entrée de `documents` dans `classe.yml` : `{id, titre, icone, md, groupe,
@@ -195,7 +215,7 @@ dans `site/*.js`.
 
 ```sh
 python3 scripts/classe.py verifier
-node --check site/app.js site/commun.js
+node --check site/app.js && node --check site/commun.js && node --check site/modele.js && node --check site/gabarits.js
 ```
 
 puis l'application servie en local (skill charte-graphique, « Vérifier une

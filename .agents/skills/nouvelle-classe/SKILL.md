@@ -64,8 +64,10 @@ collègue ? », puis suivre la ligne qui correspond.
    question à la fois dans la conversation, et avec la phrase du
    tutoiement — **le niveau**, **la zone**, **l'année**, **le profil de la
    classe** — plus **par où commencer** (une période ou les cinq) si le
-   niveau change. Le thème, les milieux, le matériel et le style sont repris
-   sans question. La zone se redemande toujours : ne jamais garder le
+   niveau change — et **la signature** (« Comment veux-tu signer ta
+   classe ? », question 7 ci-dessous : `enseignant` est celui de la nouvelle
+   classe, jamais celui de l'original). Le thème, les milieux, le matériel et
+   le style (le mini-site) sont repris sans question. La zone se redemande toujours : ne jamais garder le
    `calendrier` de la classe d'origine sans la réponse.
 4. **Écrire `origine`** dans `classe.yml`, depuis ce que dit le dépôt :
 
@@ -202,7 +204,7 @@ enseignants avant qu'ils commencent.)
    chaque cahier : l'accueil n'annonce que ce qui y figure, et
    `classe.py verifier` refuse un cahier déclaré qui n'est pas encore fabriqué.
 
-**Second appel** — la question 6 se pose toujours ; la question 5
+**Second appel** — les questions 6 et 7 se posent toujours ; la question 5
 seulement si les réponses ne permettent pas de trancher :
 
 5. **Le profil de la classe** : plus soutenu ou plus accessible ? (ici : « un
@@ -210,6 +212,25 @@ seulement si les réponses ne permettent pas de trancher :
    peu corsés »). Il règle la différenciation ★ / ★★.
 6. **Par où commencer** : une période complète d'abord (recommandé), ou les
    cinq d'un coup (voir plus haut).
+7. **« Comment veux-tu signer ta classe ? »** — en disant pourquoi on le
+   demande : **le site est public**, n'importe qui peut le lire. Les choix :
+   son nom complet (« Claire Martin »), la forme d'usage (« Mme Martin »),
+   un prénom (« Aurélie »), ou rien ; plus, s'il le veut, **un petit mot
+   d'accueil** (une ou deux phrases). La réponse s'écrit dans `classe.yml` :
+
+   ```yaml
+   enseignant:
+     signature: Mme Martin      # ou '' pour ne pas signer
+     mot: ''                    # facultatif
+   ```
+
+   Les gabarits la montrent sur l'accueil (« La classe de Mme Martin », dans
+   la forme du thème) et dans le pied, et le mot sur l'accueil. **Jamais
+   l'école ni la ville** par défaut ; s'il y tient, `ecole` et `ville`
+   s'ajoutent sous `enseignant`, après lui avoir redit que le site est
+   public (et que l'école se reconnaît, et donc ses élèves). La signature
+   sert aussi d'auteur sur la carte de la galerie, s'il partage sa classe
+   (skill partager-ma-classe).
 
 Les réglages que cette classe-ci avait fixés sans qu'on les demande (rythme
 des fiches, codage A / EC / NE, nombre d'espèces de l'imagier, espèces
@@ -234,7 +255,8 @@ au moment où le matériel concerné se fabrique.
 ## Étape 2 — Écrire la classe
 
 1. **`classe.yml`** : nom, niveau, année, projet, accroche, `ton` (`tu`, ou
-   `vous` si l'enseignant l'a demandé), `depot` (ce dépôt-ci,
+   `vous` si l'enseignant l'a demandé), `enseignant` (sa signature et son
+   mot, question 7), `depot` (ce dépôt-ci,
    `propriétaire/dépôt`, tiré de `git remote get-url origin`), `origine` si
    la classe est partie d'une autre (mode « enrichir »), `moteur` (le dépôt modèle d'où vient
    ce dépôt et le commit copié : skill synchroniser-moteur), `calendrier`
@@ -249,7 +271,12 @@ au moment où le matériel concerné se fabrique.
    ```
 2. **Le dossier `classe/`** : `annotations.yml` vide de blocs pour commencer,
    `imagier.py` et `corpus.py` sur le modèle de ceux de la classe de départ
-   (garder leur structure : les scripts en dépendent). Si le niveau n'a pas
+   (garder leur structure : les scripts en dépendent), et `projet.yml` (le
+   projet en données : ce que montrent l'accueil et la page de chaque
+   période — fil rouge, albums, œuvres, musique, sorties, textes appris,
+   emblème —, `contenu: projet:` dans classe.yml ; skill charte-graphique,
+   « La page de période »). Il reprend ce que dit le projet annuel, rien de
+   plus. Si le niveau n'a pas
    sa liste du programme, l'écrire d'abord dans `referentiel/` et pointer
    `contenu.referentiel` dessus.
 
@@ -284,41 +311,78 @@ Le style des cahiers est **celui de la classe** (étape 5), pas celui du
 moteur. La police des mots de l'enfant (Andika) et les règles d'impression
 ne changent pas.
 
-## Étape 5 — Le style
+## Étape 5 — Le style : un mini-site à l'image de la classe
 
-Chaque classe a **son** design system, fait avec l'enseignant (décidé le
-18 octobre 2026) : la galerie doit montrer des classes vraiment
-différentes. La marche complète, et le contrat du thème, sont dans le skill
-**charte-graphique** (« Créer le design system d'une classe ») ; ici,
-l'essentiel de l'entretien.
+Chaque classe a **son** site, « comme un site différent, à son image »
+(décision du propriétaire, 18 octobre 2026) : la galerie doit montrer des
+classes vraiment différentes. Le thème décide de la **forme** — l'en-tête
+et le menu, l'accueil, la page de document, la page de chaque période, les
+visuels, le mouvement —, toutes les rubriques et toutes les fonctionnalités
+restant celles du moteur. Le **papier** (fiches, cartes, PDF) reste sobre
+et ne change pas. On procède exactement comme pour la classe de
+démonstration et pour la première Grande Section : **trois maquettes, un
+choix, puis la construction.**
 
 1. **Une question**, une seule — avec l'outil de questions interactives de
    l'agent s'il en a un (`AskUserQuestion` dans Claude Code), sinon dans la
-   conversation : l'univers qui lui
-   ressemble, tiré du thème de l'année, avec deux ou trois exemples
-   concrets — pour le tour du monde : « un carnet de voyage, avec tampons et
-   étiquettes de bagage », « l'affiche d'une gare, avec ses billets »,
-   « l'album de cartes postales ». Jamais le cliché du thème (la carte au
-   trésor, l'ancre marine) ; chercher les objets qu'un enfant de cinq ans
-   manipule. Ses goûts déclarés (couleurs, « pas trop chargé ») passent
-   avant.
-2. **Deux ou trois directions nettement distinctes** — polices, ornements,
-   couverture, frise différents, pas trois palettes du même gabarit —,
-   chacune dans `site/charte/themes/<nom>/`, acceptée par
-   `python3 scripts/verifier-theme.py <nom>`.
-3. **Les montrer en captures, sur de vraies pages** : l'accueil (1280 et
-   390 px), une fiche, une carte d'imagier, une couverture — et la fiche et
-   la couverture **au PDF**, aussi en niveaux de gris (la photocopie).
-   Tant que la classe n'a pas de cahier, les montrer sur le contenu d'une
-   autre classe, assemblé dans le scratchpad. Dire en une phrase ce que
-   chaque direction a pour elle.
-4. **L'enseignant choisit, puis ajuste** (une retouche à la fois, montrée
-   aussitôt). Le style s'écrit dans `themes/<thème>/` — le verdict dans
-   `theme.yml` et le message de commit —, `theme: <thème>` dans
-   `classe.yml`, et les directions écartées sortent du dépôt.
+   conversation : ce qu'il aime, avec deux ou trois univers concrets tirés
+   du thème de l'année. Ses goûts déclarés (couleurs, « pas trop chargé »)
+   passent avant tout.
+2. **Trois maquettes de mini-site, radicalement différentes** — pas trois
+   variantes de couleur d'un même gabarit : chacune a sa **mise en page**,
+   sa **navigation** (onglets, table d'atlas, tiroirs, lignes de plan…), sa
+   **typographie**, ses **visuels** et son **mouvement**. Le niveau visé est
+   celui d'un site d'album jeunesse ou d'un musée pour enfants. **Pas de
+   cliché** du thème (la carte au trésor pour le voyage, l'ancre pour la
+   mer) : chercher l'objet qu'un enfant de cinq ans manipule ou qu'une
+   maîtresse affiche (le carnet, la planche murale, le cabinet de
+   curiosités, l'atlas qu'on feuillette). Deux jeux de maquettes servent de
+   référence : celui du tour du monde (un carnet de voyage tamponné, un
+   grand atlas ancien dont chaque continent est une planche, une gare dont
+   chaque période est une ligne) et celui de la Grande Section faune et
+   flore (un cabinet de curiosités en tiroirs, une planche murale de
+   sciences naturelles, une promenade) — ils montrent l'écart attendu entre
+   trois directions, et ce que chacune demande au moteur.
+3. **Quatre écrans par maquette, avec le vrai contenu de la classe** :
+   l'accueil, le menu au téléphone (ouvert), une page de document (une
+   progression), une page de période. Du HTML statique, ses polices et ses
+   images à côté. Chacune a son **`NOTES.md`** (l'idée en une phrase pour
+   l'enseignant, ce qui fait la direction, ce qu'elle demande au moteur) et
+   son **`CREDITS.md`**.
+4. **Les images** : libres et créditées, d'Openverse en énumérant
+   `cc0, pdm, by, by-sa` (jamais le filtre « commercial », qui laisse passer
+   ND), du Rijksmuseum, de The Met Open Access, de la Biodiversity Heritage
+   Library, ou les photographies de l'imagier de la classe ; **jamais
+   Wikimedia**. **Aucune illustration de contenu dessinée** (un animal, un
+   personnage, un objet) : seulement des ornements tracés (filets, tampons,
+   rose des vents). **Aucune figure inadaptée à des enfants** — les cartes
+   et gravures anciennes sont pleines d'allégories dénudées, de putti, de
+   scènes de rapt ou de chasse : **regarder chaque image à l'œil**, en
+   grand, et effacer ou écarter (skill charte-graphique, « Les images du
+   thème »).
+5. **Les règles qui ne bougent pas** : les mots de l'enfant en Andika ; le
+   papier inchangé (aucune maquette ne touche aux fiches, à l'imagier, aux
+   cartes-corpus ni à `impression.css`) ; les contrastes 4,5:1 ; un menu
+   utilisable au clavier.
+6. **Où** : dans un dossier temporaire, **hors du dépôt** (le scratchpad de
+   la session) — une maquette n'est pas le site, et le dépôt d'une classe
+   est public.
+7. **Montrer** : une **planche comparative** des trois directions (un écran
+   de chaque, côte à côte), puis **une planche par direction** (ses quatre
+   écrans, à 1280 et à 390 px), lisibles sur un téléphone. Dire en une
+   phrase ce que chacune a pour elle.
+8. **L'enseignant choisit**, une retouche à la fois s'il en veut ; **seulement
+   ensuite**, construire le thème choisi — `theme.yml`, `theme.css`,
+   `habillage.css`, `gabarits.js`, `classe/projet.yml` — en suivant le skill
+   charte-graphique (« Construire le mini-site d'une classe à partir d'une
+   maquette »), avec **toutes** les rubriques, pas seulement les quatre
+   écrans maquettés. Le verdict s'écrit dans `theme.yml` (`description`,
+   `retenu_le`) et le message de commit ; les directions écartées ne
+   restent pas dans le dépôt.
 
-S'il ne veut pas s'en occuper maintenant : garder le thème neutre (`demo`)
-et le dire ; le style peut venir plus tard, sans rien refaire d'autre.
+S'il ne veut pas s'en occuper maintenant : garder le thème neutre (`demo`,
+les gabarits par défaut) et le dire ; le mini-site peut venir plus tard,
+sans rien refaire d'autre.
 
 ## Étape 6 — Finir par le PDF
 
@@ -358,8 +422,8 @@ déploiement échoue.
 
 **nouvelle-classe** → site-et-calendrier (dates) → progressions-programme
 (couverture verte) → fiches-eleve + fiches-illustrations → imagier-photos →
-cartes-corpus → charte-graphique (le style : deux ou trois directions, le choix de
-l'enseignant) → imprimer-pdf → mettre
+cartes-corpus → charte-graphique (le style : trois maquettes de mini-site, le choix de
+l'enseignant, puis le thème) → imprimer-pdf → mettre
 le site en ligne → **capitaliser**. Ensuite, la vie de la classe :
 **retours-enseignant** (les retours, une question à la fois),
 **remonter-au-moteur** (ce qui vaut pour toutes les classes),

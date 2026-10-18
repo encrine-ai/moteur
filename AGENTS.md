@@ -35,13 +35,13 @@ commentaires et les messages de commit.
 | Chemin | Rôle |
 |---|---|
 | `01-…`, `02-…`, `03-progressions/`, `04-evaluations/` | les documents de l'enseignant, en Markdown |
-| `site/` | l'application web (JS sans cadriciel), publiée sur GitHub Pages |
-| `site/charte/` | le design system : `socle.css` (Andika sur tout mot de l'enfant, contrastes, espacements, mécanique des périodes — commun à toutes les classes, non négociable), `composants.css` (la couverture des cahiers) et `themes/<thème>/` (le style propre à la classe : jetons, polices, arrondis, habillage des composants nommés, motifs, déclarés dans `theme.yml` ; `demo` est le neutre de départ), assemblés dans `charte.css` par `classe.py` ; `scripts/verifier-theme.py` tient le thème à son contrat (skill `charte-graphique`) |
+| `site/` | l'application web (JS sans cadriciel), publiée sur GitHub Pages : le moteur calcule le modèle (`modele.js`) et garde la logique (`app.js`), les **gabarits** du thème dessinent le mini-site de la classe (`gabarits.js` par défaut) ; le pied porte « Conçu avec Encrine » |
+| `site/charte/` | le design system : `socle.css` (Andika sur tout mot de l'enfant, contrastes, espacements, mécanique des périodes — commun à toutes les classes, non négociable), `composants.css` (la couverture des cahiers) et `themes/<thème>/` (le style propre à la classe : jetons, polices, arrondis, habillage des composants nommés, motifs, images libres déclarées dans `theme.yml`, et ses gabarits d'écran, `gabarits.js` ; `demo` est le neutre de départ, aux gabarits par défaut), assemblés dans `charte.css` par `classe.py` ; `scripts/verifier-theme.py` tient le thème à son contrat (skill `charte-graphique`) |
 | `site/fiches/` | les fiches élève imprimables, une page A4 par fiche |
 | `site/imagier/` | l'imagier Montessori, un cahier de cartes par période |
 | `site/cartes-corpus/` | les cartes-corpus de vocabulaire, un cahier par période |
 | `classe.yml` | **la classe** : nom, niveau, année, projet, zone de vacances, milieux, documents — la seule source de ce qui la distingue d'une autre ; `scripts/classe.py verifier` refuse qu'une de ces données soit écrite en dur dans le code |
-| `classe/` | le contenu propre à la classe, que `classe.yml` désigne : les espèces de l'imagier (`imagier.py`), les cartes-corpus (`corpus.py`), ce que l'année traite du programme (`annotations.yml`) |
+| `classe/` | le contenu propre à la classe, que `classe.yml` désigne : les espèces de l'imagier (`imagier.py`), les cartes-corpus (`corpus.py`), ce que l'année traite du programme (`annotations.yml`), le projet en données pour le site (`projet.yml` : fil rouge, albums, œuvres, sorties… par période) |
 | `scripts/` | fabrication des pages et des images |
 | `.agents/skills/` | les procédures outillées du dépôt, au standard ouvert des skills (`SKILL.md`) ; `.claude/skills` n'est qu'un lien symbolique vers ce dossier, pour Claude Code (voir ci-dessous) |
 | `referentiel/` | le programme sous forme de liste numérotée, et le contrôle de couverture ; le calendrier scolaire officiel de chaque année, pour les trois zones (`calendrier-AAAA-AAAA.yml`) |

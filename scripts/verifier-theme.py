@@ -32,7 +32,15 @@ que le thème s'en tient à son contrat — le skill charte-graphique le décrit
    (couleurs, bordures, polices de l'adulte), jamais la géométrie, et un
    ornement y est toujours en position absolue — la pagination ne bouge pas ;
    un aplat sombre n'y est permis que sur la couverture, dont l'intérieur
-   (à hauteur fixe) se compose librement.
+   (à hauteur fixe) se compose librement ;
+6. **le mini-site** : les images du thème (theme.yml, `images:`) ont une
+   licence libre (CC0, domaine public, CC BY, CC BY-SA), un auteur, une
+   source, et leur fichier ; les gabarits (gabarits.js), s'il y en a, se
+   chargent, rendent chaque page de la vraie classe et posent les accroches
+   du menu (scripts/verifier-gabarits.js, avec Node), sans réécrire la
+   logique du moteur (ni fetch, ni stockage, ni route) ; l'habillage de leur
+   HTML vit dans `@media screen` (il ne touche jamais le papier) ; tout
+   mouvement est sous `prefers-reduced-motion: no-preference`.
 
 Usage :
     python3 scripts/verifier-theme.py              # le thème de classe.yml
@@ -52,8 +60,22 @@ RACINE = pathlib.Path(__file__).resolve().parent.parent
 THEMES = RACINE / "site" / "charte" / "themes"
 
 LICENCES = {"OFL-1.1", "CC0-1.0", "PDM", "CC-BY-4.0", "CC-BY-SA-4.0", "CC-BY-3.0", "CC-BY-SA-3.0"}
+# Les images (thème, projet de la classe) : libres et modifiables — une
+# carte recadre, un écran retouche. Jamais NC ni ND.
+LICENCES_IMAGES = {"CC0-1.0", "PDM", "CC-BY-4.0", "CC-BY-SA-4.0", "CC-BY-3.0", "CC-BY-SA-3.0",
+                   "CC-BY-2.0", "CC-BY-SA-2.0"}
 FEUILLES = ("theme.css", "habillage.css")
-HORS_DECLARATION = {"theme.yml", "theme.css", "habillage.css", "LISEZ-MOI.md"}
+HORS_DECLARATION = {"theme.yml", "theme.css", "habillage.css", "gabarits.js", "LISEZ-MOI.md"}
+# Ce qu'un gabarit ne fait pas : la logique (lire, stocker, router) est au moteur.
+GABARIT_INTERDIT = [
+    (r"\bfetch\s*\(|XMLHttpRequest|\bimport\s*\(|\beval\s*\(|new\s+Function\b", "lit ou exécute du code ou des données (fetch, import, eval)"),
+    (r"localStorage|sessionStorage|indexedDB|document\.cookie", "garde des données (stockage) — c'est au moteur"),
+    (r"location\.(hash|href|search)\s*=|location\.(assign|replace)\s*\(|history\.(push|replace)State", "change la route — c'est au moteur"),
+    (r"addEventListener\s*\(\s*['\"](hashchange|popstate|keydown)['\"]", "écoute la route ou le clavier — le menu et Échap sont au moteur"),
+    (r"document\.write", "écrit dans le document (document.write)"),
+    (r"https?://(?!encrine\.ai)", "charge ou nomme une adresse extérieure — tout est auto-hébergé"),
+]
+MOUVEMENT_JS = re.compile(r"requestAnimationFrame|setInterval|\.animate\s*\(")
 
 # ——— Les jetons ———————————————————————————————————————————————————————————
 PERIODES = ["--p%d%s" % (n, s) for n in range(1, 6) for s in ("", "-trait", "-pale")]
@@ -158,7 +180,7 @@ COMPOSANTS = {
 }
 ORNEMENTS = {o: nom for nom, (_, _, _, ornes) in COMPOSANTS.items() for o in ornes}
 # les mots que l'enfant lit : leur police, leur corps et leur espacement sont du socle
-ENFANT = {"mot", "mot-tri", "mot-script", "couverture-titre", "repere"}
+ENFANT = {"mot", "mot-tri", "mot-script", "couverture-titre", "repere", "mot-enfant"}
 # attributs de contexte permis partout
 CONTEXTE = {"data-periode", "data-theme", "data-support", "data-cahier", "data-bloc", "data-cle",
             "aria-current", "hidden"}
@@ -326,6 +348,26 @@ def anomalies(theme):
             if not manifeste.get(cle):
                 a.append("theme.yml : « %s » manque" % cle)
     declares = {}
+    for e in manifeste.get("images") or []:
+        if not isinstance(e, dict) or not e.get("fichier"):
+            a.append("theme.yml : chaque image a `fichier`, `titre`, `auteur`, `source`, `licence`")
+            continue
+        f = e["fichier"]
+        declares[f] = "images"
+        if e.get("licence") not in LICENCES_IMAGES:
+            a.append("theme.yml : image « %s » — licence « %s » ; seules %s (jamais NC ni ND)"
+                     % (f, e.get("licence"), ", ".join(sorted(LICENCES_IMAGES))))
+        for cle in ("titre", "auteur", "source"):
+            if not e.get(cle):
+                a.append("theme.yml : image « %s » — `%s` manque (crédit dû)" % (f, cle))
+        if e.get("source") and not str(e["source"]).startswith("https://"):
+            a.append("theme.yml : image « %s » — source « %s » : une adresse https://" % (f, e["source"]))
+        if re.search(r"wiki(media|pedia)\.org", str(e.get("source") or "")):
+            a.append("theme.yml : image « %s » — Wikimedia est exclu (AGENTS.md, « Images »)" % f)
+        if not f.lower().endswith((".jpg", ".jpeg", ".png", ".webp", ".avif", ".svg")):
+            a.append("theme.yml : image « %s » — jpg, png, webp, avif ou svg" % f)
+        if not (dossier / f).is_file():
+            a.append("theme.yml déclare l'image %s, qui n'existe pas" % f)
     for genre in ("polices", "motifs"):
         for e in manifeste.get(genre) or []:
             fichiers = e.get("fichiers") or ([e["fichier"]] if e.get("fichier") else [])
@@ -354,6 +396,9 @@ def anomalies(theme):
                 if re.search(motif, svg, re.I):
                     a.append("%s contient %s : un motif est un tracé, rien d'autre" % (f, quoi))
 
+    # — Les gabarits du mini-site —
+    a += _gabarits(theme, dossier, manifeste)
+
     # — Lecture des feuilles —
     regles, polices_declarees, utilisees = [], set(), set()
     for feuille in FEUILLES:
@@ -379,8 +424,12 @@ def anomalies(theme):
                 polices_declarees.add(fam)
                 continue
             regles.append((feuille, ctx, prelude, _declarations(corps)))
+    gab = (dossier / "gabarits.js").read_text(encoding="utf-8") if (dossier / "gabarits.js").is_file() else ""
+    for f, genre in declares.items():
+        if genre == "images" and f not in utilisees and f not in gab:
+            a.append("image %s déclarée mais ni une feuille ni gabarits.js ne s'en sert" % f)
     for f in declares:
-        if f not in utilisees and (f.endswith(".svg") or f.endswith(".woff2")):
+        if declares[f] != "images" and f not in utilisees and (f.endswith(".svg") or f.endswith(".woff2")):
             a.append("%s est déclaré mais aucune feuille ne s'en sert" % f)
 
     # — 2. Les jetons, bloc par bloc —
@@ -438,6 +487,14 @@ def anomalies(theme):
     # — 4 et 5. Le socle et les composants —
     ornements_poses = {}
     for feuille, ctx, prelude, decls in regles:
+        for p, v in decls:
+            if p in ("animation", "animation-name") and v.strip() != "none" \
+                    and not any("prefers-reduced-motion: no-preference" in c for c in ctx):
+                a.append("%s : « %s » anime hors de @media (prefers-reduced-motion: no-preference) — "
+                         "le mouvement s'arrête pour qui l'a demandé" % (feuille, prelude[:60]))
+        if any(re.search(r"@media\b[^{]*\bscreen\b", c) for c in ctx) and feuille == "habillage.css":
+            a += _ecran_du_theme(feuille, prelude, decls)
+            continue
         for sel in _selecteurs(prelude):
             composants, ornes, pseudo, classes, attributs, enfant, glob = _analyse(sel)
             ou = "%s : « %s »" % (feuille, sel)
@@ -522,6 +579,87 @@ def anomalies(theme):
         if d.get("position", "").strip() != "absolute":
             a.append("ornement « %s » : position absolute obligatoire sur le papier — "
                      "un ornement ne prend jamais de place dans la page" % sel)
+    return a
+
+
+# Les composants du papier, qu'une règle d'écran du thème ne nomme jamais.
+PAPIER = {n for n, (support, _, _, _) in COMPOSANTS.items() if support == "papier"}
+CLASSES_PAPIER = {"fiche", "planche", "carte", "etiquette", "couverture", "garde", "credits", "tri"}
+
+
+def _ecran_du_theme(feuille, prelude, decls):
+    """Une règle de `@media screen` dans habillage.css : l'habillage du HTML
+    que rendent les gabarits du thème. Ses classes sont libres ; elle ne nomme
+    aucun composant du papier, ne vise pas un élément nu (qui toucherait les
+    fiches ouvertes à l'écran), passe par les jetons de police, garde le corps
+    du texte lisible et laisse Andika aux mots de l'enfant."""
+    a = []
+    for sel in _selecteurs(prelude):
+        ou = "%s : « %s »" % (feuille, sel)
+        if sel.startswith("@") or sel in ("from", "to") or re.fullmatch(r"[\d.]+%", sel):
+            continue
+        comp = set(re.findall(r'\[data-composant="([\w-]+)"\]', sel))
+        if comp & PAPIER or set(re.findall(r"\.([\w-]+)", sel)) & CLASSES_PAPIER:
+            a.append("%s : une règle d'écran ne touche pas au papier" % ou)
+        racine = re.split(r"[\s>+~]+", sel.strip())[0]
+        if not re.search(r"[.#\[]", racine) and 'data-support="ecran"' not in sel:
+            a.append("%s : une règle d'écran part d'une classe, d'un id ou d'un attribut "
+                     "(ou de body[data-support=\"ecran\"]) — un élément nu toucherait les fiches" % ou)
+        enfant = "mot-enfant" in re.findall(r"\.([\w-]+)", re.split(r"[\s>+~]+", sel.strip())[-1])
+        for p, v in decls:
+            if p == "font-family" and not POLICES_PERMISES.match(v):
+                a.append("%s : font-family « %s » — passer par var(--police-…)" % (ou, v))
+            if p == "font" and re.search(r"[\"']|\bserif\b|sans-serif", v) and "var(--police-" not in v:
+                a.append("%s : font « %s » — la famille passe par var(--police-…)" % (ou, v))
+            if enfant and (p in ("font-family", "letter-spacing", "word-spacing", "text-transform", "font-style")
+                           or (p == "font" and "var(--police-enfant)" not in v)):
+                a.append("%s : %s sur un mot de l'enfant — Andika, droite, sans espacement ajouté" % (ou, p))
+            if p in ("font-size", "font"):
+                m = re.search(r"(?<![\w.-])([\d.]+)(px|rem|em)\b", v)
+                if m and float(m.group(1)) * (16 if m.group(2) != "px" else 1) < TAILLE_MIN_ECRAN:
+                    a.append("%s : corps %s — %d px au moins à l'écran" % (ou, m.group(0), TAILLE_MIN_ECRAN))
+            if p.startswith("--") and SOCLE.match(p):
+                a.append("%s redéfinit %s, qui est du socle" % (ou, p))
+    return a
+
+
+def _gabarits(theme, dossier, manifeste):
+    """gabarits.js : présent si theme.yml l'annonce, sans logique du moteur,
+    et essayé sur la vraie classe par scripts/verifier-gabarits.js."""
+    a = []
+    f = dossier / "gabarits.js"
+    annonce = manifeste.get("gabarits")
+    if annonce and not f.is_file():
+        return ["theme.yml annonce des gabarits (%s), mais gabarits.js n'existe pas" % annonce]
+    js = f.read_text(encoding="utf-8") if f.is_file() else ""
+    sans = re.sub(r"/\*.*?\*/", "", js, flags=re.S)
+    sans = re.sub(r"(?m)^\s*//.*$", "", sans)
+    for motif, quoi in GABARIT_INTERDIT:
+        if re.search(motif, sans):
+            a.append("gabarits.js %s" % quoi)
+    if js and "GS.theme(" not in sans:
+        a.append("gabarits.js n'appelle pas GS.theme({ … }) : rien n'est enregistré")
+    if MOUVEMENT_JS.search(sans) and "mouvement" not in sans and "prefers-reduced-motion" not in sans:
+        a.append("gabarits.js anime sans regarder m.mouvement (prefers-reduced-motion)")
+    import shutil
+    import subprocess
+    node = shutil.which("node")
+    if not node:
+        print("⚠ Node absent : les gabarits ne sont pas essayés (scripts/verifier-gabarits.js)")
+        return a
+    site = RACINE / "site"
+    if not (site / "classe.json").is_file():
+        return a
+    import json
+    if json.loads((site / "classe.json").read_text(encoding="utf-8")).get("theme") != theme:
+        return a  # on n'essaie un thème que sur la classe qui l'a choisi
+    # sans gabarits.js, ce sont ceux du moteur qu'on essaie
+    r = subprocess.run([node, str(RACINE / "scripts" / "verifier-gabarits.js"), str(site),
+                        str(f) if f.is_file() else "-"],
+                       capture_output=True, text=True)
+    a += ["gabarits : " + l for l in r.stdout.splitlines() if l.strip()]
+    if r.returncode and not r.stdout.strip():
+        a.append("gabarits : l'essai a échoué (%s)" % r.stderr.strip()[:200])
     return a
 
 

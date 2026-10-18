@@ -87,7 +87,7 @@ enregistrement par classe :
   "annee": "<classe.yml : annee>",
   "zone": "<classe.yml : calendrier.zone>",
   "milieux": [{"nom": "<periodes[].milieu>", "couleur": "<--p1 … --p5 du thème, en hex>"}],
-  "auteur": "<nom ou pseudonyme, au choix de l'enseignant>",
+  "auteur": "<enseignant.signature de classe.yml, ou le nom choisi ici>",
   "licence": "CC BY-SA 4.0",
   "restrictions": ["pictogrammes ARASAAC : pas d'usage commercial"],
   "site": "https://<propriétaire>.github.io/<dépôt>/",
@@ -118,9 +118,16 @@ enregistrement par classe :
   marque : la carte de la galerie porte le style de la classe.
 - Les **faits** sont ceux que les contrôles de l'étape 1 viennent de
   produire, jamais de mémoire.
-- **L'auteur** : demander comment il veut apparaître — son nom, un
-  pseudonyme (« Maîtresse des Écureuils »), ou le nom de l'école. Jamais
-  d'adresse électronique, jamais un prénom d'élève.
+- **L'auteur** : partir de **sa signature** (`enseignant.signature` de
+  `classe.yml`, celle que montre déjà son site : « La classe de Mme
+  Martin ») et la lui proposer comme auteur de la carte — « Je reprends ta
+  signature, Mme Martin, comme auteur : ça te va ? ». S'il n'a pas signé, ou
+  veut autre chose, demander comment il veut apparaître — son nom, un
+  pseudonyme (« Maîtresse des Écureuils »), ou le nom de l'école (en
+  rappelant que l'école se reconnaît). Jamais d'adresse électronique,
+  jamais un prénom d'élève. S'il change de signature, l'écrire aussi dans
+  `enseignant.signature`, pour que le site et la carte disent la même
+  chose.
 - **La licence**, à expliquer simplement, en recommandant la première :
 
   | Licence | Ce qu'elle permet aux autres |

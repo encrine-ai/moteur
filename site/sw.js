@@ -17,7 +17,7 @@
  */
 'use strict';
 
-var VERSION = "7a77527817b8";
+var VERSION = "f73999f4c9ae";
 var PRECACHE = [
   "./",
   "index.html",
@@ -27,6 +27,9 @@ var PRECACHE = [
   "app.js",
   "appli.js",
   "commun.js",
+  "modele.js",
+  "gabarits.js",
+  "charte/gabarits.js",
   "classe.js",
   "classe.json",
   "marked.min.js",

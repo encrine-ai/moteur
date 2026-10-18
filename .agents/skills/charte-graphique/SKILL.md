@@ -1,6 +1,6 @@
 ---
 name: charte-graphique
-description: Le design system de la classe — le socle commun à toutes les classes (police de l'élève, contrastes, papier, mécanique des périodes) et le thème propre à la classe (couleurs, polices de l'adulte, rayons, habillage des composants nommés, couverture, motifs et ornements), contrôlé par scripts/verifier-theme.py. À utiliser dès qu'on touche à l'apparence de quoi que ce soit : site/charte/ (socle.css, composants.css, themes/), site/app.css, site/index.html, l'accueil (app.js), fiches.css, imagier.css, cartes-corpus.css, impression.css, la couverture des cahiers, une nouvelle page ou un nouveau composant, une icône, une couleur, une police — et pour créer ou faire évoluer le style d'une classe avec son enseignant. Se déclenche aussi sans nom de fichier : « c'est moche », « je voudrais un style à nous », « rends l'accueil plus gai », « la couleur de l'Asie ne va pas », « je voudrais un mode sombre », « ajoute un bouton pour… », « le titre est trop gros sur téléphone », « on peut avoir une vraie couverture ? ». Ne concerne pas le choix d'une image de fiche (fiches-illustrations) ni d'une photographie de l'imagier (imagier-photos).
+description: Le design system de la classe — le socle commun à toutes les classes (police de l'élève, contrastes, papier, mécanique des périodes) et le thème propre à la classe, qui fait de son site un MINI-SITE à son image (gabarits de l'en-tête et du menu, de l'accueil, des documents et des pages de période ; images libres créditées ; mouvement ; couleurs, polices, habillage, couverture), contrôlé par scripts/verifier-theme.py et verifier-gabarits.js. À utiliser dès qu'on touche à l'apparence de quoi que ce soit : site/charte/ (socle.css, composants.css, themes/ : theme.yml, theme.css, habillage.css, gabarits.js), site/gabarits.js, site/modele.js, site/app.css, site/index.html, l'accueil, fiches.css, imagier.css, cartes-corpus.css, impression.css, la couverture des cahiers, une nouvelle page ou un nouveau composant, une icône, une couleur, une police — et pour créer ou faire évoluer le style d'une classe avec son enseignant. Se déclenche aussi sans nom de fichier : « c'est moche », « je voudrais un style à nous », « rends l'accueil plus gai », « la couleur de l'Asie ne va pas », « je voudrais un mode sombre », « ajoute un bouton pour… », « le titre est trop gros sur téléphone », « on peut avoir une vraie couverture ? », « je voudrais que le site ressemble à notre projet », « fais-nous un vrai site », « construis le thème de la maquette retenue ». Ne concerne pas le choix d'une image de fiche (fiches-illustrations) ni d'une photographie de l'imagier (imagier-photos).
 ---
 
 # Le design system de la classe
@@ -14,7 +14,7 @@ partagent ce qui sert l'enfant et le papier. D'où trois couches :
 |---|---|---|
 | **le socle** | `site/charte/socle.css` (+ Andika dans `site/charte/polices/`) | le moteur seul ; aucun thème ne le défait |
 | **les composants du moteur** | `site/app.css`, `site/impression.css`, `site/fiches/fiches.css`, `site/imagier/imagier.css`, `site/cartes-corpus/cartes-corpus.css`, `site/charte/composants.css` (la couverture) — tous dans `@layer moteur` | le moteur ; ils n'emploient que des jetons |
-| **le thème de la classe** | `site/charte/themes/<thème>/` : `theme.yml`, `theme.css`, `habillage.css`, `polices/`, `motifs/` | la classe, avec son enseignant |
+| **le thème de la classe** | `site/charte/themes/<thème>/` : `theme.yml`, `theme.css`, `habillage.css`, `gabarits.js`, `polices/`, `motifs/`, `images/` | la classe, avec son enseignant |
 
 `python3 scripts/classe.py generer` assemble `socle.css`, `composants.css`,
 puis `theme.css` et `habillage.css` du thème que nomme `theme:` dans
@@ -28,11 +28,16 @@ sélecteurs**, et un `style` écrit dans une fiche (une fiche resserrée à la
 main) l'emporte sur les deux. Le socle est hors couche lui aussi : c'est le
 contrôle qui empêche le thème d'y toucher.
 
-Le thème **habille, il ne restructure pas** : il ne réécrit aucun HTML. C'est
-ce qui permet à une classe de recevoir les nouvelles versions du moteur
-(skill synchroniser-moteur) sans perdre son style : le moteur s'engage à
-garder les accroches ci-dessous ; tout le reste lui est interne et peut
-changer.
+**Deux supports, deux règles.** À l'écran, le thème fait un **mini-site** :
+ses gabarits dessinent l'en-tête et le menu, l'accueil, la page de document
+et la page de chaque période, avec ses images et son mouvement — « comme un
+site différent, à son image » (décision du propriétaire, 18 octobre 2026).
+Sur le papier (fiches, imagier, cartes-corpus, PDF des documents), le thème
+**habille, il ne restructure pas** : couleurs, polices de l'adulte,
+ornements, couverture, jamais la géométrie. C'est ce qui permet à une classe
+de recevoir les nouvelles versions du moteur (skill synchroniser-moteur)
+sans perdre son style : le moteur garde ses accroches et le contrat des
+gabarits ; tout le reste lui est interne et peut changer.
 
 ## Le socle — non négociable
 
@@ -93,6 +98,11 @@ nuancer une teinte, pas en changer la famille.
 Chaque règle part d'une **racine** que le moteur garantit et ne nomme que
 les **parties** listées. `scripts/verifier-theme.py` tient le même registre
 (`COMPOSANTS`) : une racine ou une partie qui n'y est pas est refusée.
+
+Les six premières lignes (bandeau, menu, barre, accueil, bloc, frise) et
+les cartes du matériel et des documents sont les composants des **gabarits
+par défaut** (`site/gabarits.js`) : un thème sans gabarits les habille ici ;
+un thème qui a ses gabarits dessine les siens (« Le mini-site », plus bas).
 
 | Composant | Racine | Parties | Ornements | Support |
 |---|---|---|---|---|
@@ -165,38 +175,228 @@ seul : `python3 scripts/verifier-theme.py [thème…]`.
   d'aplat sombre hors de la couverture — dont l'intérieur, à hauteur fixe,
   se compose librement ; à l'écran, tout, sauf un corps sous 12 px.
 
+- **le mini-site** : les images de `theme.yml` (licence, auteur, source,
+  fichier, usage) ; `gabarits.js` sans logique du moteur, et **essayé** par
+  `scripts/verifier-gabarits.js` (Node) sur chaque page de la vraie classe —
+  chaque gabarit rend du texte sans erreur, l'en-tête a son `<nav>` et son
+  menu de téléphone, chaque `aria-controls` nomme un élément, chaque
+  document montre son texte et ses PDF, chaque période ses cahiers et ses
+  documents, chaque image a un `alt`, chaque bouton un `type`, le pied la
+  signature, et chaque entrée du menu a un lien ; sans `gabarits.js`, ce
+  sont les gabarits par défaut qu'il essaie ; l'habillage d'écran dans
+  `@media screen` (ci-dessous) ; toute animation sous
+  `prefers-reduced-motion: no-preference`.
+
 Il ne dit pas qu'un style est beau ni que la pagination tient : **cela se
 regarde**, aux captures et au PDF (skill imprimer-pdf).
 
+## Le mini-site : les gabarits du thème
+
+Le moteur **calcule**, le thème **dessine**. `site/index.html` n'a plus que
+trois emplacements — `#entete`, `#contenu` (`<main>`), `#pied` — et le lien
+d'évitement ; à chaque page, `site/app.js` les fait remplir par les
+gabarits, puis donne vie au menu. Il n'y a plus de bandeau (nom de la
+classe, année, logo, burger) : **le menu est dans l'en-tête**, et le pied
+porte la signature **« Conçu avec Encrine »**, liée à https://encrine.ai.
+
+| Fichier | Rôle |
+|---|---|
+| `site/modele.js` | `GS.modele()` : le modèle que reçoivent les gabarits (ci-dessous) |
+| `site/gabarits.js` | les **gabarits par défaut**, sobres ; `GS.theme({…})`, que le thème appelle |
+| `themes/<thème>/gabarits.js` | les gabarits du thème : tout ou partie des fonctions ; `classe.py generer` le copie dans `site/charte/gabarits.js` (fabriqué, chargé après ceux du moteur) |
+| `site/app.js` | la logique : routes, lecture et rendu du Markdown, extraits par période, menu, focus, crédits — un thème n'y touche pas |
+| `scripts/verifier-gabarits.js` | essaie les gabarits sur la vraie classe, avec Node (lancé par `verifier-theme.py`) |
+
+### L'API des gabarits
+
+Un gabarit est une fonction `(m, page) → HTML` (une chaîne), sans cadriciel.
+
+- **Attendus** : `entete`, `accueil`, `document`, `periode`, `pied` ;
+  **facultatifs** : `introuvable`, et `monter(racine, m, page)`, appelé après
+  chaque rendu (le mouvement, une interaction de pure forme). Le thème ne
+  fournit que ce qu'il change : `GS.theme({ accueil: …, periode: … })` ; le
+  reste vient des gabarits par défaut, qu'il peut aussi appeler
+  (`GS.gabarits.defaut.boutons(m, page)`, `.extraits(m, page)`).
+- **`page`** : `{type: 'accueil'}` ; `{type: 'document', doc, periode,
+  titre, corps, html, sections}` — `html` est le Markdown rendu, `corps` le
+  même sans son titre, `sections` les `h2` (`id`, `titre`, `periode`), les
+  badges de dates de la zone déjà posés ; `{type: 'periode', periode}` ;
+  `{type: 'credits', …}` (rendu par `document`) ; `{type: 'introuvable'}`.
+- **`m`, le modèle** : `m.classe` (nom, projet, niveau, annee, accroche,
+  zone, periodes_nom, origine, **enseignant** : signature, mot) ;
+  `m.periodes[]` (n, cle, milieu, icone, romain, lien `#/periode/<cle>`,
+  debut, fin, sem, `dates.court|long|badge`, statut `passee|en-cours|a-venir`,
+  prochaine, **cahiers** avec `href` et `nom` de leur PDF, **documents** de
+  la période, **extraits** des progressions, **projet**, **embleme**,
+  **imagier** `{faune, flore}`, **corpus**, **theme** — les données propres
+  au thème, prete) ; `m.ici` (statut `periode|vacances|avant|apres`,
+  periode, vacances, prochaine, titre « Nous y sommes », texte) ;
+  `m.vacances[]` (nom, libelle, dates, reprise, enCours) ; `m.ponts`,
+  `m.annee` (semaines, texte) ; `m.menu[]` (groupes et entrées, avec le
+  groupe des périodes) ; `m.documents`, `m.groupes` (chaque document avec
+  `pdf` et `extraits`) ; `m.sortes`, `m.materielNote` ; `m.projet` ;
+  `m.images`, `m.image(fichier)` (chemin, crédit) ; `m.signature` ;
+  `m.pied` (conformite, calendrier, credits) ; `m.mouvement` (faux si
+  `prefers-reduced-motion`) ; `m.outils` (esc, texte, icone, pastille,
+  romain, nombre, jourLong, jourCourt). Un gabarit **échappe** tout texte
+  (`esc`, ou `texte` qui ne permet que `*italique*` et `**gras**`).
+- **Les accroches du menu**, que `app.js` anime : `[data-sous-menu]` +
+  `aria-controls` (un sous-menu, `hidden` ; un seul ouvert ; Échap, un clic
+  ailleurs ou le focus qui part le ferment) ; `[data-menu-ouvrir]` +
+  `aria-controls` vers `[data-menu-panneau]` (le menu du téléphone, un
+  dialogue `role="dialog" aria-modal="true"` : le focus y entre et y reste,
+  Échap le ferme et rend le focus au bouton) ; `[data-menu-fermer]`. Le
+  moteur pose `aria-current="page"` sur chaque lien de la page affichée et
+  `data-actif` sur le bouton du sous-menu qui la contient. Une ancre
+  `href="#id"` (sommaire, renvoi) défile sans changer de page.
+- **Le moteur garantit** : le lien d'évitement, le focus sur `<main>` à
+  chaque page, le titre de l'onglet, la signature « Conçu avec Encrine »,
+  le lien des crédits (`#/credits`) et le crédit de la classe d'origine
+  (CC BY) — un pied qui les oublie les reçoit sous leur forme sobre —, et
+  l'invitation à installer l'appli (`appli.js`, composant `invitation`).
+- **Interdit à un gabarit** (refusé par `verifier-theme.py`) : lire
+  (`fetch`, `import`), stocker (`localStorage`…), changer la route, écouter
+  le clavier, écrire `<script>` ou `on…=`, nommer une adresse extérieure.
+  Animer (`requestAnimationFrame`, `setInterval`, `.animate`) seulement en
+  lisant `m.mouvement`.
+
+**Les gabarits par défaut** — ceux du thème neutre `demo` — font un site
+sobre : en-tête avec le nom du projet et un sous-menu par groupe
+(ordinateur), un bouton « Menu » qui ouvre le même menu en plein écran
+(téléphone) ; l'accueil (projet, signature et mot de l'enseignant, frise de
+l'année, vacances avec « Nous y sommes », cahiers à imprimer, documents) ;
+le document (PDF, cahiers de la période, extraits, texte) ; la période (ce
+qu'on y fait, fil rouge, cahiers, documents, projet, imagier, mots des
+corpus) ; le pied (signature de la classe, conformité, crédits, « Conçu
+avec Encrine »).
+
+### La page de période
+
+`#/periode/<clé>` existe pour chaque période, prête ou non : dates de la
+zone, statut, **ses cahiers et leurs PDF**, **ses documents** (l'évaluation,
+l'extrait de chaque progression), et **les données du projet** que porte
+`classe/projet.yml` (`contenu: projet:` dans classe.yml) : `resume` (ce
+qu'on y fait), `fil_rouge` ou `mascotte`, `albums`, `documentaires`,
+`textes`, `oeuvres`, `musique`, `sorties`, `spectacle`, `embleme` (une image
+déclarée, ou `{imagier: <slug>}`), et `theme:` — les données propres au
+thème (pour un atlas : la position du continent sur la carte, ses repères).
+L'imagier (espèces, photographie, crédit) et les mots des corpus viennent
+des manifestes de la classe. `classe.py verifier` contrôle la forme du
+fichier ; **on n'y met que ce que le projet annuel dit déjà** — une période
+en esquisse a une page en esquisse.
+
+### Les images du thème
+
+`theme.yml`, section `images:` — une entrée par fichier de `images/` :
+
+```yaml
+images:
+  - fichier: images/carte-du-monde.jpg
+    titre: Mappemonde à l'usage du roi
+    auteur: Guillaume Delisle
+    date: vers 1750
+    institution: Rijksmuseum
+    source: https://id.rijksmuseum.nl/200450285
+    licence: PDM          # CC0-1.0, PDM, CC-BY-x.0, CC-BY-SA-x.0 — jamais NC ni ND
+    recadrage: cartouche allégorique effacé, recadré sur le trait
+```
+
+`verifier-theme.py` refuse une licence hors de ces quatre familles, un
+auteur ou une source qui manque, Wikimedia, un fichier déclaré absent, un
+fichier non déclaré, une image dont aucune feuille ni aucun gabarit ne se
+sert. Les images de **contenu** (une œuvre étudiée, la gravure de la
+mascotte) vont dans `classe/projet.yml` (`images:`, fichiers sous
+`site/projet/`), avec les mêmes champs. Les **crédits s'affichent tout
+seuls** : la page `#/credits` les liste (thème, projet, photographies de
+l'imagier, polices), et le pied y renvoie.
+
+**Sources** : Openverse en énumérant `license=cc0,pdm,by,by-sa` (jamais le
+filtre `commercial`, qui laisse passer ND) ; Rijksmuseum
+(`data.rijksmuseum.nl/search/collection`, puis l'objet Linked Art → `shows`
+→ `digitally_shown_by` → `access_point`, une adresse IIIF micr.io :
+`/full/1600,/0/default.jpg` ; un `User-Agent` de navigateur ou `curl`) ;
+The Met Open Access (`collectionapi.metmuseum.org/public/collection/v1.1/search`,
+`isPublicDomain`) ; Biodiversity Heritage Library. **Jamais Wikimedia.**
+
+**À regarder à l'œil, toujours** : les cartes et gravures anciennes portent
+des allégories (les continents en figures dénudées, des putti, l'enlèvement
+d'Europe). Le site est pour des enfants de cinq ans : aucune figure
+dénudée ni violente. Effacer le cartouche (papier nu, de la couleur du
+papier voisin) et le dire dans `recadrage`, ou choisir une autre image —
+la carte de Blaeu et l'Europe de Schenk, retenues en maquette pour l'atlas
+de la démo, ont été écartées ainsi. Et **aucune illustration de contenu
+dessinée** : une image vient d'une source libre, ou n'est pas.
+
+### L'habillage du mini-site (`habillage.css`, `@media screen`)
+
+Le HTML des gabarits du thème s'habille dans `habillage.css`, **dans un
+bloc `@media screen { … }`** : il ne peut pas toucher le papier. Ses classes
+y sont libres, sauf : jamais un composant du papier, jamais un élément nu à
+la racine du sélecteur (il toucherait les fiches ouvertes à l'écran ; partir
+d'une classe ou de `body[data-support="ecran"]`), `font-family` par les
+jetons (`--police-titre|texte|etiquette|enfant`), 12 px au moins, et les
+mots de l'enfant (`.mot-enfant` : un nom d'espèce, un mot de corpus) en
+Andika — le thème en règle la taille, pas la police. Les règles **hors** de
+ce bloc gardent le contrat des composants (ci-dessus).
+
+**Le mouvement** : toute `animation` sous
+`@media (prefers-reduced-motion: no-preference)`, tout script par
+`m.mouvement` ; le moteur coupe de toute façon transitions et animations
+quand l'enseignant l'a demandé.
+
+**L'accessibilité** se vérifie, elle ne se suppose pas : tout au clavier
+(lien d'évitement, sous-menus, menu du téléphone ouvert, parcouru, refermé
+par Échap), 4,5:1 pour tout texte (les jetons privés aussi : les déclarer
+dans `contrastes:` de `theme.yml`, par paires `[texte, fond]`), un `alt` à
+chaque image (vide si elle est décorative), les mots de l'enfant en Andika.
+
+### Construire le mini-site d'une classe à partir d'une maquette
+
+La maquette retenue (skill nouvelle-classe, « Le style ») est du HTML
+statique : on la **traduit** en thème, sans rien perdre des rubriques.
+
+1. Lire la maquette, ses `NOTES.md` et `CREDITS.md`. Lister ses écrans
+   (accueil, menu, document, période) et ce que chacun montre.
+2. Écrire `classe/projet.yml` avec les données réelles (le projet annuel
+   les porte) ; les données propres au thème sous `periodes.<clé>.theme`.
+3. `themes/<nom>/theme.yml` (polices, images, icônes demandées, contrastes),
+   `theme.css` (jetons ; les couleurs de période gardent leur **famille**,
+   celle que citent les modes d'emploi imprimés), `gabarits.js` (une
+   fonction par écran, à partir du HTML de la maquette, les données venant
+   du modèle), `habillage.css` (le CSS de la maquette dans `@media screen`,
+   les couleurs passées en jetons).
+4. **Toutes les rubriques**, pas seulement les pages de la maquette : chaque
+   progression, le projet, la programmation, les évaluations, chaque
+   période (même en esquisse), les crédits, une page introuvable.
+5. Le papier reste sobre : un thème peut ne rien habiller du papier (les
+   gabarits n'y touchent jamais), ou reprendre l'habillage d'avant.
+6. Contrôles : `classe.py generer` et `verifier` (dont `verifier-theme.py`
+   et l'essai des gabarits), un parcours Playwright de chaque lien du menu
+   à 390 et 1280 px dans un **sous-dossier** comme en production (aucune
+   erreur, aucun 404, aucun débordement, menu au clavier), puis le PDF
+   (`generer-pdf.sh`, `verifier-pagination.py` : même nombre de PDF et de
+   pages qu'avant). Vider les caches du service worker entre deux essais
+   (`serviceWorkers: 'block'` dans Playwright).
+7. Relire les captures avec l'œil de l'enseignant : le niveau visé est
+   celui de la maquette, ou mieux.
+
 ## Créer le design system d'une classe
 
-C'est l'étape « le style » du skill nouvelle-classe ; la même marche sert à
-le faire évoluer.
+C'est l'étape « Le style » du skill nouvelle-classe, qui en tient la marche
+complète : **trois maquettes de mini-site radicalement différentes**, quatre
+écrans chacune, sur le vrai contenu de la classe, une planche comparative,
+le choix de l'enseignant — et **seulement ensuite** le thème choisi se
+construit (« Construire le mini-site… », ci-dessus). La même marche sert à
+faire évoluer un style.
 
-1. **Une question, des univers.** Demander à l'enseignant ce qu'il aime
-   (« plutôt carnet, affiche, album, atelier ? ») en partant du thème de
-   l'année, avec deux ou trois exemples d'univers. **Pas de cliché** : pour
-   le voyage, pas la carte au trésor ; pour la mer, pas l'ancre et le
-   gouvernail. Chercher l'objet que manipule un enfant de cinq ans (le
-   carnet, le tampon, l'étiquette de bagage).
-2. **Deux ou trois directions nettement distinctes**, pas trois palettes du
-   même gabarit : chacune avec ses polices (libres, OFL), son principe
-   d'ornement, sa façon d'occuper la couverture, la frise, l'en-tête. Chaque
-   direction est un dossier `themes/<nom>/` complet, que
-   `verifier-theme.py` accepte. Partir de `themes/demo/` (neutre) ou du
-   thème d'une autre classe.
-3. **Les montrer sur de vraies pages** : l'accueil à 1280 et à 390 px, une
-   fiche, une carte d'imagier, une couverture — à l'écran **et** au PDF
-   (`--print-to-pdf`, puis `pdftoppm`, aussi en `-gray` pour la photocopie).
-   Tant que la classe n'a pas de cahier, assembler une classe d'essai dans
-   le scratchpad avec le contenu d'une autre classe ; jamais dans le dépôt.
-4. **L'enseignant choisit et ajuste** ; son verdict s'écrit dans le message
-   de commit et dans `theme.yml` (`description`, `retenu_le`). Les
-   directions écartées ne restent pas dans le dépôt.
-5. `theme: <nom>` dans `classe.yml`, `python3 scripts/classe.py generer`
-   puis `verifier`, les icônes des milieux (`periodes[].icone`, puis
-   `scripts/generer-icones.py`, qui demande le réseau), et le PDF (skill
-   imprimer-pdf).
+Une fois le thème construit : `theme: <nom>` dans `classe.yml`,
+`python3 scripts/classe.py generer` puis `verifier`, les icônes
+(`periodes[].icone` et `icones:` de `theme.yml`, puis
+`scripts/generer-icones.py`, qui demande le réseau), les icônes de l'appli
+(refaites par `generer` depuis les couleurs et la police des titres du
+thème), et le PDF (skill imprimer-pdf). Le verdict de l'enseignant s'écrit
+dans le message de commit et dans `theme.yml` (`description`,
+`retenu_le`) ; les directions écartées ne restent pas dans le dépôt.
 
 **Polices** : Fontsource (`cdn.jsdelivr.net/npm/@fontsource/<nom>/…`, ou
 `@fontsource-variable/<nom>` pour un fichier par sous-ensemble) ; lire la
@@ -251,12 +451,17 @@ d'une page.
 
 ## Vérifier une retouche de l'écran
 
-Assembler le site (skill imprimer-pdf, étape 1), le servir, puis une capture
+Assembler le site (skill imprimer-pdf, étape 1), le servir **dans un
+sous-dossier** (`/<dépôt>/`, comme GitHub Pages), puis une capture
 Playwright (Node : `require('playwright')`, le Chromium est dans
-`/opt/pw-browsers`) à 1280 et à 390 px, en `colorScheme: 'light'` **et**
-`'dark'`, de l'accueil, d'une progression et d'une évaluation. Gouttière de
-16 px au moins, aucun défilement horizontal, jamais une carte seule sur sa
-rangée. Regarder les captures avant de commiter.
+`/opt/pw-browsers`, `--no-proxy-server` pour le serveur local,
+`serviceWorkers: 'block'` pour ne pas voir une vieille page) à 1280 et à
+390 px, en `colorScheme: 'light'` **et** `'dark'` : l'accueil, le menu du
+téléphone ouvert, une progression, une évaluation, une page de période, le
+pied. `?date=AAAA-MM-JJ` dans l'adresse simule un jour (une période en
+cours, des vacances). Gouttière de 16 px au moins, aucun défilement
+horizontal, jamais une carte seule sur sa rangée. Regarder les captures
+avant de commiter.
 
 ## Le miroir publié
 
