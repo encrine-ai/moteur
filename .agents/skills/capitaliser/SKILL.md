@@ -1,6 +1,6 @@
 ---
 name: capitaliser
-description: Après une modification de Ma Grande Section, verser ce qu'elle a appris là où la prochaine session le trouvera — le bon skill, un script de contrôle, CLAUDE.md, le message de commit — au lieu de le laisser dans la conversation. À utiliser en fin de tâche dès qu'une correction de l'enseignante, une erreur, un piège d'une source d'images, un défaut d'impression ou une décision de pédagogie est apparu ; et quand la demande dit « retiens ça », « note-le pour la prochaine fois », « il ne faut plus que ça arrive », « mets à jour les skills », « qu'est-ce qu'on a appris ? ».
+description: Après une modification de Ma Grande Section, verser ce qu'elle a appris là où la prochaine session le trouvera — le bon skill, un script de contrôle, AGENTS.md, le message de commit — au lieu de le laisser dans la conversation. À utiliser en fin de tâche dès qu'une correction de l'enseignante, une erreur, un piège d'une source d'images, un défaut d'impression ou une décision de pédagogie est apparu ; et quand la demande dit « retiens ça », « note-le pour la prochaine fois », « il ne faut plus que ça arrive », « mets à jour les skills », « qu'est-ce qu'on a appris ? ».
 ---
 
 # Capitaliser
@@ -16,7 +16,7 @@ skill ou dans un script. Une session ne se souvient de rien ; le dépôt, si.
 |---|---|---|
 | vérifiable par une machine | **un script de contrôle**, qui sort en code 1 | une espèce voisine dans le vivier → `verifier-imagier.py` refuse la carte ; un débordement → `verifier-pagination.py` |
 | une manière de faire propre à un matériel | **le skill de ce matériel**, avec l'incident qui l'a fait naître | « chicken » était un poulet rôti → `fiches-illustrations` |
-| un fait sur une source ou un outil | la section **Images** de `CLAUDE.md` si elle vaut pour tout le dépôt | le bridage de Wikimedia Commons, le filtre `commercial` d'Openverse qui laisse passer ND |
+| un fait sur une source ou un outil | la section **Images** de `AGENTS.md` si elle vaut pour tout le dépôt | le bridage de Wikimedia Commons, le filtre `commercial` d'Openverse qui laisse passer ND |
 | une exigence du programme | `referentiel/cycle1-gs.yml`, relue contre le BO | — |
 | une convention de la classe | **jamais** dans le référentiel : dans le script du matériel concerné | le nombre d'espèces de l'imagier, affirmé à tort comme une règle du programme |
 | une préférence de l'enseignante | le skill qu'elle concerne, à la première personne de la règle | « une image doit convenir à des enfants de cinq ans » |

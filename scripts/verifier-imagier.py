@@ -138,7 +138,7 @@ tailles = {len(v) for v in par_groupe.values()}
 if len(tailles) == 1:
     n = tailles.pop()
     TEXTES = ("site/app.js", "README.md", "01-projet-annuel.md",
-              "02-programmation-annuelle.md", "CLAUDE.md")
+              "02-programmation-annuelle.md", "AGENTS.md")
     motif = re.compile(r"(\d+)\s+(?:espèces de faune|animaux et)")
     for nom in TEXTES:
         chemin = os.path.join(ICI, "..", nom)

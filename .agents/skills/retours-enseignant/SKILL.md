@@ -30,8 +30,8 @@ depuis un téléphone, photos à l'appui.
   « le référentiel » ; « vérifier que l'année couvre tout le programme », pas
   « la couverture ».
 - **Une question à la fois**, seulement si elle change le résultat et que
-  la personne seule peut y répondre (pédagogie, goût, diffusion), par
-  `AskUserQuestion`, dans ses mots. Attendre la réponse plutôt que trancher.
+  la personne seule peut y répondre (pédagogie, goût, diffusion), avec l'outil de questions interactives de l'agent s'il en a un (`AskUserQuestion` dans Claude Code), sinon une question à la fois dans la conversation,
+  dans ses mots. Attendre la réponse plutôt que trancher.
 - **Relire ce qui vient d'une dictée** avant de s'en servir : un mot, un
   album, un nom d'espèce se répète à la personne s'il est douteux (« SDG »
   était « SVG »).
@@ -47,7 +47,7 @@ depuis un téléphone, photos à l'appui.
 
    | Le retour porte sur… | C'est… | Ce qu'on fait |
    |---|---|---|
-   | le contenu de **cette** classe : une fiche, une consigne, une image, une séance, une date, un album | **une retouche** | la faire ici, avec le skill du matériel (tableau des skills de `CLAUDE.md`) |
+   | le contenu de **cette** classe : une fiche, une consigne, une image, une séance, une date, un album | **une retouche** | la faire ici, avec le skill du matériel (tableau des skills de `AGENTS.md`) |
    | un défaut qui toucherait **toutes** les classes : un cahier qui déborde quel que soit le thème, un contrôle qui laisse passer une erreur, un skill qui a mené de travers | **un défaut du moteur** | le corriger ici s'il est simple et générique (`classe.py verifier` vert), puis le **remonter** (skill remonter-au-moteur) |
    | un souhait qui vaudrait pour d'autres enseignants : un nouveau type de cahier, une question de plus dans l'entretien, un niveau | **une idée pour le moteur** | la **remonter** telle quelle, sans la construire ici ; proposer, si la personne la veut tout de suite, une version propre à sa classe |
    | une préférence qui ne vaut que pour cette classe (le rythme des fiches, une espèce qu'on refuse) | **une convention de la classe** | la noter là où le skill du matériel la range, jamais comme une règle du programme |

@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 """Mesure si un skill du dépôt se déclenche sur les bonnes demandes.
 
+**Outil interne, propre à Claude Code** : il lance `claude -p` (Claude Code,
+le seul agent testé à ce jour) et lit son flux. Le moteur, lui, ne dépend
+d'aucun agent : les skills vivent dans `.agents/skills/` (standard ouvert
+des skills), et `.claude/skills` n'est qu'un lien symbolique vers ce
+dossier, par lequel Claude Code les trouve.
+
 Un skill que Claude n'ouvre pas au bon moment ne sert à rien, et un skill
 qui s'ouvre pour tout encombre les autres tâches. Ce script rejoue une liste
 de demandes réalistes et regarde, pour chacune, si le skill est consulté.
@@ -20,6 +26,7 @@ qu'un garde-fou de coût : trop bas, il compte comme non-déclenchements des
 exécutions où Claude explore le dépôt avant d'ouvrir le skill.
 
 Usage : python3 scripts/mesurer-declenchement.py <cas.json>
+        python3 scripts/mesurer-declenchement.py --help
         SKILL=<nom>              le skill à mesurer (défaut : imagier-photos)
         RUNS=<n>                 essais par demande (défaut : 2)
         DECLENCHEMENT_DIR=<dir>  clones et résultat (défaut : /tmp/declenchement)
@@ -43,6 +50,23 @@ RUNS = int(os.environ.get("RUNS", "2"))
 LIMITE_OUTILS = int(os.environ.get("LIMITE_OUTILS", "8"))
 MODELE = "claude-opus-5"
 verrou = threading.Lock()
+SKILLS = os.path.join(DEPOT, ".agents", "skills")
+
+
+def nom_du_skill(nom):
+    """Le `name` du frontmatter de .agents/skills/<nom>/SKILL.md."""
+    chemin = os.path.join(SKILLS, nom, "SKILL.md")
+    if not os.path.isfile(chemin):
+        sys.exit("skill introuvable : %s" % os.path.relpath(chemin, DEPOT))
+    lignes = open(chemin, encoding="utf-8").read().split("\n")
+    if lignes[0].strip() != "---":
+        sys.exit("%s : pas de frontmatter" % chemin)
+    for ligne in lignes[1:]:
+        if ligne.strip() == "---":
+            break
+        if ligne.startswith("name:"):
+            return ligne.split(":", 1)[1].strip()
+    sys.exit("%s : pas de `name` dans le frontmatter" % chemin)
 
 
 def clone(i):
@@ -50,6 +74,15 @@ def clone(i):
     if not os.path.exists(d):
         os.makedirs(os.path.dirname(d), exist_ok=True)
         subprocess.run(["git", "clone", "-q", DEPOT, d], check=True)
+    # Claude Code lit .claude/skills : le lien vers .agents/skills doit
+    # exister dans le clone (un git sans liens symboliques en ferait un
+    # fichier texte).
+    lien = os.path.join(d, ".claude", "skills")
+    if not os.path.islink(lien):
+        if os.path.exists(lien):
+            os.remove(lien)
+        os.makedirs(os.path.dirname(lien), exist_ok=True)
+        os.symlink(os.path.join("..", ".agents", "skills"), lien)
     return d
 
 
@@ -107,6 +140,11 @@ def mesure(args):
             "taux": taux, "ok": ok}
 
 
+if len(sys.argv) != 2 or sys.argv[1] in ("-h", "--help"):
+    print(__doc__)
+    sys.exit(0 if len(sys.argv) == 2 else 2)
+if nom_du_skill(SKILL) != SKILL:
+    sys.exit("le skill %s porte un autre `name` dans son SKILL.md" % SKILL)
 cas = json.load(open(sys.argv[1], encoding="utf-8"))
 for i in range(5):
     clone(i)

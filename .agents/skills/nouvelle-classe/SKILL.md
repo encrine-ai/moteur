@@ -11,7 +11,7 @@ autre : la sienne, à l'enseignant qui lance la session. Une classe, c'est
 espèces de l'imagier, les mots des corpus, ce que l'année traite du
 programme), les documents `01-…` à `04-…`, et les cahiers fabriqués dans
 `site/`. **Le moteur ne se touche pas** : `site/*.js`, `scripts/`,
-`referentiel/`, `.claude/skills/` restent tels quels, et
+`referentiel/`, `.agents/skills/` restent tels quels, et
 `python3 scripts/classe.py verifier` le garantit.
 
 ## Étape 0 — Une classe est-elle déjà là ?
@@ -19,8 +19,9 @@ programme), les documents `01-…` à `04-…`, et les cahiers fabriqués dans
 Décidé le 18 octobre 2026 : chaque classe partagée est elle-même un
 dépôt-modèle GitHub. « Partir de cette classe », c'est **« Use this
 template » sur le dépôt de cette classe** : l'enseignant arrive avec tout
-son contenu, son thème et ses PDF, puis tape `/nouvelle-classe`, **sans
-adresse**. Avant toute question, regarder donc ce que contient le dépôt :
+son contenu, son thème et ses PDF, puis lance l'entretien **sans adresse**
+(`/nouvelle-classe` dans Claude Code ; ailleurs « crée ma classe », ou le
+skill nouvelle-classe). Avant toute question, regarder donc ce que contient le dépôt :
 
 ```sh
 git remote get-url origin                       # le dépôt courant
@@ -58,8 +59,10 @@ collègue ? », puis suivre la ligne qui correspond.
      pas dû être un modèle (partager-ma-classe l'empêche). Le dire, ne garder
      que le thème et les milieux (une idée ne se protège pas), et réécrire
      tout le reste comme pour une classe partie de zéro.
-3. **Ne poser que** (un seul appel `AskUserQuestion`, avec la phrase du
-   tutoiement) : **le niveau**, **la zone**, **l'année**, **le profil de la
+3. **Ne poser que** — en une fois avec l'outil de questions interactives de
+   l'agent s'il en a un (`AskUserQuestion` dans Claude Code), sinon une
+   question à la fois dans la conversation, et avec la phrase du
+   tutoiement — **le niveau**, **la zone**, **l'année**, **le profil de la
    classe** — plus **par où commencer** (une période ou les cinq) si le
    niveau change. Le thème, les milieux, le matériel et le style sont repris
    sans question. La zone se redemande toujours : ne jamais garder le
@@ -135,8 +138,9 @@ l'entretien (question 6). Deux façons de faire :
 Le chemin normal est « Partir de cette classe » (« Use this template ») et
 le mode « enrichir » ci-dessus. Ce repli ne sert que pour une classe **qui
 n'est pas un modèle** mais dont la licence permet la reprise : l'enseignant
-a créé son dépôt depuis `moteur` et tape `/nouvelle-classe <adresse>` (son
-site, son dépôt, ou sa carte de galerie).
+a créé son dépôt depuis `moteur` et lance l'entretien avec l'adresse
+(`/nouvelle-classe <adresse>` dans Claude Code, ou « crée ma classe à
+partir de <adresse> ») : son site, son dépôt, ou sa carte de galerie.
 
 1. **Lire sa fiche** dans `classes.json` du dépôt de la galerie
    (`galerie.depot`), ou à défaut le `classe.yml` de son dépôt : projet,
@@ -161,7 +165,9 @@ site, son dépôt, ou sa carte de galerie).
 
 ## Étape 1 — L'entretien
 
-Un ou deux appels `AskUserQuestion`, pas plus. Ne demander que **ce qui
+Peu de questions : un ou deux appels à l'outil de questions interactives
+de l'agent s'il en a un (`AskUserQuestion` dans Claude Code), pas plus ;
+sinon une question à la fois dans la conversation, le moins possible. Ne demander que **ce qui
 change le résultat** ; pour le reste, prendre la valeur par défaut et
 **l'annoncer** (« je pars sur 2 à 3 fiches par semaine, dis-moi si c'est trop »).
 
@@ -286,7 +292,9 @@ différentes. La marche complète, et le contrat du thème, sont dans le skill
 **charte-graphique** (« Créer le design system d'une classe ») ; ici,
 l'essentiel de l'entretien.
 
-1. **Une question** (une seule, `AskUserQuestion`) : l'univers qui lui
+1. **Une question**, une seule — avec l'outil de questions interactives de
+   l'agent s'il en a un (`AskUserQuestion` dans Claude Code), sinon dans la
+   conversation : l'univers qui lui
    ressemble, tiré du thème de l'année, avec deux ou trois exemples
    concrets — pour le tour du monde : « un carnet de voyage, avec tampons et
    étiquettes de bagage », « l'affiche d'une gare, avec ses billets »,
@@ -338,7 +346,7 @@ déploiement échoue.
 - **Une modification faite à la main par l'enseignant n'est jamais écrasée**
   par une régénération : relire avant de régénérer.
 - **Licences** : CC0, domaine public, CC BY, CC BY-SA ; jamais ND ; NC
-  pour les seuls pictogrammes ARASAAC, crédités (CLAUDE.md, « Images »).
+  pour les seuls pictogrammes ARASAAC, crédités (AGENTS.md, « Images »).
 - Une période juste et imprimée vaut mieux que cinq approximatives — même
   quand l'enseignant a choisi les cinq d'un coup.
 - **La classe reste dans le dépôt de l'enseignant** : « mettre en ligne »,

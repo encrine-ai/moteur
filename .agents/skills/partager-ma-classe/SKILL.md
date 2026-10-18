@@ -11,8 +11,8 @@ thème, avec deux gestes — **voir la classe** (son site, chez son auteur) et
 **partir de cette classe**. Décidé le 18 octobre 2026 : chaque classe
 partagée qui le permet est elle-même un **dépôt-modèle GitHub** (« Template
 repository ») ; « partir de cette classe », c'est « Use this template » sur
-son dépôt, puis `/nouvelle-classe` sans adresse (skill nouvelle-classe,
-mode « enrichir »). Le site d'une classe-modèle continue de se publier : le
+son dépôt, puis l'entretien sans adresse (skill nouvelle-classe, mode
+« enrichir »). Le site d'une classe-modèle continue de se publier : le
 déploiement ne saute que pour le dépôt du moteur lui-même. Et :
 
 - **on partage si on le veut** : ce skill ne se lance qu'à la demande de
@@ -56,7 +56,7 @@ commercial » (NC) : ils se partagent, mais **le dire** sur la fiche (champ
 base à un matériel vendu. Une image ND (pas de modification) ne passe jamais.
 
 **`verifier-partage.py` signale un prénom.** Demander, une question à la fois,
-avec `AskUserQuestion` : « Je vois le prénom Léa dans les problèmes de
+avec l'outil de questions interactives de l'agent s'il en a un (`AskUserQuestion` dans Claude Code), sinon une question à la fois dans la conversation : « Je vois le prénom Léa dans les problèmes de
 mathématiques. Est-ce un personnage inventé, ou un élève de ta classe ? »
 Inventé : l'ajouter à `partage.prenoms_fictifs` dans `classe.yml`. Un élève :
 le remplacer partout par un prénom inventé (le skill du document concerné),
@@ -156,7 +156,7 @@ de celle-ci. Écrire la fiche dans `partage/fiche.json` de la classe.
 ## 3. Demander l'accord — rien de public sans un oui
 
 Montrer la fiche en clair (le projet, les milieux, le nom affiché, la
-licence, ce qui sera visible) et demander, avec `AskUserQuestion` :
+licence, ce qui sera visible) et demander, avec l'outil de questions interactives de l'agent s'il en a un (`AskUserQuestion` dans Claude Code), sinon une question à la fois dans la conversation :
 *Oui, propose ma classe* / *Pas maintenant*. Dire ce qui se passe ensuite :
 « Une personne relit avant que ta classe apparaisse ; tu pourras la retirer
 quand tu veux. » Un « pas maintenant » est respecté : ne pas reposer la

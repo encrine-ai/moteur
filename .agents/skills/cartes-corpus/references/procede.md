@@ -100,7 +100,7 @@ Dans l'ordre, en copiant les scripts existants plutôt qu'en réinventant :
 6. **Le contrôle et la revue**, avec les quatre vérifications ci-dessus.
 7. **Le câblage** : `scripts/generer-pdf.sh` pour le PDF, `site/index.html` et
    `site/app.js` pour le bouton et la rubrique d'accueil, `README.md` et
-   `CLAUDE.md` pour la documentation.
+   `AGENTS.md` pour la documentation.
 8. **Le skill**, avec ses cas de déclenchement dans `tests/`, mesurés par
    `scripts/mesurer-declenchement.py`. Un procédé qui n'est pas dans un skill
    sera refait de zéro par la prochaine session.
@@ -112,6 +112,7 @@ SKILL=cartes-corpus python3 scripts/mesurer-declenchement.py \
   tests/declenchement-cartes-corpus.json
 ```
 
+Cette mesure lance Claude Code (outil interne, le seul agent testé).
 **Ne pas se fier au banc d'essai du skill-creator** : il passe par un faux
 fichier de commande que cette version de Claude Code n'expose pas comme un
 skill, si bien qu'aucune demande ne déclenche jamais rien. Il annonçait 10/20

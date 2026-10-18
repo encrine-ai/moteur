@@ -3,7 +3,7 @@
 Un **dépôt modèle** pour fabriquer l'année d'une classe : la programmation,
 des progressions qui couvrent le programme, les fiches élève, l'imagier, les
 cartes de vocabulaire et tous les PDF, prêts à imprimer. On ne programme
-rien : on répond à quelques questions, et le skill **`/nouvelle-classe`**
+rien : on répond à quelques questions, et le skill **`nouvelle-classe`**
 écrit la classe dans `classe.yml` et fabrique le reste.
 
 Pour voir ce que cela donne : la **classe de démonstration**, une Grande
@@ -17,6 +17,13 @@ arrivent période par période. Le modèle, lui, ne publie rien.
 des enseignants ont choisi de partager.
 
 ---
+
+## Il faut…
+
+- un compte **GitHub** (gratuit) ;
+- un **agent de code** : **Claude Code** (recommandé, testé) ; le moteur
+  suit le standard ouvert des skills et `AGENTS.md`, et devrait fonctionner
+  avec d'autres agents, comme Codex.
 
 ## Créer sa classe, en quatre étapes
 
@@ -38,8 +45,10 @@ des enseignants ont choisi de partager.
    publics.
 2. **Activez le site** : dans votre dépôt, **Settings → Pages → Source →
    « GitHub Actions »**. C'est le seul réglage à faire à la main.
-3. **Ouvrez le dépôt dans Claude Code, sur la branche `main`**, et tapez
-   **`/nouvelle-classe`**, sans rien d'autre. Parti de zéro, l'entretien vous
+3. **Ouvrez le dépôt dans votre agent de code, sur la branche `main`**, et
+   tapez **`/nouvelle-classe`** dans Claude Code, sans rien d'autre (dans un
+   autre agent : demandez « crée ma classe », ou appelez le skill
+   nouvelle-classe). Parti de zéro, l'entretien vous
    demande le niveau, votre zone de vacances (le site et les PDF prennent
    ses dates), le thème de l'année, le matériel voulu ; il commence par une
    période complète, ou par les cinq si vous le préférez. Parti d'une
@@ -72,7 +81,7 @@ Des contrôles qui sortent en erreur plutôt que de laisser passer :
 
 ## Les skills
 
-Chaque capacité a son skill, dans `.claude/skills/` : on demande avec ses mots (« la consigne de la fiche 2.4 n'est pas claire », « il manque le hérisson dans l'imagier »), et le bon skill s'ouvre.
+Chaque capacité a son skill, dans `.agents/skills/` (le dossier commun du standard ouvert des skills ; `.claude/skills` y renvoie pour Claude Code) : on demande avec ses mots (« la consigne de la fiche 2.4 n'est pas claire », « il manque le hérisson dans l'imagier »), et le bon skill s'ouvre.
 
 | Pour | Skill |
 |---|---|

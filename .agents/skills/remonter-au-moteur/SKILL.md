@@ -97,7 +97,7 @@ Décidé le 18 octobre 2026 : une remontée est **proposée, puis envoyée si
 l'enseignant est d'accord**, jamais en silence. Lui dire en deux phrases,
 sans technique, ce qui partirait et pourquoi (« Le débordement de la fiche
 2.4 arriverait sans doute à d'autres classes. Je le signale à l'outil, pour
-qu'il soit corrigé pour tout le monde ? »), avec `AskUserQuestion` :
+qu'il soit corrigé pour tout le monde ? »), avec l'outil de questions interactives de l'agent s'il en a un (`AskUserQuestion` dans Claude Code), sinon une question à la fois dans la conversation :
 *Oui, transmets* / *Non, garde-le pour ma classe*. Plusieurs remontées d'un
 même retour : une seule question, chacune cochable. Un non est définitif
 pour cette remontée : ne pas la reposer.

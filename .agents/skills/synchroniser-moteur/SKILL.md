@@ -16,10 +16,10 @@ chaque enseignant met à jour **sa** classe, quand il le veut.
 
 | Couche | Chemins | Synchronisée ? |
 |---|---|---|
-| **le moteur** | `scripts/`, `site/*.js` (sauf `site/classe.js`), `site/*.html`, `site/*.css`, `site/marked.min.js`, les feuilles des cahiers (`site/fiches/fiches.css`, `site/imagier/imagier.css`, `site/cartes-corpus/cartes-corpus.css`), le socle de la charte : `site/charte/socle.css`, `site/charte/composants.css` et `site/charte/polices/` (Andika), `referentiel/` (la liste du programme **et le calendrier officiel de chaque année**, `calendrier-AAAA-AAAA.yml`), `.claude/skills/`, `.github/workflows/`, `tests/` | **oui** |
+| **le moteur** | `scripts/`, `site/*.js` (sauf `site/classe.js`), `site/*.html`, `site/*.css`, `site/marked.min.js`, les feuilles des cahiers (`site/fiches/fiches.css`, `site/imagier/imagier.css`, `site/cartes-corpus/cartes-corpus.css`), le socle de la charte : `site/charte/socle.css`, `site/charte/composants.css` et `site/charte/polices/` (Andika), `referentiel/` (la liste du programme **et le calendrier officiel de chaque année**, `calendrier-AAAA-AAAA.yml`), `.agents/skills/` (les skills, au standard ouvert) et le lien symbolique `.claude/skills` qui y renvoie pour Claude Code, `.github/workflows/`, `tests/` | **oui** |
 | **la classe** | `classe.yml`, `classe/`, les documents `01-…` à `04-…`, `README.md`, les cahiers fabriqués (`site/fiches/*.html`, `site/imagier/`, `site/cartes-corpus/`, leurs images et crédits), `site/classe.json`, `site/classe.js`, les thèmes `site/charte/themes/` | **jamais** |
 | **fabriqué** | `site/charte/charte.css` (socle + thème), `site/charte/icones.svg` (icônes génériques + celles des milieux de `classe.yml`) | **jamais copiés** : refaits après la synchronisation, `python3 scripts/classe.py generer` puis `python3 scripts/generer-icones.py` (réseau) |
-| **à la main** | `CLAUDE.md` (il mêle les règles du moteur et l'identité de la classe) | ne reprendre que les règles générales, par une lecture attentive |
+| **à la main** | `AGENTS.md` (les consignes de l'agent : il mêle les règles du moteur et l'identité de la classe) ; `CLAUDE.md` (l'import `@AGENTS.md` et quelques lignes propres à Claude Code) | ne reprendre que les règles générales, par une lecture attentive ; une classe d'avant `AGENTS.md`, dont tout tient dans `CLAUDE.md`, y déplace ses consignes et ne garde dans `CLAUDE.md` que l'import |
 
 La charte est scindée (`docs/vers-un-moteur.md`, « Deux couches de style ») :
 le socle suit le moteur, **les thèmes jamais** — même celui que le modèle
@@ -55,10 +55,17 @@ grandes ; l'entretien demande le modèle d'écriture cursive »).
 ## 2. Copier la couche moteur, et elle seule
 
 ```sh
-git checkout moteur/main -- scripts/ referentiel/ .claude/skills/ .github/workflows/ tests/ \
+git checkout moteur/main -- scripts/ referentiel/ .agents/skills/ .github/workflows/ tests/ \
   site/app.js site/commun.js site/marked.min.js site/index.html site/imprimer.html \
   site/app.css site/impression.css site/charte/socle.css site/charte/composants.css site/charte/polices/ \
   site/fiches/fiches.css site/imagier/imagier.css site/cartes-corpus/cartes-corpus.css
+# Les skills vivent dans .agents/skills ; .claude/skills n'est qu'un lien,
+# pour Claude Code. Une classe d'avant ce découpage a encore un vrai dossier :
+# il est remplacé par le lien (ses leçons propres ont été remontées à l'étape 0).
+if [ -d .claude/skills ] && [ ! -L .claude/skills ]; then git rm -rq .claude/skills; rm -rf .claude/skills; fi
+mkdir -p .claude && { [ -L .claude/skills ] || ln -s ../.agents/skills .claude/skills; }
+git add .claude/skills
+git ls-files -s .claude/skills         # doit montrer le mode 120000 (un lien, pas un dossier)
 python3 scripts/classe.py generer      # refait charte.css : nouveau socle + thème de la classe
 python3 scripts/verifier-theme.py      # le thème de la classe tient-il le contrat du nouveau moteur ?
 ```
@@ -122,7 +129,7 @@ Mettre `moteur.version` à jour dans `classe.yml` (le commit du moteur
 copié, `git rev-parse moteur/main`), `classe.py generer`, puis un seul
 commit : `Moteur <version courte> : <ce qui change pour la classe>`, avec
 dans le corps la liste des contrôles et leurs résultats chiffrés. Fusionner
-sur `main` une fois les contrôles verts (CLAUDE.md, « Branches, commits,
+sur `main` une fois les contrôles verts (AGENTS.md, « Branches, commits,
 publication »), et ne dire « c'est en ligne » qu'après l'avoir vu en ligne
 (skill site-et-calendrier).
 

@@ -259,7 +259,8 @@ rangée. Regarder les captures avant de commiter.
 
 ## Le miroir publié
 
-Si la classe a publié son design system dans Claude (un artefact), il
-reprend les jetons du thème, les règles ci-dessus et les composants ; quand
-une valeur change ici, le mettre à jour (outil Artifact, `read` puis
-`publish` sur son URL). Le dépôt fait foi en cas d'écart.
+Si la classe a publié son design system comme artefact de claude.ai (propre
+à Claude), il reprend les jetons du thème, les règles ci-dessus et les
+composants ; quand une valeur change ici, le mettre à jour (dans Claude
+Code : outil Artifact, `read` puis `publish` sur son URL ; un agent qui n'a
+pas cet outil le signale à l'enseignant). Le dépôt fait foi en cas d'écart.

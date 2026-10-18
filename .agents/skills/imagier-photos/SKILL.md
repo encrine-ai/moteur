@@ -242,7 +242,7 @@ Ce dernier contrôle vient d'une mésaventure : en doublant l'imagier, seules
 les pages générées ont suivi, parce qu'elles comptent le manifeste. Le site
 a continué d'annoncer « 9 espèces de faune et 9 de flore » devant un cahier
 qui en contenait dix-huit de chaque. Le contrôle compare donc `site/app.js`,
-le README, le projet annuel, la programmation et `CLAUDE.md` au manifeste.
+le README, le projet annuel, la programmation et `AGENTS.md` au manifeste.
 **Changer le nombre d'espèces oblige à relire ces cinq fichiers** — le
 contrôle dira lesquels.
 
