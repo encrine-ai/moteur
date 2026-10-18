@@ -1,6 +1,6 @@
 ---
 name: nouvelle-classe
-description: Le skill d'amorçage du moteur — transformer ce dépôt en LA classe d'un autre enseignant, à partir d'un court entretien (niveau, double niveau, année et zone de vacances, thème de l'année et milieu de chaque période, matériel voulu, profil de la classe, diffusion gratuite ou payante), puis écrire classe.yml et le contenu, réécrire le projet, la programmation et les progressions jusqu'à ce que le programme soit couvert, fabriquer les cahiers et finir par le PDF. À utiliser quand quelqu'un veut sa propre version : « je veux faire ma classe », « crée une classe de moyenne section », « adapte tout ça pour ma GS de l'an prochain, zone B », « je voudrais le même matériel mais sur le thème des contes », « j'ai une classe de MS-GS », « /nouvelle-classe », « on repart de zéro pour une autre école », « je voudrais partir de la classe des contes de la galerie », « fais-moi la même que celle-ci : <lien> ». Ne concerne pas une retouche de la classe actuelle (une séance, une fiche, une image, une date : voir les skills de chaque matériel).
+description: Le skill d'amorçage du moteur — transformer ce dépôt en LA classe d'un autre enseignant, à partir d'un court entretien (niveau, double niveau, année et zone de vacances, thème de l'année et milieu de chaque période, matériel voulu, profil de la classe), puis écrire classe.yml et le contenu, réécrire le projet, la programmation et les progressions jusqu'à ce que le programme soit couvert, fabriquer les cahiers et finir par le PDF. À utiliser quand quelqu'un veut sa propre version : « je veux faire ma classe », « crée une classe de moyenne section », « adapte tout ça pour ma GS de l'an prochain, zone B », « je voudrais le même matériel mais sur le thème des contes », « j'ai une classe de MS-GS », « /nouvelle-classe », « on repart de zéro pour une autre école », « je voudrais partir de la classe des contes de la galerie », « fais-moi la même que celle-ci : <lien> ». Ne concerne pas une retouche de la classe actuelle (une séance, une fiche, une image, une date : voir les skills de chaque matériel).
 ---
 
 # Nouvelle classe
@@ -29,7 +29,7 @@ simple, selon son niveau :
 ## Une période, ou les cinq : l'enseignant choisit
 
 Décidé le 18 octobre 2026 : **on pose la question**, au second appel de
-l'entretien (question 7). Deux façons de faire :
+l'entretien (question 6). Deux façons de faire :
 
 - **une période complète d'abord** — sa progression dans chaque domaine, ses
   cahiers, ses PDF — puis les suivantes, une par une, en itérant. C'est la
@@ -56,7 +56,11 @@ site, son dépôt, ou sa carte. Décidé le 18 octobre 2026 :
    demander. **La zone surtout se redemande toujours**, même quand la classe
    d'origine en a une (sa fiche de galerie la donne) : la nouvelle classe
    a **ses** vacances. Ne jamais recopier le `calendrier` de la classe
-   d'origine.
+   d'origine. **Si le niveau change** (un CP qui part d'une Grande
+   Section), on garde le thème, les milieux et le style, mais les
+   progressions, les évaluations et les fiches se réécrivent pour le
+   nouveau niveau, sur la liste numérotée de son programme : un contenu
+   d'un autre niveau ne se recopie pas.
 3. **Le contenu ne se copie que si la licence le permet** :
    - CC BY, CC BY-SA : on peut reprendre les progressions, les fiches, les
      choix d'espèces et de mots, en les adaptant ; une classe CC BY-SA reste
@@ -109,16 +113,13 @@ enseignants avant qu'ils commencent.)
    chaque cahier : l'accueil n'annonce que ce qui y figure, et
    `classe.py verifier` refuse un cahier déclaré qui n'est pas encore fabriqué.
 
-**Second appel** — la question 7 se pose toujours ; les questions 5 et 6
+**Second appel** — la question 6 se pose toujours ; la question 5
 seulement si les réponses ne permettent pas de trancher :
 
 5. **Le profil de la classe** : plus soutenu ou plus accessible ? (ici : « un
    quartier où les enfants ont de bonnes compétences », des exercices « un
    peu corsés »). Il règle la différenciation ★ / ★★.
-6. **La diffusion** : matériel gratuit, ou vendu un jour ? Payant interdit les
-   pictogrammes ARASAAC (licence NC) : seules les sources libres du skill
-   fiches-illustrations restent permises.
-7. **Par où commencer** : une période complète d'abord (recommandé), ou les
+6. **Par où commencer** : une période complète d'abord (recommandé), ou les
    cinq d'un coup (voir plus haut).
 
 Les réglages que cette classe-ci avait fixés sans qu'on les demande (rythme
@@ -252,7 +253,7 @@ déploiement échoue.
 - **Une modification faite à la main par l'enseignant n'est jamais écrasée**
   par une régénération : relire avant de régénérer.
 - **Licences** : CC0, domaine public, CC BY, CC BY-SA ; jamais ND ; NC
-  seulement si la diffusion reste gratuite (CLAUDE.md, « Images »).
+  pour les seuls pictogrammes ARASAAC, crédités (CLAUDE.md, « Images »).
 - Une période juste et imprimée vaut mieux que cinq approximatives — même
   quand l'enseignant a choisi les cinq d'un coup.
 - **La classe reste dans le dépôt de l'enseignant** : « mettre en ligne »,

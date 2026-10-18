@@ -289,8 +289,8 @@ def installer(slug, choix):
     print("installé : img/%s — penser à : generer-credits.py, contrôle PDF" % dest)
 
 
-# ARASAAC est CC BY-NC-SA : la clause NC est acceptée pour ces fiches
-# diffusées gratuitement, c'est écrit dans le skill fiches-illustrations.
+# ARASAAC est CC BY-NC-SA : la clause NC est acceptée pour ses pictogrammes,
+# crédités (skill fiches-illustrations).
 # Toute autre restriction (ND en particulier) est refusée.
 ADMISES = ("cc0", "pdm", "domaine public", "by 2.0", "by 3.0", "by 4.0",
            "by-sa", "by-nc-sa")

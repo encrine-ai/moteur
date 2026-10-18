@@ -185,16 +185,19 @@ moisson Commons : ne pas les relancer.
 
 ### Vérifier la licence avant de retenir une image
 
-Toute image entrant dans le dépôt doit porter une licence **compatible avec
-un usage commercial et avec la modification** — CC0, la marque du domaine
-public, CC BY ou CC BY-SA — parce que le matériel est susceptible d'être
-diffusé au-delà du site gratuit, et qu'une carte recadre l'image.
+Toute image entrant dans le dépôt doit porter une licence **libre et qui
+permet la modification** — CC0, la marque du domaine public, CC BY ou
+CC BY-SA — parce qu'une carte recadre l'image, et qu'une classe partagée
+doit pouvoir être reprise par une autre (« Partir de cette classe ») sans
+condition cachée.
 
 Deux clauses disqualifient :
 
 - **NC**, qui interdit l'usage commercial. Les pictogrammes **ARASAAC** sont
-  dans ce cas ; c'est accepté tant que le matériel reste
-  gratuit, et c'est la raison pour laquelle Mulberry passe toujours d'abord ;
+  dans ce cas : ils restent acceptés, crédités, et signalés sur la fiche de
+  partage d'une classe ; Mulberry, entièrement libre et style de la maison,
+  passe toujours d'abord. On ne demande pas à l'enseignant s'il vendra son
+  matériel : décidé le 18 octobre 2026, la question n'a pas lieu d'être ;
 - **ND**, qui interdit les œuvres dérivées, et qui est le piège vicieux :
   le filtre `license_type=commercial` d'Openverse **la laisse passer**,
   puisqu'une image ND autorise bien le commerce. Une photographie de givre

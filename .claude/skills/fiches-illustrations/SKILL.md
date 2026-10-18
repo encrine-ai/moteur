@@ -56,10 +56,9 @@ recherche : https://api.arasaac.org/api/pictograms/fr/search/<mot>
 fichier   : https://static.arasaac.org/pictograms/<id>/<id>_500.png
 ```
 
-ARASAAC est **CC BY-NC-SA** — clause NC. C'est accepté pour ces fiches
-diffusées gratuitement, mais c'est LA raison pour laquelle Mulberry passe
-toujours d'abord : si le matériel devait un jour être vendu, seuls les
-pictogrammes ARASAAC seraient à remplacer. Crédit obligatoire : « Sergio
+ARASAAC est **CC BY-NC-SA** — clause NC. C'est accepté, crédité, et
+signalé sur la fiche de partage de la classe ; Mulberry, entièrement libre
+et style de la maison, passe toujours d'abord. Crédit obligatoire : « Sergio
 Palao — propriété du Gouvernement d'Aragon (Espagne) ».
 
 **3. Openverse en troisième recours** (un clipart introuvable en

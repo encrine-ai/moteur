@@ -252,9 +252,9 @@ suivent la moisson, `revoir-imagier.py` et le PDF.
 
 ## Licences
 
-Seules CC0, CC BY et CC BY-SA sont acceptées : le matériel est susceptible
-d'être diffusé au-delà du site gratuit, donc **une clause NC est
-disqualifiante**. L'auteur et la licence sont obligatoires — le script de
+Seules CC0, CC BY et CC BY-SA sont acceptées : une carte recadre la
+photographie, et une classe partagée doit pouvoir être reprise par une autre
+sans condition cachée, donc **une clause NC ou ND est disqualifiante**. L'auteur et la licence sont obligatoires — le script de
 moisson refuse une photographie dont il ne retrouve pas les crédits, et
 `verifier-imagier.py` le contrôle avant publication.
 
