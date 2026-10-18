@@ -11,8 +11,7 @@ Section « Le tour du monde », un continent par période, publiée sur
 **https://encrine.ai/tour-du-monde/** (dépôt
 [encrine-ai/tour-du-monde](https://github.com/encrine-ai/tour-du-monde)).
 Elle est créée depuis ce modèle, comme la vôtre le sera ; ses documents
-arrivent période par période. Le modèle, lui, ne publie qu'un renvoi vers
-encrine.ai.
+arrivent période par période. Le modèle, lui, ne publie rien.
 
 ▶ **[encrine.ai](https://encrine.ai)** — le principe, et « Les classes » que
 des enseignants ont choisi de partager.
