@@ -16,7 +16,10 @@ if [ -z "${CHROME_BIN:-}" ]; then
   CHROME_BIN=$(command -v google-chrome || ls /opt/pw-browsers/chromium-*/chrome-linux/chrome 2>/dev/null | head -1 || true)
 fi
 CHROME_BIN=${CHROME_BIN:-google-chrome}
-PORT=${PORT:-8931}
+# Un port libre, choisi par le système : deux fabrications lancées en même
+# temps (deux classes, ou deux copies de travail) ne se servent pas l'une
+# l'autre leurs pages — c'est arrivé, et les cahiers sortaient d'une page.
+PORT=${PORT:-$(python3 -c 'import socket; s = socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1])')}
 OUT="$SITE_DIR/pdf"
 
 python3 -m http.server "$PORT" --directory "$SITE_DIR" >/dev/null 2>&1 &
