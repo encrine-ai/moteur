@@ -5,11 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Ma classe</title>
   <meta name="description" content="Toutes les progressions, la programmation et les évaluations de l'année, aux dates des vacances de la classe, à consulter et à imprimer en PDF.">
-  <meta name="theme-color" content="#f6f7f2" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#121a16" media="(prefers-color-scheme: dark)">
-  <link rel="icon" href="favicon.ico" sizes="any">
-  <link rel="icon" href="icones/favicon-32.png" type="image/png" sizes="32x32">
-  <link rel="apple-touch-icon" href="icones/favicon-180.png" sizes="180x180">
+  <!-- L'appli installable (scripts/appli.py) : le manifeste et les icônes
+       sont fabriqués pour la classe ; la couleur de la barre et le nom sous
+       l'icône d'iOS, posés par appli.js depuis le thème et classe.yml. -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="">
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" href="icones/appli.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
   <link rel="stylesheet" href="charte/charte.css">
   <link rel="stylesheet" href="app.css">
 </head>
@@ -64,5 +71,6 @@
   <script src="classe.js"></script>
   <script src="commun.js"></script>
   <script src="app.js"></script>
+  <script src="appli.js"></script>
 </body>
 </html>

@@ -35,6 +35,8 @@ jobs:
           cp -r site/. _site/
           cp 01-projet-annuel.md 02-programmation-annuelle.md _site/content/
           for d in 03-progressions 04-evaluations; do [ -d "$d" ] && cp -r "$d" _site/content/ || true; done
+      - name: La version de l'appli (sw.js), sur le site assemblé
+        run: python3 scripts/classe.py estampiller _site
       - name: Générer les PDF (documents de la zone de la classe + cahiers)
         run: bash scripts/generer-pdf.sh _site
       - name: Une page par fiche, une page par planche

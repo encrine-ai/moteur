@@ -106,6 +106,7 @@ les **parties** listées. `scripts/verifier-theme.py` tient le même registre
 | Carte d'un cahier à imprimer | `[data-composant="materiel"]` | `.materiel-tete`, `.materiel-num`, `.materiel-liste`, `.en-cours` | `materiel` | écran |
 | Cartes des documents | `[data-composant="documents"]` | `.docs-groupe`, `.docs` | | écran |
 | Document rendu | `[data-composant="document"]` | `.contenu`, `.zone-badge` | | écran |
+| Invitation à installer l'appli | `[data-composant="invitation"]` | `.invitation-icone`, `.invitation-texte`, `.invitation-fermer`, `.btn`, `.btn-principal`, `.ic` | | écran |
 | Pied, pastille, bouton | `[data-composant="pied"]`, `.pastille`, `.btn` | `.btn-principal` | | écran |
 | **Couverture** d'un cahier | `[data-composant="couverture"]` (+ `data-periode`, `data-cle`) | `.couverture-tete`, `-classe`, `-annee`, `-centre`, `-cahier`, `-titre` (mot de l'enfant), `-sous`, `-pied`, `-periode`, `-num`, `-projet` | `couverture-fond`, `couverture-embleme`, `couverture-tampon` | papier |
 | Page de garde | `[data-composant="garde"]` | `.sous-titre`, `.encadre`, `.titre-encadre`, `.trois-temps`, `.temps`, `.usages`, `.quand`, `.listes`, `.savant`, `.pied-garde`, `.note` | `garde` | papier |

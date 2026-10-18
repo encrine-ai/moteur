@@ -47,7 +47,7 @@ chaque déploiement avec Chromium en mode `--print-to-pdf`.
 Après avoir touché à un manifeste ou à un gabarit, régénérer les pages :
 
 ```sh
-python3 scripts/classe.py generer        # site/classe.json et classe.js, après toute retouche de classe.yml
+python3 scripts/classe.py generer        # site/classe.json et classe.js, la charte, l'appli installable (manifeste, icônes, sw.js), après toute retouche de classe.yml ou du thème
 python3 scripts/generer-cartes-corpus.py # site/cartes-corpus/periode-N.html
 python3 scripts/generer-imagier.py     # site/imagier/periode-N.html
 python3 scripts/generer-credits.py     # page des crédits des fiches

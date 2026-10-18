@@ -127,6 +127,8 @@ COMPOSANTS = {
     "documents": ("ecran", DC % "documents", {"docs-groupe", "docs", "ic"}, set()),
     "document": ("ecran", DC % "document", {"contenu", "zone-badge", "chargement"}, set()),
     "pied": ("ecran", DC % "pied", {"pied"}, set()),
+    "invitation": ("ecran", DC % "invitation", {"invitation-icone", "invitation-texte", "invitation-fermer",
+                                               "btn", "btn-principal", "ic"}, set()),
     "pastille": ("ecran", ".pastille", set(), set()),
     "bouton": ("ecran", ".btn", {"btn-principal", "ic"}, set()),
     # le papier de la classe

@@ -139,8 +139,8 @@ def images(racine):
             if f.name not in banques[dossier] and f.stem not in auto:
                 anomalies.append("%s : image sans crédit dans la banque (photo de classe, "
                                  "scan ?)" % rel)
-        elif dossier == "site/icones" and f.name.startswith("favicon"):
-            pass
+        elif dossier == "site/icones":
+            pass   # l'icône de l'appli, fabriquée depuis le thème (scripts/appli.py)
         elif rel.parts[:2] == ("site", "charte") and ext == ".svg":
             pass
         else:

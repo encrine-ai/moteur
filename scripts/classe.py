@@ -13,8 +13,11 @@ composants communs du moteur (site/charte/composants.css), puis le thème choisi
 Ces fichiers sont versionnés, comme les cahiers.
 
 Usage :
-  python3 scripts/classe.py generer    # écrit site/classe.json, site/classe.js
-                                       # et site/charte/charte.css
+  python3 scripts/classe.py generer    # écrit site/classe.json, site/classe.js,
+                                       # site/charte/charte.css, et l'appli
+                                       # installable (scripts/appli.py) :
+                                       # site/manifest.webmanifest, site/sw.js,
+                                       # site/icones/ et site/favicon.ico
   python3 scripts/classe.py verifier   # code 1 si classe.js est périmé, si le
                                        # matériel déclaré et les pages fabriquées
                                        # ne concordent pas, ou si une donnée de
@@ -22,7 +25,12 @@ Usage :
                                        # (site/*.js, *.html, *.css, scripts/),
                                        # ou si le thème enfreint son contrat
                                        # (scripts/verifier-theme.py), ou si
-                                       # `depot` ou `origine` sont mal formés
+                                       # `depot` ou `origine` sont mal formés,
+                                       # ou si le manifeste, les icônes ou
+                                       # sw.js manquent ou sont périmés
+  python3 scripts/classe.py estampiller <site>   # au déploiement : la version
+                                       # de <site>/sw.js recalculée sur le site
+                                       # assemblé (documents de content/ compris)
 
 L'identité de la classe : `depot` (« propriétaire/dépôt », le dépôt GitHub de
 cette classe) et, si elle est partie d'une autre classe par « Use this
@@ -43,6 +51,9 @@ try:
     import yaml
 except ImportError:
     sys.exit("PyYAML requis :  pip install pyyaml")
+
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
+import appli  # noqa: E402  (l'appli installable : manifeste, icônes, service worker)
 
 RACINE = pathlib.Path(__file__).resolve().parent.parent
 SOURCE = RACINE / "classe.yml"
@@ -125,6 +136,8 @@ def charger():
             # une, sauf `couverture: false` (une page de plus par cahier)
             if m["cle"] in COUVERTURES:
                 m.setdefault("couverture", True)
+    # le nom de l'appli installée et l'initiale de son icône (scripts/appli.py)
+    c["appli"] = appli.identite(c)
     return c
 
 
@@ -245,6 +258,7 @@ def generer():
     JS.write_text(js, encoding="utf-8")
     (CHARTE / "charte.css").write_text(_charte(c), encoding="utf-8")
     print("site/classe.json, site/classe.js et site/charte/charte.css écrits depuis classe.yml")
+    appli.fabriquer(c)
 
 
 # Ce que le moteur n'a pas le droit d'écrire en dur : chaque valeur de classe.yml
@@ -252,7 +266,7 @@ def generer():
 # contenu) n'en font pas partie : ils sont le contenu.
 MOTEUR = ["site/*.js", "site/*.html", "site/*.css", "site/*/*.css", "scripts/generer-*.py", "scripts/generer-pdf.sh",
           "scripts/*-imagier.py"]
-EXCLUS = {"site/classe.js", "site/marked.min.js", "site/charte/charte.css"}  # fabriqués ou tiers
+EXCLUS = {"site/classe.js", "site/marked.min.js", "site/charte/charte.css", "site/sw.js"}  # fabriqués ou tiers
 # Ce que les pages de l'application ne comptent pas à la place de la classe :
 # « 18 animaux », « 36 espèces » — le nombre vit dans classe.yml (`desc` du
 # matériel). Les scripts, eux, peuvent porter les conventions de la classe.
@@ -450,6 +464,10 @@ def verifier():
         import importlib
         vt = importlib.import_module("verifier-theme")
         anomalies += ["thème « %s » : %s" % (c["theme"], a) for a in vt.anomalies(c["theme"])]
+    # L'appli installable : manifeste, icônes, service worker (scripts/appli.py).
+    a_appli, w_appli = appli.anomalies(c)
+    anomalies += a_appli
+    avertissements += w_appli
     for a in avertissements:
         print("⚠ " + a)
     for a in anomalies:
@@ -464,5 +482,7 @@ if __name__ == "__main__":
         generer()
     elif action == "verifier":
         sys.exit(verifier())
+    elif action == "estampiller" and len(sys.argv) == 3:
+        appli.estampiller(sys.argv[2], charger())
     else:
         sys.exit(__doc__)

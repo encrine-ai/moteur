@@ -3,6 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <title>Impression</title>
+  <!-- le manifeste seulement : la vue d'impression n'enregistre pas le
+       service worker (Chromium y fabrique les PDF, sans rien en cache) -->
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="favicon.ico" sizes="48x48">
   <link rel="stylesheet" href="charte/charte.css">
   <link rel="stylesheet" href="impression.css">
 </head>

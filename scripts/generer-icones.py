@@ -30,6 +30,8 @@ ICONES = [
     "clipboard-list", "file-text", "map-pin", "menu", "x", "star",
     # matériel à imprimer
     "download", "printer", "image", "layers", "pencil",
+    # l'invitation à installer l'appli sur iPhone et iPad (appli.js)
+    "share", "square-plus",
 ]
 # les milieux de la classe, dans l'ordre des périodes
 ICONES += [p["icone"] for p in classe.charger()["periodes"] if p["icone"] not in ICONES]

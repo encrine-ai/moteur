@@ -219,6 +219,36 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 /* — Pied — */
 .pied { max-width: 1040px; margin-top: var(--esp-5); font-size: 13px; color: var(--encre-douce); }
 
+/* — L'invitation à installer l'appli (appli.js) : une carte discrète en bas
+   de l'écran, refermable ; jamais dans l'appli installée ni sur le papier. — */
+.invitation {
+  position: fixed; z-index: 50; left: 50%; transform: translateX(-50%);
+  bottom: max(var(--esp-4), calc(env(safe-area-inset-bottom, 0px) + var(--esp-2)));
+  width: min(480px, calc(100vw - 2 * var(--esp-4)));
+  display: flex; align-items: center; gap: var(--esp-3);
+  padding: var(--esp-3) var(--esp-2) var(--esp-3) var(--esp-3);
+  background: var(--feuille); color: var(--encre);
+  border: 1px solid var(--trait); border-radius: var(--rayon-m); box-shadow: var(--ombre-flotte);
+  font-size: 14px; line-height: 1.4;
+}
+.invitation-icone { width: 44px; height: 44px; flex-shrink: 0; border-radius: 22%; }
+.invitation-texte { flex: 1; min-width: 0; margin: 0; }
+.invitation-texte strong { display: block; font: 700 15px/1.3 var(--police-titre); color: var(--sapin); }
+.invitation-texte .ic { width: 16px; height: 16px; vertical-align: -3px; margin: 0 2px; color: var(--sapin); }
+.invitation .btn { flex-shrink: 0; }
+.invitation-fermer {
+  flex-shrink: 0; display: grid; place-items: center; width: 36px; height: 36px; padding: 0;
+  background: none; border: 0; border-radius: var(--rayon-s); color: var(--encre-douce); cursor: pointer;
+}
+.invitation-fermer:hover { background: var(--feuille-creuse); color: var(--encre); }
+@media (display-mode: standalone) { .invitation { display: none; } }
+[data-appli] .invitation { display: none; }
+
+/* — En mode appli : le bas de l'écran (barre d'accueil de l'iPhone) — */
+.page { padding-bottom: calc(var(--esp-7) + env(safe-area-inset-bottom, 0px)); }
+.sidebar { padding-bottom: calc(var(--esp-7) + env(safe-area-inset-bottom, 0px)); }
+[data-appli] body { overscroll-behavior-y: none; }
+
 /* — Écrans étroits — */
 @media (max-width: 960px) {
   .menu-toggle { display: grid; flex-shrink: 0; }
@@ -245,7 +275,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   .bandeau { gap: var(--esp-3); padding-left: max(var(--esp-4), env(safe-area-inset-left, 0px)); padding-right: max(var(--esp-4), env(safe-area-inset-right, 0px)); }
   .marque-frise { display: none; }
   .marque-titre { font-size: 17px; }
-  .page { padding-block: var(--esp-3) var(--esp-6); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+  .page { padding-block: var(--esp-3) calc(var(--esp-6) + env(safe-area-inset-bottom, 0px)); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
   .toolbar { flex-direction: column; align-items: stretch; gap: var(--esp-2); }
   .fil { order: 2; }
   .btn { min-height: 36px; padding: 0 var(--esp-3); font-size: 14px; }
@@ -255,11 +285,12 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
   .bloc-tete .zone-badge { margin: 0; }
   .bloc { padding: var(--esp-4); border-radius: var(--rayon-m); }
   .materiels, .docs, .materiel:first-child .materiel-liste { grid-template-columns: minmax(0, 1fr); }
+  .invitation-icone { width: 36px; height: 36px; }
 }
 
 /* — Impression depuis le navigateur (les PDF passent, eux, par imprimer.html) — */
 @media print {
-  .bandeau, .sidebar, .toolbar, .periodes-print, .pied { display: none !important; }
+  .bandeau, .sidebar, .toolbar, .periodes-print, .pied, .invitation { display: none !important; }
   body { background: #fff; font-size: 11pt; }
   .layout { display: block; }
   .page { padding: 0; }

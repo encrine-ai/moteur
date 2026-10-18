@@ -66,6 +66,11 @@ sur `main` le republie, PDF compris.
 
 ---
 
+## Ce que vous recevez
+
+- **un site pour la classe**, publié à chaque envoi, avec tous les PDF prêts à imprimer ;
+- **une appli à installer** : sur téléphone ou tablette, « Ajouter à l'écran d'accueil » pose l'icône de **votre** classe (ses couleurs, son initiale), qui s'ouvre comme une appli et garde hors connexion les documents déjà consultés.
+
 ## Ce que le moteur garantit
 
 Des contrôles qui sortent en erreur plutôt que de laisser passer :

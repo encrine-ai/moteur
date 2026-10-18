@@ -124,5 +124,10 @@ var CLASSE = {
       "groupe": "Pour piloter l’année",
       "desc": "Tous les domaines période par période, en un coup d’œil."
     }
-  ]
+  ],
+  "appli": {
+    "nom": "Classe de démonstration — Le tour du monde",
+    "nom_court": "Tour du monde",
+    "initiale": "T"
+  }
 };

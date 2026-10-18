@@ -1,0 +1,42 @@
+{
+  "name": "Classe de démonstration — Le tour du monde",
+  "short_name": "Tour du monde",
+  "description": "Une classe de démonstration en cours d’écriture : un continent par période. Les documents et les cahiers arriveront période par période.",
+  "lang": "fr",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#ffffff",
+  "background_color": "#f6f7f2",
+  "categories": [
+    "education"
+  ],
+  "icons": [
+    {
+      "src": "icones/appli-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icones/appli-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icones/appli-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icones/appli.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

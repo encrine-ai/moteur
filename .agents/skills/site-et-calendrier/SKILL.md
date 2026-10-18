@@ -46,6 +46,39 @@ concernées ») — vérifier qu'un élément masqué l'est vraiment ; et une fa
 SVG en *data URI* non échappée, remplacée par de vrais fichiers
 (`site/favicon.ico`).
 
+## L'appli installable
+
+L'enseignant installe le site de **sa** classe sur l'écran d'accueil de son
+téléphone ou de sa tablette, et l'ouvre en classe comme une appli, même sans
+réseau. Tout est fabriqué par `scripts/appli.py`, que lance
+`python3 scripts/classe.py generer` :
+
+| Fichier | Rôle |
+|---|---|
+| `site/manifest.webmanifest` | nom (`nom — projet`) et nom court (l'étiquette sous l'icône), tirés de `classe.yml` ; `start_url` et `scope` à `./` (le site vit dans un sous-dossier) ; **pas d'`id`** — résolu contre la seule origine, il ferait de deux classes d'un même domaine une seule appli ; `display: standalone`, `lang: fr` ; `theme_color` = `--feuille` (le bandeau), `background_color` = `--papier`, lus dans le bloc clair de `theme.css` |
+| `site/icones/` et `site/favicon.ico` | l'icône de la classe : les cinq bandes de ses périodes (`--p1`…`--p5`) et un disque `--feuille` portant son initiale en `--sapin`, dans la police des titres du thème — `appli.svg` (la lettre en contour, sans police), `appli-192.png`, `appli-512.png`, `appli-maskable-512.png` (le disque dans la zone sûre), `apple-touch-icon.png` (180, plein, iOS l'arrondit), `favicon-32.png`, `favicon.ico` (16, 32, 48). Aucun logo d'Encrine : c'est l'appli de la classe. Les PNG demandent Pillow, fontTools et brotli ; chaque icône porte l'empreinte de ce dont elle est faite, que `verifier` relit sans eux |
+| `site/sw.js` | le service worker, tiré de `scripts/modele-sw.js` : l'application, les polices, les icônes, `classe.json` et les documents Markdown du menu en cache à l'installation ; **réseau d'abord** pour les pages, documents, scripts et `classe.json` (la copie gardée si le réseau échoue ou tarde 4 s) ; PDF et images **à l'usage** seulement (40 PDF, 300 images au plus) ; un PDF jamais ouvert répond hors connexion par une page qui le dit. `VERSION` est l'empreinte du site : chaque publication qui change quelque chose remplace l'ancien cache. Caches préfixés par la portée : deux classes d'un même domaine ne s'effacent pas |
+| `site/appli.js` (moteur) | enregistre `sw.js` ; l'**invitation** (`data-composant="invitation"`) : « Installer » par `beforeinstallprompt` sur Android et Chrome, « Partager, puis Sur l'écran d'accueil » dans Safari d'iPhone et d'iPad ; refermée, elle ne revient plus (`localStorage`, par dossier de classe) ; jamais dans l'appli installée ni à l'impression. En mode appli sur iOS, les PDF s'ouvrent dans une feuille du navigateur (`target="_blank"`, sans `download`) ; la couleur de la barre et le titre iOS viennent du thème et de `classe.yml` |
+
+- `classe.yml` peut fixer `appli: {nom, nom_court, initiale}` ; sinon le nom
+  court est le nom de la classe (≤ 12 lettres), le projet sans article
+  (≤ 15), ou « GS 2026-2027 », et l'initiale celle du nom court.
+- `imprimer.html` lie le manifeste mais **n'enregistre pas** le service
+  worker : Chromium y fabrique les PDF sans rien en cache (vérifié : mêmes
+  PDF, mêmes pages, avant et après l'appli).
+- `classe.py verifier` refuse un manifeste, une icône ou un `sw.js` absent ou
+  périmé, un chemin absolu ; une version en retard (un document changé sans
+  `generer`) n'est qu'un avertissement : le déploiement la recalcule sur le
+  site assemblé (`python3 scripts/classe.py estampiller _site`).
+- Pour l'essayer : servir le site assemblé **dans un sous-dossier**
+  (`http://127.0.0.1:PORT/<dépôt>/`). Hors connexion : arrêter le serveur —
+  `setOffline` de Playwright ne coupe pas les requêtes du service worker.
+  Mode appli : Chromium lancé avec `--app=<adresse>` (profil non privé :
+  en navigation privée, Chrome refuse l'installation par principe).
+- **Limites d'iOS** : pas d'invitation système (d'où l'explication) ;
+  l'appli installée a son propre stockage, distinct de Safari ; Safari
+  d'iOS 26 range parfois « Partager » dans le menu « ··· ».
+
 ## Le calendrier
 
 **Une classe a une zone de vacances, la sienne**, choisie au départ (skill
