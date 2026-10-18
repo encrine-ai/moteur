@@ -15,28 +15,44 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Le modèle ne publie rien : sa démonstration est une classe à part
-  # (encrine-ai/tour-du-monde). Une classe créée depuis le modèle n'est pas
-  # un modèle : elle publie son site, ses PDF compris.
+  # Le modèle ne publie qu'une page qui renvoie vers l'accueil d'Encrine : sa
+  # démonstration est une classe à part (encrine-ai/tour-du-monde). Une classe
+  # créée depuis le modèle n'est pas un modèle : elle publie son site, ses PDF
+  # compris.
   build:
-    if: ${{ !github.event.repository.is_template }}
     runs-on: ubuntu-latest
     steps:
+      - name: Le modèle renvoie vers l'accueil
+        if: ${{ github.event.repository.is_template }}
+        run: |
+          mkdir -p _site
+          cat > _site/index.html <<'HTML'
+          <!doctype html><meta charset="utf-8"><title>Encrine</title>
+          <meta http-equiv="refresh" content="0; url=https://encrine.ai/">
+          <link rel="canonical" href="https://encrine.ai/">
+          <p><a href="https://encrine.ai/">encrine.ai</a></p>
+          HTML
       - name: Checkout
+        if: ${{ !github.event.repository.is_template }}
         uses: actions/checkout@v4
       - name: Polices emoji et outils PDF
+        if: ${{ !github.event.repository.is_template }}
         run: sudo apt-get update -qq && sudo apt-get install -y -qq fonts-noto-color-emoji poppler-utils
       - name: La classe vient de classe.yml, et de nulle part ailleurs
+        if: ${{ !github.event.repository.is_template }}
         run: pip install -q pyyaml && python3 scripts/classe.py verifier
       - name: Assembler le site (application + contenus)
+        if: ${{ !github.event.repository.is_template }}
         run: |
           mkdir -p _site/content
           cp -r site/. _site/
           cp 01-projet-annuel.md 02-programmation-annuelle.md _site/content/
           for d in 03-progressions 04-evaluations; do [ -d "$d" ] && cp -r "$d" _site/content/ || true; done
       - name: Générer les PDF (documents × zones + cahiers)
+        if: ${{ !github.event.repository.is_template }}
         run: bash scripts/generer-pdf.sh _site
       - name: Une page par fiche, une page par planche
+        if: ${{ !github.event.repository.is_template }}
         run: python3 scripts/verifier-pagination.py _site
       - name: Setup Pages
         uses: actions/configure-pages@v5
