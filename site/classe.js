@@ -12,6 +12,7 @@ var CLASSE = {
   "conformite": "Conforme au programme officiel de l'école maternelle (cycle 1, 2024-2026) et au programme d'éducation à la vie affective et relationnelle.",
   "theme": "demo",
   "ton": "tu",
+  "depot": "à définir",
   "moteur": {
     "depot": "encrine-ai/moteur",
     "version": null

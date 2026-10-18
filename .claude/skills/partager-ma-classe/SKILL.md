@@ -8,8 +8,12 @@ description: Partager sa classe dans la galerie de la plateforme (« Les classes
 La galerie de la plateforme montre ce que les enseignants ont fait, pour
 donner des idées : chaque classe partagée y a une carte, aux couleurs de son
 thème, avec deux gestes — **voir la classe** (son site, chez son auteur) et
-**partir de cette classe** (skill nouvelle-classe). Décidé le 18 octobre
-2026 :
+**partir de cette classe**. Décidé le 18 octobre 2026 : chaque classe
+partagée qui le permet est elle-même un **dépôt-modèle GitHub** (« Template
+repository ») ; « partir de cette classe », c'est « Use this template » sur
+son dépôt, puis `/nouvelle-classe` sans adresse (skill nouvelle-classe,
+mode « enrichir »). Le site d'une classe-modèle continue de se publier : le
+déploiement ne saute que pour le dépôt du moteur lui-même. Et :
 
 - **on partage si on le veut** : ce skill ne se lance qu'à la demande de
   l'enseignant, jamais de lui-même, jamais en fin d'un autre travail ;
@@ -29,6 +33,10 @@ pas encore. Faire quand même les contrôles et la fiche (étapes 1 et 2), les
 garder sous `partage/fiche.json` dans la classe, et le dire : « Tout est
 prêt ; la galerie n'est pas encore ouverte, je la proposerai dès qu'elle le
 sera. »
+
+Avant tout, `depot` doit être renseigné dans `classe.yml`
+(`propriétaire/dépôt`, celui de `git remote get-url origin`) : la fiche de
+galerie en tire ses liens. `classe.py verifier` le signale s'il manque.
 
 ## 1. Vérifier — rien ne se partage s'il reste du rouge
 
@@ -83,12 +91,25 @@ enregistrement par classe :
   "licence": "CC BY-SA 4.0",
   "restrictions": ["pictogrammes ARASAAC : pas d'usage commercial"],
   "site": "https://<propriétaire>.github.io/<dépôt>/",
-  "depot": "https://github.com/<propriétaire>/<dépôt>",
+  "depot": "<propriétaire>/<dépôt>",
+  "modele": true,
+  "origine": {"depot": "<classe.yml : origine.depot>", "titre": "…", "auteur": "…"},
   "faits": {"attendus": "159/159", "pdf": <le total que donne verifier-pagination.py, 65 pour une GS complète>, "pagination": "vérifiée", "moteur": "<moteur.version>"},
   "partage_le": "AAAA-MM-JJ"
 }
 ```
 
+- **`depot`** est `classe.yml : depot`, sous la forme `propriétaire/dépôt`.
+  La page d'accueil de la galerie en tire le lien du dépôt
+  (`https://github.com/<depot>`) et, si `modele` est vrai, celui du bouton
+  « Partir de cette classe » :
+  `https://github.com/new?template_owner=<propriétaire>&template_name=<dépôt>`.
+- **`modele`** : `true` seulement si la licence permet la reprise (CC BY ou
+  CC BY-SA) **et** que l'enseignant a coché « Template repository »
+  (étape 2 bis) ; sinon `false`, et la carte se montre sans « Partir de
+  cette classe ».
+- **`origine`** : seulement si la classe est elle-même partie d'une autre
+  (`origine` dans `classe.yml`) ; la carte crédite alors l'original.
 - La zone n'est qu'une information pour qui regarde : « partir de cette
   classe » ne la reprend jamais, et redemande toujours la sienne à
   l'enseignant (skill nouvelle-classe).
@@ -106,10 +127,31 @@ enregistrement par classe :
   |---|---|
   | **CC BY-SA 4.0** (recommandée) | réutiliser et modifier ta classe, même pour un usage payant, en te citant et en partageant leurs modifications sous la même licence |
   | CC BY 4.0 | la même chose, sans l'obligation de partager sous la même licence |
-  | CC BY-NC-SA 4.0 | réutiliser et modifier, en te citant, mais jamais pour un usage commercial |
-  | Tous droits réservés | regarder seulement : « partir de cette classe » reprendra ton thème et tes milieux, pas tes textes |
+  | CC BY-NC-SA 4.0 | réutiliser et modifier, en te citant, mais jamais pour un usage commercial — ta classe se montre sans « Partir de cette classe » |
+  | Tous droits réservés | regarder seulement — ta classe se montre sans « Partir de cette classe » |
 
-Écrire la fiche dans `partage/fiche.json` de la classe.
+  Une classe partie d'une classe **CC BY-SA** (`origine.licence`) reste
+  **CC BY-SA** : ne pas proposer d'autre choix, et le dire.
+
+Écrire la licence et l'auteur dans `classe.yml` (`partage.licence`,
+`partage.auteur`) et dans `LICENCE-CONTENU.md` à la racine (la licence, son
+lien, l'auteur, et le crédit de `origine` s'il y en a une) : c'est là que le
+mode « enrichir » de nouvelle-classe les lira, dans la classe qui partira
+de celle-ci. Écrire la fiche dans `partage/fiche.json` de la classe.
+
+## 2 bis. Faire de la classe un modèle — seulement si la licence le permet
+
+- **CC BY ou CC BY-SA** : demander à l'enseignant, en une phrase et sans
+  technique, le seul geste qu'aucune session ne peut faire à sa place :
+  « Dans ton dépôt sur GitHub, ouvre **Settings → General**, et coche
+  **Template repository**, juste sous le nom du dépôt. C'est ce qui fait
+  marcher le bouton « Partir de cette classe ». » Attendre qu'il dise que
+  c'est fait (`gh api repos/<depot> --jq .is_template` le confirme quand
+  `gh` répond), puis mettre `"modele": true` dans la fiche.
+- **Toute autre licence** (NC, tous droits réservés) : **pas de case
+  cochée** — une copie par « Use this template » reprendrait tout le
+  contenu, ce que la licence n'autorise pas. `"modele": false`. Si la case
+  est déjà cochée, demander de la décocher avant de proposer la classe.
 
 ## 3. Demander l'accord — rien de public sans un oui
 
@@ -143,7 +185,9 @@ apparaîtra quand elle aura été relue. »
 L'enseignant dit « retire ma classe de la galerie » : même chemin, une
 demande de fusion (ou une issue) qui **retire** son enregistrement de
 `classes.json`, avec la mention « à la demande de l'auteur ». Supprimer
-`partage/fiche.json`. Rappeler que son site et son dépôt restent à lui : les
+`partage/fiche.json`. Décocher « Template repository » n'est pas
+obligatoire (ceux qui sont déjà partis de la classe gardent leur copie),
+mais le proposer. Rappeler que son site et son dépôt restent à lui : les
 rendre privés ou les supprimer se fait dans ses réglages GitHub, et la carte
 de la galerie, qui n'est qu'un lien, cesse alors de mener quelque part.
 
@@ -153,6 +197,8 @@ de la galerie, qui n'est qu'un lien, cesse alors de mener quelque part.
 - Jamais un prénom d'élève, une photo d'enfant, une production d'élève, un
   texte d'album ou de chanson recopié, une adresse électronique.
 - Jamais de faits de mémoire : seulement la sortie des contrôles du jour.
+- Jamais de case « Template repository » pour une classe dont la licence
+  n'autorise pas la reprise (ni NC, ni tous droits réservés).
 - Ne rien copier dans la galerie que la fiche : la classe reste chez son
   auteur.
 
@@ -160,5 +206,5 @@ de la galerie, qui n'est qu'un lien, cesse alors de mener quelque part.
 
 L'enseignant le demande → **partager-ma-classe** (contrôles de l'étape 1,
 avec imprimer-pdf pour le PDF). Une autre classe part de celle-ci par
-**nouvelle-classe** (« partir d'une classe de la galerie »). Une idée pour
+« Use this template » puis **nouvelle-classe** (mode « enrichir »). Une idée pour
 l'outil lui-même, pas pour la galerie → remonter-au-moteur.

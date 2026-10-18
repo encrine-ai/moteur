@@ -15,11 +15,12 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Le modèle ne publie rien : sa démonstration est une classe à part
-  # (encrine-ai/tour-du-monde). Une classe créée depuis le modèle n'est pas
-  # un modèle : elle publie son site, ses PDF compris.
+  # Seul le dépôt du moteur ne publie rien : sa démonstration est une classe
+  # à part (encrine-ai/tour-du-monde). Toute classe publie son site, ses PDF
+  # compris, même cochée « Template repository » pour qu'on puisse partir
+  # d'elle.
   build:
-    if: ${{ !github.event.repository.is_template }}
+    if: ${{ github.repository != 'encrine-ai/moteur' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

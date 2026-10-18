@@ -1,6 +1,6 @@
 ---
 name: nouvelle-classe
-description: Le skill d'amorçage du moteur — transformer ce dépôt en LA classe d'un autre enseignant, à partir d'un court entretien (niveau, double niveau, année et zone de vacances, thème de l'année et milieu de chaque période, matériel voulu, profil de la classe), puis écrire classe.yml et le contenu, réécrire le projet, la programmation et les progressions jusqu'à ce que le programme soit couvert, fabriquer les cahiers et finir par le PDF. À utiliser quand quelqu'un veut sa propre version : « je veux faire ma classe », « crée une classe de moyenne section », « adapte tout ça pour ma GS de l'an prochain, zone B », « je voudrais le même matériel mais sur le thème des contes », « j'ai une classe de MS-GS », « /nouvelle-classe », « on repart de zéro pour une autre école », « je voudrais partir de la classe des contes de la galerie », « fais-moi la même que celle-ci : <lien> ». Ne concerne pas une retouche de la classe actuelle (une séance, une fiche, une image, une date : voir les skills de chaque matériel).
+description: Le skill d'amorçage du moteur — transformer ce dépôt en LA classe d'un autre enseignant, à partir d'un court entretien (niveau, double niveau, année et zone de vacances, thème de l'année et milieu de chaque période, matériel voulu, profil de la classe), puis écrire classe.yml et le contenu, réécrire le projet, la programmation et les progressions jusqu'à ce que le programme soit couvert, fabriquer les cahiers et finir par le PDF. À utiliser quand quelqu'un veut sa propre version : « je veux faire ma classe », « crée une classe de moyenne section », « adapte tout ça pour ma GS de l'an prochain, zone B », « je voudrais le même matériel mais sur le thème des contes », « j'ai une classe de MS-GS », « /nouvelle-classe », « on repart de zéro pour une autre école », « je voudrais partir de la classe des contes de la galerie », « j'ai cliqué sur Partir de cette classe », « fais-moi la même que celle-ci : <lien> ». Commence toujours par regarder si une classe est déjà dans le dépôt (copie faite par « Use this template » d'une classe partagée) : alors il l'enrichit au lieu de repartir de zéro. Ne concerne pas une retouche de la classe actuelle (une séance, une fiche, une image, une date : voir les skills de chaque matériel).
 ---
 
 # Nouvelle classe
@@ -13,6 +13,97 @@ programme), les documents `01-…` à `04-…`, et les cahiers fabriqués dans
 `site/`. **Le moteur ne se touche pas** : `site/*.js`, `scripts/`,
 `referentiel/`, `.claude/skills/` restent tels quels, et
 `python3 scripts/classe.py verifier` le garantit.
+
+## Étape 0 — Une classe est-elle déjà là ?
+
+Décidé le 18 octobre 2026 : chaque classe partagée est elle-même un
+dépôt-modèle GitHub. « Partir de cette classe », c'est **« Use this
+template » sur le dépôt de cette classe** : l'enseignant arrive avec tout
+son contenu, son thème et ses PDF, puis tape `/nouvelle-classe`, **sans
+adresse**. Avant toute question, regarder donc ce que contient le dépôt :
+
+```sh
+git remote get-url origin                       # le dépôt courant
+python3 -c "import yaml; c = yaml.safe_load(open('classe.yml')); print(c.get('depot'), c.get('materiel'))"
+ls 03-progressions/ 2>/dev/null                 # des progressions écrites ?
+```
+
+Ramener l'adresse du remote à `propriétaire/dépôt` (sans `https://github.com/`,
+`git@github.com:`, ni `.git` ; un proxy de session peut la préfixer, ne
+garder que les deux derniers segments). Puis :
+
+| Ce qu'on voit | Ce que c'est | Le mode |
+|---|---|---|
+| `classe.yml` a du contenu (`materiel` non vide, **ou** des progressions dans `03-progressions/`) **et** `depot` ≠ le dépôt courant | une copie d'une classe partagée, faite par « Use this template » | **enrichir** (ci-dessous) |
+| `depot` = le dépôt courant | l'auteur lui-même relance l'entretien | l'entretien habituel (étape 1), sur sa propre classe |
+| ni matériel ni progression (la classe de départ du modèle `moteur`, `depot: à définir`) | partir de zéro | l'entretien habituel (étape 1) |
+
+Une classe ancienne sans `depot`, mais avec du contenu : demander une seule
+fois « Cette classe est-elle la tienne, ou es-tu parti de celle d'un
+collègue ? », puis suivre la ligne qui correspond.
+
+## Le mode « enrichir » — on part d'une classe déjà là
+
+1. **Annoncer ce qu'on garde**, en une phrase, avant toute question :
+   « Tu pars de « <projet> » : je garde son thème, ses périodes, son style
+   et son contenu. »
+2. **Lire la licence** : `LICENCE-CONTENU.md` s'il existe, sinon
+   `classe.yml` (`partage.licence` et `partage.auteur`, écrits par
+   partager-ma-classe), sinon la fiche `partage/fiche.json`. **La dire** :
+   - **CC BY-SA** : « Ta classe restera sous CC BY-SA, comme celle d'origine :
+     c'est la condition de sa licence. » Garder ou écrire la même licence ;
+   - **CC BY** : la nouvelle classe choisira la sienne au partage ; le crédit
+     reste obligatoire ;
+   - **NC, tous droits réservés, licence absente** : cette classe n'aurait
+     pas dû être un modèle (partager-ma-classe l'empêche). Le dire, ne garder
+     que le thème et les milieux (une idée ne se protège pas), et réécrire
+     tout le reste comme pour une classe partie de zéro.
+3. **Ne poser que** (un seul appel `AskUserQuestion`, avec la phrase du
+   tutoiement) : **le niveau**, **la zone**, **l'année**, **le profil de la
+   classe** — plus **par où commencer** (une période ou les cinq) si le
+   niveau change. Le thème, les milieux, le matériel et le style sont repris
+   sans question. La zone se redemande toujours : ne jamais garder le
+   `calendrier` de la classe d'origine sans la réponse.
+4. **Écrire `origine`** dans `classe.yml`, depuis ce que dit le dépôt :
+
+   ```yaml
+   origine:
+     depot: <l'ancienne valeur de `depot`>
+     titre: <le projet de la classe d'origine>
+     auteur: <LICENCE-CONTENU.md, sinon partage.auteur ou partage/fiche.json>
+     licence: CC BY-SA 4.0
+     site: https://<propriétaire>.github.io/<dépôt>/
+     reprise_le: AAAA-MM-JJ          # aujourd'hui
+   ```
+
+   puis **mettre `depot` au dépôt courant**. `classe.py verifier` refuse une
+   `origine` sans titre ni licence, et une `origine.depot` égale à `depot`.
+   Le pied du site crédite alors l'original (« Classe partie de « … », de …
+   (…) », avec le lien) : c'est l'obligation de CC BY et CC BY-SA.
+5. **Remettre à zéro ce qui appartient à l'auteur d'origine** : le `nom` de
+   la classe change (demander lequel), l'`accroche` et le `sous_titre`
+   aussi si l'enseignant le veut ; `partage` garde ses
+   `prenoms_fictifs` (ce sont des personnages, pas des élèves), mais
+   `partage.auteur` se vide (l'auteur de la nouvelle classe le choisira en
+   partageant ; `partage.licence` reste CC BY-SA si l'origine l'est) ; supprimer
+   `partage/fiche.json` (la fiche de galerie de l'autre classe). Réécrire la
+   tête du `README.md` (étape 7) avec le crédit : « D'après *<titre>*, de
+   <auteur> (<site>), sous licence <licence>. »
+   `LICENCE-CONTENU.md`, s'il existe, se réécrit de même : la licence (la
+   même, si l'origine est CC BY-SA), et le crédit de l'original.
+6. **Selon le niveau** :
+   - **le même niveau** : on garde tout. Recaler les dates sur la nouvelle
+     zone et la nouvelle année (`calendrier.zone`, `annee` ; skill
+     site-et-calendrier), `python3 scripts/classe.py generer`, régénérer les
+     cahiers, puis refaire tous les contrôles (`classe.py verifier`,
+     `couverture.py`, `verifier-imagier.py`…) et **les PDF** (étape 6) ;
+   - **un autre niveau** : on garde le thème, les milieux et le style, mais
+     les progressions, les évaluations et les fiches **se réécrivent** pour
+     le nouveau niveau, sur la liste numérotée de son programme (étapes 3 et
+     4). Un contenu d'un autre niveau ne se recopie pas ; l'imagier et les
+     cartes-corpus peuvent rester, à revoir avec l'enseignant.
+7. Les images gardent leurs crédits : ils sont déjà dans le dépôt, n'y rien
+   retirer.
 
 ## Ce que le moteur sait faire aujourd'hui — le dire avant de commencer
 
@@ -39,28 +130,23 @@ l'entretien (question 6). Deux façons de faire :
   retoucher. Fabriquer alors période par période quand même, et contrôler
   chacune (couverture, pagination) avant de passer à la suivante.
 
-## Partir d'une classe de la galerie
+## Repli : partir d'une classe par son adresse
 
-L'enseignant peut donner le lien d'une classe partagée dans la galerie de la
-plateforme (« partir de cette classe », skill partager-ma-classe) : son
-site, son dépôt, ou sa carte. Décidé le 18 octobre 2026 :
+Le chemin normal est « Partir de cette classe » (« Use this template ») et
+le mode « enrichir » ci-dessus. Ce repli ne sert que pour une classe **qui
+n'est pas un modèle** mais dont la licence permet la reprise : l'enseignant
+a créé son dépôt depuis `moteur` et tape `/nouvelle-classe <adresse>` (son
+site, son dépôt, ou sa carte de galerie).
 
 1. **Lire sa fiche** dans `classes.json` du dépôt de la galerie
    (`galerie.depot`), ou à défaut le `classe.yml` de son dépôt : projet,
-   niveau, milieux, licence, auteur.
+   niveau, milieux, licence, auteur, `depot`.
 2. **L'entretien en repart** : le thème, les cinq milieux, le style du
    thème, les choix de matériel deviennent les **valeurs par défaut
-   annoncées** de l'étape 1 (« je reprends le thème des contes et ses cinq
-   milieux ; dis-moi ce que tu veux changer »). Le niveau, l'année, la zone
-   et le profil de la classe restent ceux de l'enseignant : toujours les
-   demander. **La zone surtout se redemande toujours**, même quand la classe
-   d'origine en a une (sa fiche de galerie la donne) : la nouvelle classe
-   a **ses** vacances. Ne jamais recopier le `calendrier` de la classe
-   d'origine. **Si le niveau change** (un CP qui part d'une Grande
-   Section), on garde le thème, les milieux et le style, mais les
-   progressions, les évaluations et les fiches se réécrivent pour le
-   nouveau niveau, sur la liste numérotée de son programme : un contenu
-   d'un autre niveau ne se recopie pas.
+   annoncées** de l'étape 1. Le niveau, l'année, la zone et le profil
+   restent ceux de l'enseignant : toujours les demander, et ne jamais
+   recopier le `calendrier` de la classe d'origine. Si le niveau change,
+   même règle qu'en mode « enrichir » (point 6).
 3. **Le contenu ne se copie que si la licence le permet** :
    - CC BY, CC BY-SA : on peut reprendre les progressions, les fiches, les
      choix d'espèces et de mots, en les adaptant ; une classe CC BY-SA reste
@@ -68,14 +154,10 @@ site, son dépôt, ou sa carte. Décidé le 18 octobre 2026 :
    - CC BY-NC(-SA) : la même chose, et la nouvelle classe ne pourra jamais
      servir à un usage commercial — le dire, et le noter dans le README ;
    - tous droits réservés, ou licence absente : reprendre **seulement** le
-     thème et les milieux (une idée ne se protège pas), et réécrire tout le
-     reste.
-4. **Citer l'auteur** dans le README de la nouvelle classe, en tête :
-   « D'après *<projet>*, de <auteur> (<lien du site>), sous licence
-   <licence>. » Et ne rien reprendre de ce qui n'est pas à l'auteur : les
-   images gardent leurs propres crédits, à recopier avec elles.
-5. Le reste — les séances, les fiches, les retouches — reste à la main de
-   l'enseignant, comme pour une classe partie de zéro.
+     thème et les milieux, et réécrire tout le reste.
+4. **Écrire `origine`** comme en mode « enrichir » (point 4), `depot` au
+   dépôt courant, et citer l'auteur en tête du README. Les images gardent
+   leurs propres crédits, à recopier avec elles.
 
 ## Étape 1 — L'entretien
 
@@ -104,7 +186,8 @@ enseignants avant qu'ils commencent.)
    son fichier se prépare d'abord dans le moteur (skill site-et-calendrier,
    « Changer d'année scolaire »). Ne jamais écrire de date dans
    `classe.yml`.
-3. **Le thème de l'année** : reprendre celui de la classe d'origine, ou un
+3. **Le thème de l'année** (partie de zéro ; en mode « enrichir », il est
+   repris sans question) : la faune et la flore, ou un
    autre (la faune et la flore, les saisons, le tour du monde, les contes…). Proposer ensuite **un milieu ou
    un sous-thème par période**, cinq en tout, que l'enseignant corrige.
 4. **Le matériel voulu** : fiches d'entraînement, fiches d'évaluation, imagier
@@ -145,7 +228,9 @@ au moment où le matériel concerné se fabrique.
 ## Étape 2 — Écrire la classe
 
 1. **`classe.yml`** : nom, niveau, année, projet, accroche, `ton` (`tu`, ou
-   `vous` si l'enseignant l'a demandé), `moteur` (le dépôt modèle d'où vient
+   `vous` si l'enseignant l'a demandé), `depot` (ce dépôt-ci,
+   `propriétaire/dépôt`, tiré de `git remote get-url origin`), `origine` si
+   la classe est partie d'une autre (mode « enrichir »), `moteur` (le dépôt modèle d'où vient
    ce dépôt et le commit copié : skill synchroniser-moteur), `calendrier`
    — la zone seule, plus un pont propre à l'école s'il y en a
    (`calendrier.ponts`), les dates venant du moteur —, les cinq `periodes` (clé, milieu,

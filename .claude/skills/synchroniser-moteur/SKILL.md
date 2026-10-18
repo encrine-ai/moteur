@@ -89,6 +89,11 @@ la leçon si elle vaut toujours, en la remontant.
   classe n'a pas, `python3 scripts/classe.py verifier` le dit. L'ajouter
   avec la valeur par défaut annoncée par le skill concerné, et l'annoncer à
   l'enseignant ; ne poser la question que si la valeur change le résultat.
+- **`depot` et `origine`** (l'identité de la classe, et la classe d'où elle
+  est partie) sont du contenu : jamais copiés depuis le modèle. Une classe
+  d'avant ces clés reçoit seulement l'avertissement de `classe.py verifier`
+  pour `depot` : le renseigner depuis `git remote get-url origin`
+  (`propriétaire/dépôt`), et l'annoncer.
 - `python3 scripts/classe.py generer`, puis régénérer les cahiers
   (`generer-imagier.py`, `generer-cartes-corpus.py`, `generer-credits.py`).
 - Une régénération ne doit écraser **aucune** retouche faite à la main par

@@ -21,7 +21,14 @@ Usage :
                                        # classe est écrite en dur dans le moteur
                                        # (site/*.js, *.html, *.css, scripts/),
                                        # ou si le thème enfreint son contrat
-                                       # (scripts/verifier-theme.py)
+                                       # (scripts/verifier-theme.py), ou si
+                                       # `depot` ou `origine` sont mal formés
+
+L'identité de la classe : `depot` (« propriétaire/dépôt », le dépôt GitHub de
+cette classe) et, si elle est partie d'une autre classe par « Use this
+template », `origine` (depot, titre, auteur, licence, site, reprise_le).
+classe.json transmet l'une et l'autre : le pied du site crédite l'original
+(skill nouvelle-classe, « Partir d'une classe »).
 
 Depuis un autre script :
   from classe import charger, milieux, chemin, manifeste, cahiers, couverture
@@ -308,9 +315,56 @@ def _verifier_calendrier(anomalies):
             anomalies.append("%s : `%s` doit avoir `debut` et `reprise`" % (f.relative_to(RACINE), nom))
 
 
+# « propriétaire/dépôt », comme GitHub les écrit.
+DEPOT = re.compile(r"^[A-Za-z0-9-]+/[A-Za-z0-9._-]+$")
+# Ce que `origine` peut dire de la classe d'où celle-ci est partie.
+CLES_ORIGINE = {"depot", "titre", "auteur", "licence", "site", "reprise_le"}
+NON_DEFINI = (None, "", "à définir")
+
+
+def _verifier_identite(anomalies, avertissements):
+    """`depot` (le dépôt de cette classe) et `origine` (la classe d'où elle
+    est partie). Une classe d'avant ces clés n'a pas de `depot` : on prévient
+    seulement ; une valeur écrite, elle, doit être bien formée."""
+    brut = yaml.safe_load(SOURCE.read_text(encoding="utf-8"))
+    depot = brut.get("depot")
+    if depot in NON_DEFINI:
+        avertissements.append("depot : non renseigné — le dépôt de cette classe, "
+                              "« propriétaire/dépôt » (skill nouvelle-classe)")
+    elif not (isinstance(depot, str) and DEPOT.match(depot)):
+        anomalies.append("depot : « %s » — il faut « propriétaire/dépôt »" % depot)
+    if "origine" not in brut:
+        return
+    o = brut["origine"]
+    if not isinstance(o, dict):
+        anomalies.append("origine : il faut un bloc (depot, titre, auteur, licence, site, reprise_le)")
+        return
+    for cle in sorted(set(o) - CLES_ORIGINE):
+        anomalies.append("origine.%s : clé inconnue (%s)" % (cle, ", ".join(sorted(CLES_ORIGINE))))
+    for cle in ("titre", "licence"):
+        if not (isinstance(o.get(cle), str) and o[cle].strip()):
+            anomalies.append("origine.%s : manquant — CC BY et CC BY-SA obligent à "
+                             "créditer l'original (titre, auteur, licence)" % cle)
+    if not o.get("auteur"):
+        avertissements.append("origine.auteur : non renseigné — le crédit de l'original le nomme")
+    od = o.get("depot")
+    if od is not None and not (isinstance(od, str) and DEPOT.match(od)):
+        anomalies.append("origine.depot : « %s » — il faut « propriétaire/dépôt »" % od)
+    elif od and od == depot:
+        anomalies.append("origine.depot : c'est le dépôt de cette classe — `depot` doit "
+                         "passer au nouveau dépôt (skill nouvelle-classe)")
+    site = o.get("site")
+    if site is not None and not (isinstance(site, str) and site.startswith("https://")):
+        anomalies.append("origine.site : « %s » — une adresse en https://" % site)
+    if "reprise_le" in o and not isinstance(o["reprise_le"], datetime.date):
+        anomalies.append("origine.reprise_le : « %s » — une date AAAA-MM-JJ" % o["reprise_le"])
+
+
 def verifier():
     anomalies = []
+    avertissements = []
     _verifier_calendrier(anomalies)
+    _verifier_identite(anomalies, avertissements)
     c = charger()
     texte, js = _contenus(c)
     for chemin, attendu in ((JSON, texte), (JS, js)):
@@ -396,6 +450,8 @@ def verifier():
         import importlib
         vt = importlib.import_module("verifier-theme")
         anomalies += ["thème « %s » : %s" % (c["theme"], a) for a in vt.anomalies(c["theme"])]
+    for a in avertissements:
+        print("⚠ " + a)
     for a in anomalies:
         print("✘ " + a)
     print("classe.yml : %d anomalie(s)" % len(anomalies))

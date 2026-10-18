@@ -20,19 +20,31 @@ des enseignants ont choisi de partager.
 
 ## Créer sa classe, en quatre étapes
 
-1. **Use this template → Create a new repository.** Sur la page de ce dépôt,
-   le bouton vert **« Use this template »** — ou directement
-   **[github.com/new?template_owner=encrine-ai&template_name=moteur](https://github.com/new?template_owner=encrine-ai&template_name=moteur)** ; nommez votre classe (par
-   exemple `ma-grande-section`) et choisissez **Public** — GitHub Pages
-   publie gratuitement les dépôts publics. Vous obtenez votre propre dépôt :
-   le moteur entier et une classe de départ, que l'entretien remplace par la
-   vôtre.
+1. **Choisissez votre départ**, puis **Use this template → Create a new
+   repository** :
+   - **de zéro** : sur la page de ce dépôt, le bouton vert **« Use this
+     template »** — ou directement
+     **[github.com/new?template_owner=encrine-ai&template_name=moteur](https://github.com/new?template_owner=encrine-ai&template_name=moteur)** ;
+     vous obtenez le moteur entier et une classe de départ, que l'entretien
+     remplace par la vôtre ;
+   - **depuis une classe de la galerie** : sur sa carte
+     ([encrine.ai](https://encrine.ai), « Les classes »), le bouton
+     **« Partir de cette classe »** ; vous repartez avec tout son contenu,
+     son thème et ses PDF, et l'entretien l'adapte à votre niveau, votre
+     zone et votre année, en créditant son auteur.
+
+   Dans les deux cas, nommez votre classe (par exemple `ma-grande-section`)
+   et choisissez **Public** — GitHub Pages publie gratuitement les dépôts
+   publics.
 2. **Activez le site** : dans votre dépôt, **Settings → Pages → Source →
    « GitHub Actions »**. C'est le seul réglage à faire à la main.
 3. **Ouvrez le dépôt dans Claude Code, sur la branche `main`**, et tapez
-   **`/nouvelle-classe`**. L'entretien vous demande le niveau, votre zone de
-   vacances (le site et les PDF prennent ses dates), le thème de l'année, le matériel voulu ; il commence par une
-   période complète, ou par les cinq si vous le préférez.
+   **`/nouvelle-classe`**, sans rien d'autre. Parti de zéro, l'entretien vous
+   demande le niveau, votre zone de vacances (le site et les PDF prennent
+   ses dates), le thème de l'année, le matériel voulu ; il commence par une
+   période complète, ou par les cinq si vous le préférez. Parti d'une
+   classe, il voit qu'elle est déjà là, dit ce qu'il garde, et ne demande
+   que le niveau, la zone, l'année et le profil de votre classe.
 4. **Répondez, imprimez, dites ce qui ne va pas.** Vos retours corrigent votre
    classe ; ce qui vaut pour tous remonte au moteur, avec votre accord, et
    revient dans chaque classe à la mise à jour suivante.

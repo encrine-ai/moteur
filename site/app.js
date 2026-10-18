@@ -270,7 +270,20 @@
     document.title = C.nom + ' ' + C.annee + ' · ' + C.projet;
     document.querySelector('.marque-titre').textContent = C.nom;
     document.querySelector('.marque-sous').textContent = C.annee + ' · ' + C.sous_titre;
-    document.querySelector('.pied').textContent = C.conformite + ' Dates des vacances : calendrier scolaire officiel ' + C.annee + ', zone ' + GS.ZONE + '.';
+    var pied = document.querySelector('.pied');
+    pied.textContent = C.conformite + ' Dates des vacances : calendrier scolaire officiel ' + C.annee + ', zone ' + GS.ZONE + '.';
+    // La classe d'où celle-ci est partie : CC BY et CC BY-SA obligent à la créditer.
+    var o = C.origine;
+    if (o && o.titre) {
+      var credit = document.createElement('p');
+      credit.className = 'pied-origine';
+      credit.appendChild(document.createTextNode('Classe partie de « '));
+      var titre = credit.appendChild(document.createElement(o.site ? 'a' : 'span'));
+      titre.textContent = o.titre;
+      if (o.site) titre.href = o.site;
+      credit.appendChild(document.createTextNode(' »' + (o.auteur ? ', de ' + o.auteur : '') + ' (' + o.licence + ').'));
+      pied.appendChild(credit);
+    }
   }
 
   document.addEventListener('DOMContentLoaded', function () {

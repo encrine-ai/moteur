@@ -14,6 +14,13 @@ conformite: Conforme au programme officiel de l'école maternelle (cycle 1, 2024
   programme d'éducation à la vie affective et relationnelle.
 theme: demo
 ton: tu
+# Le dépôt GitHub de CETTE classe, « propriétaire/dépôt » : à définir par
+# l'entretien (skill nouvelle-classe). S'il ne correspond pas au dépôt
+# courant, c'est une copie faite par « Use this template » d'une classe
+# partagée : l'entretien passe en mode « enrichir » et écrit `origine`
+# (depot, titre, auteur, licence, site, reprise_le), que le pied du site
+# crédite.
+depot: à définir
 moteur:
   depot: encrine-ai/moteur
   version: null

@@ -3,12 +3,21 @@
 Ce dépôt est **le modèle** d'Encrine (https://encrine.ai) : le moteur qui
 fabrique l'année d'une classe — programmation, progressions conformes au
 programme, fiches, imagier, cartes de vocabulaire, PDF — à partir de
-`classe.yml`. Chaque enseignant crée **son** dépôt depuis ce modèle, puis
-tape `/nouvelle-classe`. Le modèle **ne publie rien** (le déploiement saute
-tant que le dépôt est un modèle) ; la **classe de démonstration** est un
-dépôt à part, `encrine-ai/tour-du-monde`, publié sur
+`classe.yml`. Chaque enseignant crée **son** dépôt depuis ce modèle (partir
+de zéro) ou depuis une classe partagée de la galerie, elle-même cochée
+« Template repository » (partir de cette classe), puis tape
+`/nouvelle-classe` — sans adresse : le skill voit qu'une classe est déjà là
+et l'enrichit. Le modèle **ne publie rien** : le déploiement saute pour le
+seul dépôt `encrine-ai/moteur`, testé par son nom (et non par
+`is_template`, que portent aussi les classes partagées). La **classe de
+démonstration** est un dépôt à part, `encrine-ai/tour-du-monde`, publié sur
 https://encrine.ai/tour-du-monde/, et créé depuis ce modèle comme toute
 classe.
+
+`classe.yml` porte l'identité de la classe, `depot` (`propriétaire/dépôt`),
+et, si elle est partie d'une autre, son `origine` (dépôt, titre, auteur,
+licence, site, date de reprise) : le pied du site crédite l'original, ce
+qu'exigent CC BY et CC BY-SA.
 
 Tout est écrit **en français**, y compris les noms de fichiers, les
 commentaires et les messages de commit.
