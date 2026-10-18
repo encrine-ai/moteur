@@ -425,9 +425,13 @@ def anomalies(theme):
                 continue
             regles.append((feuille, ctx, prelude, _declarations(corps)))
     gab = (dossier / "gabarits.js").read_text(encoding="utf-8") if (dossier / "gabarits.js").is_file() else ""
+    # une image du thème peut aussi servir par les données propres au thème,
+    # dans le projet de la classe (periodes.<clé>.theme de classe/projet.yml)
+    projet = RACINE / "classe" / "projet.yml"
+    gab += projet.read_text(encoding="utf-8") if projet.is_file() else ""
     for f, genre in declares.items():
         if genre == "images" and f not in utilisees and f not in gab:
-            a.append("image %s déclarée mais ni une feuille ni gabarits.js ne s'en sert" % f)
+            a.append("image %s déclarée mais ni une feuille, ni gabarits.js, ni classe/projet.yml ne s'en sert" % f)
     for f in declares:
         if declares[f] != "images" and f not in utilisees and (f.endswith(".svg") or f.endswith(".woff2")):
             a.append("%s est déclaré mais aucune feuille ne s'en sert" % f)
@@ -611,12 +615,14 @@ def _ecran_du_theme(feuille, prelude, decls):
                 a.append("%s : font-family « %s » — passer par var(--police-…)" % (ou, v))
             if p == "font" and re.search(r"[\"']|\bserif\b|sans-serif", v) and "var(--police-" not in v:
                 a.append("%s : font « %s » — la famille passe par var(--police-…)" % (ou, v))
-            if enfant and (p in ("font-family", "letter-spacing", "word-spacing", "text-transform", "font-style")
+            if enfant and (p in ("font-family", "letter-spacing", "word-spacing", "text-transform")
+                           or (p == "font-style" and v.strip() != "normal")
                            or (p == "font" and "var(--police-enfant)" not in v)):
                 a.append("%s : %s sur un mot de l'enfant — Andika, droite, sans espacement ajouté" % (ou, p))
             if p in ("font-size", "font"):
-                m = re.search(r"(?<![\w.-])([\d.]+)(px|rem|em)\b", v)
-                if m and float(m.group(1)) * (16 if m.group(2) != "px" else 1) < TAILLE_MIN_ECRAN:
+                # px et rem seulement : un corps en em se rapporte à son parent
+                m = re.search(r"(?<![\w.-])([\d.]+)(px|rem)\b", v)
+                if m and float(m.group(1)) * (16 if m.group(2) == "rem" else 1) < TAILLE_MIN_ECRAN:
                     a.append("%s : corps %s — %d px au moins à l'écran" % (ou, m.group(0), TAILLE_MIN_ECRAN))
             if p.startswith("--") and SOCLE.match(p):
                 a.append("%s redéfinit %s, qui est du socle" % (ou, p))

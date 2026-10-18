@@ -56,7 +56,9 @@ Yasmine Fatima Julie Salomé Elise Élise Marie Pauline Laura Océane Anaïs Emi
 Émilie Lisa Noémie Justine Clémence Maëlle Elina Lilou Kenza Aliyah
 """.split()
 
-# Une ligne de crédits nomme des auteurs adultes, et doit les nommer.
+# Une ligne de crédits nomme des auteurs adultes, et doit les nommer ; de
+# même le champ `auteur` d'une œuvre ou d'une image (classe/projet.yml).
+AUTEUR = re.compile(r"^\s*(-\s*)?auteur\s*:")
 CREDIT = re.compile(r"CC0|CC BY|licence|domaine public|iNaturalist|Wikimedia|Openverse|"
                     r"ARASAAC|Mulberry|Global Symbols|OpenMoji|SIL Open Font", re.I)
 IMAGES = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg", ".heic", ".tif", ".tiff", ".bmp"}
@@ -93,7 +95,7 @@ def prenoms(racine, partage):
     trouves = {}
     for f in _documents(racine):
         for i, ligne in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
-            if CREDIT.search(ligne):
+            if CREDIT.search(ligne) or AUTEUR.match(ligne):
                 continue
             for m in motif.finditer(_sans_titres(ligne)):
                 if m.group(1) not in fictifs:

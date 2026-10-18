@@ -578,8 +578,8 @@ def _verifier_projet(c, anomalies):
                              "ou {imagier: <slug>}" % (ou, v, qui))
 
     def fil(ou, v):
-        if not (isinstance(v, dict) and isinstance(v.get("nom"), str) and set(v) <= {"nom", "texte", "message", "embleme"}):
-            anomalies.append("%s : il faut {nom, texte} (message, embleme facultatifs)" % ou)
+        if not (isinstance(v, dict) and isinstance(v.get("nom"), str) and set(v) <= {"cle", "nom", "texte", "message", "embleme"}):
+            anomalies.append("%s : il faut {nom, texte} (cle, message, embleme facultatifs)" % ou)
         elif v.get("embleme"):
             embleme(ou, v["embleme"])
 
