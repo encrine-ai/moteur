@@ -7,6 +7,7 @@ Ce dossier contient le référentiel ; un contrôle le confronte aux annotations
 | [`cycle1-gs.yml`](cycle1-gs.yml) | **159 attendus** du programme, un par ligne, chacun avec un identifiant stable — plus 5 règles de cadre |
 | [`classe/annotations.yml`](../classe/annotations.yml) | **286 accroches** : ce que chaque période de chaque progression traite. C'est du contenu de la classe, désigné par `contenu.annotations` dans `classe.yml` |
 | `scripts/couverture.py` | la soustraction des deux, et le rapport |
+| `calendrier-AAAA-AAAA.yml` | à part du programme : le **calendrier scolaire officiel** d'une année, pour les trois zones. Une classe n'y choisit que sa zone (`calendrier.zone` dans `classe.yml`) ; `scripts/classe.py` en tire ses dates |
 
 ```sh
 python3 scripts/couverture.py             # le rapport

@@ -23,11 +23,11 @@ commentaires et les messages de commit.
 | `site/fiches/` | les fiches élève imprimables, une page A4 par fiche |
 | `site/imagier/` | l'imagier Montessori, un cahier de cartes par période |
 | `site/cartes-corpus/` | les cartes-corpus de vocabulaire, un cahier par période |
-| `classe.yml` | **la classe** : nom, niveau, année, projet, calendrier, milieux, documents — la seule source de ce qui la distingue d'une autre ; `scripts/classe.py verifier` refuse qu'une de ces données soit écrite en dur dans le code |
+| `classe.yml` | **la classe** : nom, niveau, année, projet, zone de vacances, milieux, documents — la seule source de ce qui la distingue d'une autre ; `scripts/classe.py verifier` refuse qu'une de ces données soit écrite en dur dans le code |
 | `classe/` | le contenu propre à la classe, que `classe.yml` désigne : les espèces de l'imagier (`imagier.py`), les cartes-corpus (`corpus.py`), ce que l'année traite du programme (`annotations.yml`) |
 | `scripts/` | fabrication des pages et des images |
 | `.claude/skills/` | les procédures outillées du dépôt (voir ci-dessous) |
-| `referentiel/` | le programme sous forme de liste numérotée, et le contrôle de couverture |
+| `referentiel/` | le programme sous forme de liste numérotée, et le contrôle de couverture ; le calendrier scolaire officiel de chaque année, pour les trois zones (`calendrier-AAAA-AAAA.yml`) |
 
 Les PDF **ne sont pas versionnés** : `scripts/generer-pdf.sh` les fabrique à
 chaque déploiement avec Chromium en mode `--print-to-pdf`.
@@ -72,8 +72,10 @@ python3 scripts/couverture.py          # tous les attendus du programme ; code 1
 identifiant ; `classe/annotations.yml` dit ce que chaque
 période traite. Une séance ajoutée sans accroche ne sera pas comptée.
 
-**`referentiel/` ne contient que des exigences du programme**, relues contre le
-BO. Une règle que la classe se donne (le nombre d'espèces de l'imagier, par
+**`referentiel/` ne contient que des données officielles** : les exigences du
+programme, relues contre le BO, et le calendrier scolaire national
+(`calendrier-AAAA-AAAA.yml`, les trois zones, relevé dans le jeu de données
+officiel ; une classe n'y choisit que sa zone, `calendrier.zone`). Une règle que la classe se donne (le nombre d'espèces de l'imagier, par
 exemple) n'y a pas sa place : elle vit dans le script du matériel concerné.
 
 
@@ -92,7 +94,7 @@ matériel qu'il couvre, et finir par [`capitaliser`](.claude/skills/capitaliser/
 | [`cartes-corpus`](.claude/skills/cartes-corpus/SKILL.md) | les cahiers de cartes de vocabulaire (`site/cartes-corpus/`) — ajouter un mot à un corpus, refaire un cahier, produire les étiquettes de tri des fiches X.1 |
 | [`charte-graphique`](.claude/skills/charte-graphique/SKILL.md) | toute question d'apparence : couleurs des périodes, polices, icônes, composants de l'écran et du papier, et le design system publié qui en est le miroir |
 | [`imprimer-pdf`](.claude/skills/imprimer-pdf/SKILL.md) | fabriquer les PDF et prouver qu'ils sont justes — avant tout commit qui touche à ce qui s'imprime |
-| [`site-et-calendrier`](.claude/skills/site-et-calendrier/SKILL.md) | l'application, la liste des documents, les zones et dates de vacances, le changement d'année, le déploiement |
+| [`site-et-calendrier`](.claude/skills/site-et-calendrier/SKILL.md) | l'application, la liste des documents, la zone de la classe et le calendrier officiel, le changement de zone ou d'année, le déploiement |
 | [`nouvelle-classe`](.claude/skills/nouvelle-classe/SKILL.md) | faire du dépôt la classe d'un autre enseignant : l'entretien (niveau, zone, thème, matériel), puis `classe.yml`, les progressions, les cahiers et les PDF |
 | [`retours-enseignant`](.claude/skills/retours-enseignant/SKILL.md) | l'enseignant fait ses retours avec ses mots (une fiche, une image, une idée) : les trier, corriger la classe, remonter ce qui vaut pour toutes |
 | [`remonter-au-moteur`](.claude/skills/remonter-au-moteur/SKILL.md) | un défaut, une amélioration ou une idée qui servirait à toutes les classes devient une issue sur le dépôt du moteur (`moteur` dans `classe.yml`) |

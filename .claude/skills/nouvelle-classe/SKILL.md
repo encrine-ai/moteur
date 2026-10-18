@@ -53,7 +53,10 @@ site, son dépôt, ou sa carte. Décidé le 18 octobre 2026 :
    annoncées** de l'étape 1 (« je reprends le thème des contes et ses cinq
    milieux ; dis-moi ce que tu veux changer »). Le niveau, l'année, la zone
    et le profil de la classe restent ceux de l'enseignant : toujours les
-   demander.
+   demander. **La zone surtout se redemande toujours**, même quand la classe
+   d'origine en a une (sa fiche de galerie la donne) : la nouvelle classe
+   a **ses** vacances. Ne jamais recopier le `calendrier` de la classe
+   d'origine.
 3. **Le contenu ne se copie que si la licence le permet** :
    - CC BY, CC BY-SA : on peut reprendre les progressions, les fiches, les
      choix d'espèces et de mots, en les adaptant ; une classe CC BY-SA reste
@@ -89,9 +92,14 @@ enseignants avant qu'ils commencent.)
 
 1. **Le niveau** : PS, MS, GS, double niveau — avec ce que le moteur en fait
    (tableau ci-dessus).
-2. **L'année scolaire et la zone de vacances** (A, B, C). Les dates se
-   relèvent dans le jeu de données officiel, jamais de mémoire (skill
-   site-et-calendrier).
+2. **L'année scolaire et la zone de vacances** (A, B, C). La zone est **le
+   seul réglage du calendrier** de la classe : `calendrier: {zone: X}` dans
+   `classe.yml`. Les dates des trois zones sont dans le moteur
+   (`referentiel/calendrier-<année>.yml`), relevées une fois pour toutes les
+   classes dans le jeu de données officiel ; une année qui n'a pas encore
+   son fichier se prépare d'abord dans le moteur (skill site-et-calendrier,
+   « Changer d'année scolaire »). Ne jamais écrire de date dans
+   `classe.yml`.
 3. **Le thème de l'année** : reprendre celui de la classe d'origine, ou un
    autre (la faune et la flore, les saisons, le tour du monde, les contes…). Proposer ensuite **un milieu ou
    un sous-thème par période**, cinq en tout, que l'enseignant corrige.
@@ -137,8 +145,9 @@ au moment où le matériel concerné se fabrique.
 
 1. **`classe.yml`** : nom, niveau, année, projet, accroche, `ton` (`tu`, ou
    `vous` si l'enseignant l'a demandé), `moteur` (le dépôt modèle d'où vient
-   ce dépôt et le commit copié : skill synchroniser-moteur), calendrier
-   (dates officielles, ponts compris), les cinq `periodes` (clé, milieu,
+   ce dépôt et le commit copié : skill synchroniser-moteur), `calendrier`
+   — la zone seule, plus un pont propre à l'école s'il y en a
+   (`calendrier.ponts`), les dates venant du moteur —, les cinq `periodes` (clé, milieu,
    icône du sprite, couleur, phrase de l'imagier), la section `contenu` et
    la liste des `documents`. Puis :
 

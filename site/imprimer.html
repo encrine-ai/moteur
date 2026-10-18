@@ -17,9 +17,8 @@
       'use strict';
       var params = new URLSearchParams(location.search);
       var id = params.get('doc') || 'projet-annuel';
-      var zone = params.get('zone') || 'A';
+      var zone = GS.ZONE;  // celle de la classe (classe.yml)
       var periode = parseInt(params.get('periode') || '0', 10);
-      if (['A', 'B', 'C'].indexOf(zone) === -1) zone = 'A';
       var doc = GS.DOCS.find(function (x) { return x.id === id; });
       if (!doc || !doc.md) { document.getElementById('contenu').textContent = 'Document inconnu.'; return; }
 
@@ -54,7 +53,7 @@
           }
         }
 
-        GS.annoteTitres(contenu, zone);
+        GS.annoteTitres(contenu);
         document.body.dataset.pret = '1';
       });
     })();

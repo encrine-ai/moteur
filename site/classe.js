@@ -30,11 +30,7 @@ var CLASSE = {
     "corpus": "classe/corpus.py"
   },
   "calendrier": {
-    "zones": [
-      "A",
-      "B",
-      "C"
-    ],
+    "zone": "C",
     "rentree": "2026-09-01",
     "fin": "2027-07-02",
     "toussaint": {
@@ -46,32 +42,12 @@ var CLASSE = {
       "reprise": "2027-01-04"
     },
     "hiver": {
-      "A": {
-        "debut": "2027-02-13",
-        "reprise": "2027-03-01"
-      },
-      "B": {
-        "debut": "2027-02-20",
-        "reprise": "2027-03-08"
-      },
-      "C": {
-        "debut": "2027-02-06",
-        "reprise": "2027-02-22"
-      }
+      "debut": "2027-02-06",
+      "reprise": "2027-02-22"
     },
     "printemps": {
-      "A": {
-        "debut": "2027-04-10",
-        "reprise": "2027-04-26"
-      },
-      "B": {
-        "debut": "2027-04-17",
-        "reprise": "2027-05-03"
-      },
-      "C": {
-        "debut": "2027-04-03",
-        "reprise": "2027-04-19"
-      }
+      "debut": "2027-04-03",
+      "reprise": "2027-04-19"
     },
     "ponts": [
       {

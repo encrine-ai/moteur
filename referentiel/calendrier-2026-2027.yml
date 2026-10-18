@@ -1,0 +1,35 @@
+# Le calendrier scolaire officiel 2026-2027, France métropolitaine.
+# Données nationales, communes à toutes les classes : chaque classe n'en
+# retient que sa zone (`calendrier.zone` dans classe.yml), et
+# scripts/classe.py assemble ses dates dans site/classe.json et classe.js.
+#
+# Source : le jeu de données fr-en-calendrier-scolaire
+# (https://data.education.gouv.fr/explore/dataset/fr-en-calendrier-scolaire/).
+# Toute date se relève là, jamais de mémoire (skill site-et-calendrier).
+#
+# Chaque vacance se note par son premier jour (`debut`) et son jour de
+# reprise (`reprise`) ; la période se termine la veille du premier jour.
+# Une année de plus, c'est un fichier de plus : calendrier-AAAA-AAAA.yml.
+
+annee: 2026-2027
+rentree: 2026-09-01
+fin: 2027-07-02
+
+# communes aux trois zones
+toussaint: {debut: 2026-10-17, reprise: 2026-11-02}
+noel: {debut: 2026-12-19, reprise: 2027-01-04}
+
+# par zone
+hiver:
+  A: {debut: 2027-02-13, reprise: 2027-03-01}
+  B: {debut: 2027-02-20, reprise: 2027-03-08}
+  C: {debut: 2027-02-06, reprise: 2027-02-22}
+printemps:
+  A: {debut: 2027-04-10, reprise: 2027-04-26}
+  B: {debut: 2027-04-17, reprise: 2027-05-03}
+  C: {debut: 2027-04-03, reprise: 2027-04-19}
+
+# les ponts nationaux ; un pont propre à l'école s'écrit dans classe.yml
+# (`calendrier.ponts`), qui s'ajoute à ceux-ci
+ponts:
+  - {nom: Pont de l’Ascension, du: 2027-05-06, au: 2027-05-09}

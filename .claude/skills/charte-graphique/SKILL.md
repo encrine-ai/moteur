@@ -96,10 +96,9 @@ refuse `themes/<thème>` écrit dans `site/*.html` ou `site/*.js`).
 | Composant | Classes | Notes |
 |---|---|---|
 | Bandeau | `.bandeau`, `.marque`, `.marque-frise` | la marque = cinq bandes aux couleurs des périodes |
-| Sélecteur de zone | `.segments`, `.zone-btn[aria-pressed]` | mémorisé dans `localStorage` (`zone-vacances`) |
 | Menu | `.sidebar`, `.menu-groupe`, `.groupe`, `a.actif` | les évaluations y portent une pastille de période |
 | Bouton | `.btn`, `.btn-principal` | un seul principal par barre : le PDF du document |
-| Pastille, badge | `.pastille[data-periode]`, `.zone-badge` | le badge porte les dates calculées de la zone |
+| Pastille, badge | `.pastille[data-periode]`, `.zone-badge` | le badge porte les dates calculées de la zone de la classe ; à l'accueil, la mention discrète « zone X » |
 | Frise | `.frise`, `.frise-periode.en-cours`, `.frise-ici` | une bande par période, `flex-grow` = semaines |
 | Matériel | `.materiels`, `.materiel.en-cours` | 2 colonnes, la période en cours (ou à venir) en tête et sur toute la largeur |
 | Document | `.contenu[data-periode]` | le Markdown rendu ; une évaluation prend la couleur de sa période |

@@ -30,8 +30,8 @@ des enseignants ont choisi de partager.
 2. **Activez le site** : dans votre dépôt, **Settings → Pages → Source →
    « GitHub Actions »**. C'est le seul réglage à faire à la main.
 3. **Ouvrez le dépôt dans Claude Code, sur la branche `main`**, et tapez
-   **`/nouvelle-classe`**. L'entretien vous demande le niveau, la zone de
-   vacances, le thème de l'année, le matériel voulu ; il commence par une
+   **`/nouvelle-classe`**. L'entretien vous demande le niveau, votre zone de
+   vacances (le site et les PDF prennent ses dates), le thème de l'année, le matériel voulu ; il commence par une
    période complète, ou par les cinq si vous le préférez.
 4. **Répondez, imprimez, dites ce qui ne va pas.** Vos retours corrigent votre
    classe ; ce qui vaut pour tous remonte au moteur, avec votre accord, et

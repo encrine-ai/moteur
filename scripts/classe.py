@@ -2,7 +2,9 @@
 """La classe : lire classe.yml, le fournir au site, et garder le moteur propre.
 
 classe.yml est la seule source de ce qui distingue cette classe d'une autre
-(année, niveau, thème, milieux, calendrier, documents). Le site ne lit pas le
+(année, niveau, thème, milieux, zone de vacances, documents). Les dates des
+vacances, elles, sont nationales : referentiel/calendrier-<année>.yml les porte
+pour les trois zones, et `generer` n'y prend que celles de la zone de la classe. Le site ne lit pas le
 YAML : il charge site/classe.js, fabriqué ici ; scripts/generer-pdf.sh lit
 site/classe.json. La charte que chargent toutes les pages, site/charte/charte.css,
 est elle aussi fabriquée ici : le socle commun (site/charte/socle.css) suivi du
@@ -37,6 +39,37 @@ SOURCE = RACINE / "classe.yml"
 JSON = RACINE / "site" / "classe.json"
 JS = RACINE / "site" / "classe.js"
 CHARTE = RACINE / "site" / "charte"
+ZONES = ("A", "B", "C")
+# Ce que classe.yml peut dire du calendrier : sa zone, et les ponts propres à
+# l'école, qui s'ajoutent aux ponts nationaux. Tout le reste vient du moteur.
+CLES_CALENDRIER = {"zone", "ponts"}
+
+
+def fichier_calendrier(annee):
+    """Le calendrier officiel de l'année scolaire, dans le moteur."""
+    return RACINE / "referentiel" / ("calendrier-%s.yml" % annee)
+
+
+def calendrier(c):
+    """Les dates de la classe : celles de sa zone, tirées du calendrier
+    national de son année, plus ses ponts propres. None si l'année n'a pas de
+    fichier ou si la zone n'est pas A, B ou C (`verifier` le dit)."""
+    propre = c.get("calendrier") or {}
+    zone = propre.get("zone")
+    f = fichier_calendrier(c.get("annee"))
+    if zone not in ZONES or not f.is_file():
+        return None
+    nat = _iso(yaml.safe_load(f.read_text(encoding="utf-8")))
+    return {
+        "zone": zone,
+        "rentree": nat["rentree"],
+        "fin": nat["fin"],
+        "toussaint": nat["toussaint"],
+        "noel": nat["noel"],
+        "hiver": nat["hiver"][zone],
+        "printemps": nat["printemps"][zone],
+        "ponts": (nat.get("ponts") or []) + (propre.get("ponts") or []),
+    }
 
 
 def _iso(v):
@@ -65,6 +98,7 @@ def charger():
     """classe.yml, dates en ISO, les titres des documents de période complétés,
     et chaque cahier du matériel muni de sa page source et de son PDF."""
     c = _iso(yaml.safe_load(SOURCE.read_text(encoding="utf-8")))
+    c["calendrier"] = calendrier(c) or c.get("calendrier")
     for doc in c["documents"]:
         n = doc.get("fiches")
         if n:
@@ -140,6 +174,10 @@ def _charte(c):
 
 def generer():
     c = charger()
+    if calendrier(_iso(yaml.safe_load(SOURCE.read_text(encoding="utf-8")))) is None:
+        sys.exit("✘ calendrier : il faut `calendrier: {zone: A|B|C}` dans classe.yml, et "
+                 "referentiel/calendrier-%s.yml dans le moteur — python3 scripts/classe.py verifier"
+                 % c.get("annee"))
     texte, js = _contenus(c)
     JSON.write_text(texte, encoding="utf-8")
     JS.write_text(js, encoding="utf-8")
@@ -159,6 +197,9 @@ EXCLUS = {"site/classe.js", "site/marked.min.js", "site/charte/charte.css"}  # f
 NOMBRES = re.compile(r"\b\d+\s+(animaux|plantes|espèces)\b", re.I)
 # L'adresse publiée d'une classe (« propriétaire.github.io/dépôt »).
 ADRESSE = re.compile(r"[\w-]+\.github\.io/[\w-]+")
+# Les restes du temps où chaque classe portait les trois zones : un sélecteur
+# mémorisé, des PDF rangés par zone, la liste des zones lue dans classe.json.
+ANCIEN = re.compile(r"zone-vacances|pdf/zone-|zone-\$|\['zones'\]|calendrier\.zones")
 
 
 def _interdits(c):
@@ -173,8 +214,48 @@ def _interdits(c):
     return sorted(valeurs, key=len, reverse=True)
 
 
+def _verifier_calendrier(anomalies):
+    """La zone, le fichier de l'année, et plus aucune date dans classe.yml."""
+    brut = yaml.safe_load(SOURCE.read_text(encoding="utf-8"))
+    propre = brut.get("calendrier")
+    if not isinstance(propre, dict):
+        anomalies.append("calendrier : il faut `calendrier: {zone: A|B|C}` (skill site-et-calendrier)")
+        return
+    if propre.get("zone") not in ZONES:
+        anomalies.append("calendrier.zone : « %s » — la zone de vacances de la classe, A, B ou C"
+                         % propre.get("zone"))
+    for cle in sorted(set(propre) - CLES_CALENDRIER):
+        anomalies.append("calendrier.%s : ancienne clé — les dates des trois zones viennent de "
+                         "referentiel/calendrier-<année>.yml ; classe.yml ne garde que `zone` "
+                         "(et ses ponts propres, `ponts`)" % cle)
+    for p in propre.get("ponts") or []:
+        if not (isinstance(p, dict) and p.get("nom") and p.get("du") and p.get("au")):
+            anomalies.append("calendrier.ponts : chaque pont a `nom`, `du` et `au`")
+    f = fichier_calendrier(brut.get("annee"))
+    if not f.is_file():
+        anomalies.append("annee %s : %s n'existe pas — le calendrier officiel de l'année entre "
+                         "dans le moteur (skill site-et-calendrier)"
+                         % (brut.get("annee"), f.relative_to(RACINE)))
+        return
+    nat = yaml.safe_load(f.read_text(encoding="utf-8"))
+    if str(nat.get("annee")) != str(brut.get("annee")):
+        anomalies.append("%s : annee « %s » au lieu de « %s »"
+                         % (f.relative_to(RACINE), nat.get("annee"), brut.get("annee")))
+    for cle in ("rentree", "fin"):
+        if not isinstance(nat.get(cle), datetime.date):
+            anomalies.append("%s : `%s` doit être une date" % (f.relative_to(RACINE), cle))
+    vacances = [(cle, nat.get(cle)) for cle in ("toussaint", "noel")]
+    vacances += [("%s.%s" % (cle, z), (nat.get(cle) or {}).get(z))
+                 for cle in ("hiver", "printemps") for z in ZONES]
+    for nom, v in vacances:
+        if not (isinstance(v, dict) and all(isinstance(v.get(k), datetime.date)
+                                             for k in ("debut", "reprise"))):
+            anomalies.append("%s : `%s` doit avoir `debut` et `reprise`" % (f.relative_to(RACINE), nom))
+
+
 def verifier():
     anomalies = []
+    _verifier_calendrier(anomalies)
     c = charger()
     texte, js = _contenus(c)
     for chemin, attendu in ((JSON, texte), (JS, js)):
@@ -233,6 +314,11 @@ def verifier():
         if rel in EXCLUS:
             continue
         for i, ligne in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
+            ancien = ANCIEN.search(ligne)
+            if ancien:
+                anomalies.append("%s:%d garde « %s » — une classe n'a plus qu'une zone, "
+                                 "celle de classe.yml (GS.CAL.zone)" % (rel, i, ancien.group(0)))
+                continue
             site = ADRESSE.search(ligne)
             if site:
                 anomalies.append("%s:%d écrit l'adresse « %s » en dur — "

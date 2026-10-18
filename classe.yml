@@ -27,43 +27,10 @@ contenu:
   annotations: classe/annotations.yml
   imagier: classe/imagier.py
   corpus: classe/corpus.py
+# La zone de vacances de la classe : ses dates viennent du calendrier officiel
+# de l'année, dans le moteur (referentiel/calendrier-<annee>.yml).
 calendrier:
-  zones:
-  - A
-  - B
-  - C
-  rentree: 2026-09-01
-  fin: 2027-07-02
-  toussaint:
-    debut: 2026-10-17
-    reprise: 2026-11-02
-  noel:
-    debut: 2026-12-19
-    reprise: 2027-01-04
-  hiver:
-    A:
-      debut: 2027-02-13
-      reprise: 2027-03-01
-    B:
-      debut: 2027-02-20
-      reprise: 2027-03-08
-    C:
-      debut: 2027-02-06
-      reprise: 2027-02-22
-  printemps:
-    A:
-      debut: 2027-04-10
-      reprise: 2027-04-26
-    B:
-      debut: 2027-04-17
-      reprise: 2027-05-03
-    C:
-      debut: 2027-04-03
-      reprise: 2027-04-19
-  ponts:
-  - nom: Pont de l’Ascension
-    du: 2027-05-06
-    au: 2027-05-09
+  zone: C
 periodes:
 - cle: europe
   milieu: L’Europe

@@ -6,7 +6,7 @@
 (function () {
   'use strict';
 
-  var etat = { zone: 'A', doc: 'accueil' };
+  var etat = { doc: 'accueil' };
   var cacheMd = {};
 
   function icone(nom) {
@@ -59,7 +59,7 @@
     contenu.innerHTML = '<p class="chargement">Chargement…</p>';
     chargeMd(doc).then(function (md) {
       contenu.innerHTML = marked.parse(GS.nettoieMarkdown(md));
-      GS.annoteTitres(contenu, etat.zone);
+      GS.annoteTitres(contenu);
       window.scrollTo(0, 0);
     }).catch(function () {
       contenu.innerHTML = '<p>Impossible de charger ce document. Vérifiez votre connexion puis rechargez la page.</p>';
@@ -91,7 +91,7 @@
   /* La frise de l'année : cinq bandes, larges de leur nombre de semaines. */
   function frise(ps, pj, prochaine) {
     var total = ps.reduce(function (s, p) { return s + p.sem; }, 0);
-    return '<ol class="frise" aria-label="Les cinq périodes de l’année, zone ' + etat.zone + '">' +
+    return '<ol class="frise" aria-label="Les cinq périodes de l’année, zone ' + GS.ZONE + '">' +
       ps.map(function (p) {
         var enCours = pj && pj.n === p.n;
         var aVenir = !pj && prochaine && prochaine.n === p.n;
@@ -152,7 +152,7 @@
     var contenu = document.getElementById('contenu');
     contenu.className = 'contenu accueil';
     delete contenu.dataset.periode;
-    var ps = GS.periodes(etat.zone);
+    var ps = GS.periodes();
     var pj = periodeDuJour(ps);
     var C = GS.CLASSE;
     // « Pont de l’Ascension : pas de classe du jeudi 6 au dimanche 9 mai … »
@@ -162,7 +162,7 @@
     }).join('');
     var vac = [
       ['Toussaint', GS.CAL.toussaint], ['Noël', GS.CAL.noel],
-      ['Hiver', GS.CAL.hiver[etat.zone]], ['Printemps', GS.CAL.printemps[etat.zone]]
+      ['Hiver', GS.CAL.hiver], ['Printemps', GS.CAL.printemps]
     ].map(function (v) {
       return '<li><strong>' + v[0] + '</strong><span>du ' + GS.fmtCourt(GS.d(v[1].debut)) + ' au ' + GS.fmtCourt(GS.veille(v[1].reprise)) +
         '</span><span class="reprise">reprise le ' + GS.fmtCourt(GS.d(v[1].reprise)) + '</span></li>';
@@ -193,10 +193,10 @@
       '<h1>' + C.projet + '</h1>' +
       '<p class="chapo">' + C.accroche + '</p>' +
       '</div>' +
-      '<section class="bloc"><div class="bloc-tete"><h2>L’année en ' + nombre(ps.length) + ' ' + (C.periodes_nom || 'périodes') + '</h2><span class="zone-badge">Zone ' + etat.zone + '</span></div>' +
+      '<section class="bloc"><div class="bloc-tete"><h2>L’année en ' + nombre(ps.length) + ' ' + (C.periodes_nom || 'périodes') + '</h2><span class="zone-badge">zone ' + GS.ZONE + '</span></div>' +
       frise(ps, pj, tete) +
       '<ul class="vacances">' + vac + '</ul>' +
-      '<p class="note">' + ponts + 'Les dates suivent la zone choisie en haut de page ; ' +
+      '<p class="note">' + ponts + 'Les dates sont celles de la zone ' + GS.ZONE + ' ; ' +
       'chaque document se télécharge en PDF prêt à imprimer, dates comprises.</p></section>' +
       (ordre.length ? '<section class="bloc"><div class="bloc-tete"><h2>À imprimer pour la classe</h2></div>' +
       '<p class="note">' + noteMateriel(sortes, sortes.every(function (m) { return m.periodes.length === ps.length; })) + '</p>' +
@@ -215,8 +215,8 @@
     var btnPdf = document.getElementById('btn-pdf');
     if (doc.md) {
       btnPdf.hidden = false;
-      btnPdf.href = 'pdf/zone-' + etat.zone + '/' + doc.id + '.pdf';
-      btnPdf.setAttribute('download', GS.PREFIXE + '-' + doc.id + '-zone-' + etat.zone + '.pdf');
+      btnPdf.href = 'pdf/' + doc.id + '.pdf';
+      btnPdf.setAttribute('download', GS.PREFIXE + '-' + doc.id + '.pdf');
     } else {
       btnPdf.hidden = true;
     }
@@ -238,8 +238,8 @@
       pp.hidden = false;
       pp.innerHTML = '<span>' + icone('printer') + 'L’extrait d’une période, pour l’afficher en classe :</span> ' +
         GS.THEMES.map(function (_, i) { return i + 1; }).map(function (n) {
-          return '<a data-periode="' + n + '" href="pdf/zone-' + etat.zone + '/' + doc.id + '-periode-' + n + '.pdf" ' +
-            'download="' + GS.PREFIXE + '-' + doc.id + '-periode-' + n + '-zone-' + etat.zone + '.pdf">' + pastille(n) + GS.THEMES[n - 1] + '</a>';
+          return '<a data-periode="' + n + '" href="pdf/' + doc.id + '-periode-' + n + '.pdf" ' +
+            'download="' + GS.PREFIXE + '-' + doc.id + '-periode-' + n + '.pdf">' + pastille(n) + GS.THEMES[n - 1] + '</a>';
         }).join(' ');
     } else {
       pp.hidden = true;
@@ -255,16 +255,6 @@
     document.getElementById('menu-toggle').setAttribute('aria-expanded', 'false');
   }
 
-  /* ——— Zone ——— */
-  function appliqueZone(zone, memorise) {
-    etat.zone = zone;
-    if (memorise) { try { localStorage.setItem('zone-vacances', zone); } catch (e) { /* ignore */ } }
-    document.querySelectorAll('.zone-btn').forEach(function (b) {
-      b.setAttribute('aria-pressed', String(b.dataset.zone === zone));
-    });
-    rend();
-  }
-
   /* ——— Démarrage ——— */
   // Les textes de la classe dans l'en-tête, le titre et le pied de page.
   function habilleClasse() {
@@ -272,7 +262,7 @@
     document.title = C.nom + ' ' + C.annee + ' · ' + C.projet;
     document.querySelector('.marque-titre').textContent = C.nom;
     document.querySelector('.marque-sous').textContent = C.annee + ' · ' + C.sous_titre;
-    document.querySelector('.pied').textContent = C.conformite + ' Dates des vacances : calendrier scolaire officiel ' + C.annee + '.';
+    document.querySelector('.pied').textContent = C.conformite + ' Dates des vacances : calendrier scolaire officiel ' + C.annee + ', zone ' + GS.ZONE + '.';
   }
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -280,13 +270,6 @@
     habilleClasse();
     construireMenu();
 
-    var zone = 'A';
-    try { zone = localStorage.getItem('zone-vacances') || 'A'; } catch (e) { /* ignore */ }
-    if (['A', 'B', 'C'].indexOf(zone) === -1) zone = 'A';
-
-    document.querySelectorAll('.zone-btn').forEach(function (b) {
-      b.addEventListener('click', function () { appliqueZone(b.dataset.zone, true); });
-    });
     document.getElementById('menu-toggle').addEventListener('click', function (e) {
       e.stopPropagation();
       var sb = document.getElementById('sidebar');
@@ -304,6 +287,6 @@
     });
 
     etat.doc = (location.hash || '#/accueil').replace('#/', '') || 'accueil';
-    appliqueZone(zone, false);
+    rend();
   });
 })();

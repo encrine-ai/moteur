@@ -16,7 +16,7 @@ chaque enseignant met à jour **sa** classe, quand il le veut.
 
 | Couche | Chemins | Synchronisée ? |
 |---|---|---|
-| **le moteur** | `scripts/`, `site/*.js` (sauf `site/classe.js`), `site/*.html`, `site/*.css`, `site/marked.min.js`, le socle de la charte : `site/charte/socle.css` et `site/charte/polices/` (Andika), `referentiel/`, `.claude/skills/`, `.github/workflows/`, `tests/` | **oui** |
+| **le moteur** | `scripts/`, `site/*.js` (sauf `site/classe.js`), `site/*.html`, `site/*.css`, `site/marked.min.js`, le socle de la charte : `site/charte/socle.css` et `site/charte/polices/` (Andika), `referentiel/` (la liste du programme **et le calendrier officiel de chaque année**, `calendrier-AAAA-AAAA.yml`), `.claude/skills/`, `.github/workflows/`, `tests/` | **oui** |
 | **la classe** | `classe.yml`, `classe/`, les documents `01-…` à `04-…`, `README.md`, les cahiers fabriqués (`site/fiches/*.html`, `site/imagier/`, `site/cartes-corpus/`, leurs images et crédits), `site/classe.json`, `site/classe.js`, les thèmes `site/charte/themes/` | **jamais** |
 | **fabriqué** | `site/charte/charte.css` (socle + thème), `site/charte/icones.svg` (icônes génériques + celles des milieux de `classe.yml`) | **jamais copiés** : refaits après la synchronisation, `python3 scripts/classe.py generer` puis `python3 scripts/generer-icones.py` (réseau) |
 | **à la main** | `CLAUDE.md` (il mêle les règles du moteur et l'identité de la classe) | ne reprendre que les règles générales, par une lecture attentive |
@@ -69,6 +69,15 @@ la leçon si elle vaut toujours, en la remontant.
 
 ## 3. Mettre la classe d'accord avec le nouveau moteur
 
+- **Le calendrier** : les dates des trois zones arrivent avec `referentiel/`
+  (`calendrier-AAAA-AAAA.yml`) ; la classe ne garde que sa zone
+  (`calendrier.zone`). C'est ainsi qu'une nouvelle année scolaire parvient
+  aux classes : la synchronisation apporte son fichier, puis on change
+  `annee` (skill site-et-calendrier). Une classe d'avant ce découpage, qui
+  porte encore les dates des trois zones dans `classe.yml`, voit
+  `classe.py verifier` refuser ces anciennes clés : ne garder que
+  `calendrier: {zone: X}` — la zone qu'utilise l'enseignant, à lui
+  demander si rien ne la dit — plus ses ponts propres s'il en a ajouté.
 - **Nouvelles clés de `classe.yml`** : si le moteur en attend une que la
   classe n'a pas, `python3 scripts/classe.py verifier` le dit. L'ajouter
   avec la valeur par défaut annoncée par le skill concerné, et l'annoncer à

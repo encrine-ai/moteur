@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Génère tous les PDF du site dans <dossier-site>/pdf/ :
-#  - un PDF par document et par zone de vacances (A, B, C), via la vue imprimer.html
+#  - un PDF par document, aux dates de la zone de la classe (classe.yml,
+#    `calendrier.zone`), via la vue imprimer.html, et ses extraits par période
 #  - un PDF par cahier du matériel et par période qui l'a (classe.yml,
 #    `materiel` : entraînement, évaluation, imagier, cartes-corpus)
 # Usage : scripts/generer-pdf.sh <dossier-site-assemblé>
@@ -30,25 +31,26 @@ imprime() { # imprime <url> <fichier-pdf> [budget-temps-ms]
   [ -s "$2" ] || { echo "ÉCHEC : $2" >&2; exit 1; }
 }
 
-# Les documents et les zones viennent de la classe (classe.yml, via site/classe.json).
+# Les documents et la zone viennent de la classe (classe.yml, via site/classe.json).
 classe() { python3 -c "import json,sys; c=json.load(open('$SITE_DIR/classe.json')); print(' '.join($1))"; }
 DOCS=$(classe "d['id'] for d in c['documents'] if d.get('md')")
 PROGRESSIONS=$(classe "d['id'] for d in c['documents'] if d.get('par_periode')")
-ZONES=$(classe "c['calendrier']['zones']")
+ZONE=$(classe "[c['calendrier']['zone']]")
 PERIODES=$(classe "str(i + 1) for i in range(len(c['periodes']))")
-for Z in $ZONES; do
-  mkdir -p "$OUT/zone-$Z"
-  for D in $DOCS; do
-    imprime "http://127.0.0.1:$PORT/imprimer.html?doc=$D&zone=$Z" "$OUT/zone-$Z/$D.pdf"
-  done
-  # Extraits par période des progressions, pour l'affichage en classe
-  for D in $PROGRESSIONS; do
-    for N in $PERIODES; do
-      imprime "http://127.0.0.1:$PORT/imprimer.html?doc=$D&zone=$Z&periode=$N" "$OUT/zone-$Z/$D-periode-$N.pdf"
-    done
-  done
-  echo "Zone $Z : $(ls "$OUT/zone-$Z" | wc -l) PDF"
+mkdir -p "$OUT"
+NDOCS=0
+for D in $DOCS; do
+  imprime "http://127.0.0.1:$PORT/imprimer.html?doc=$D" "$OUT/$D.pdf"
+  NDOCS=$((NDOCS + 1))
 done
+# Extraits par période des progressions, pour l'affichage en classe
+for D in $PROGRESSIONS; do
+  for N in $PERIODES; do
+    imprime "http://127.0.0.1:$PORT/imprimer.html?doc=$D&periode=$N" "$OUT/$D-periode-$N.pdf"
+    NDOCS=$((NDOCS + 1))
+  done
+done
+echo "Documents (zone $ZONE) : $NDOCS PDF"
 
 # Les cahiers : ceux que déclare le matériel, période par période. L'imagier
 # et les cartes-corpus, lourds en photographies, laissent plus de temps au

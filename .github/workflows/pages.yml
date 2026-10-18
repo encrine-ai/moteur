@@ -34,7 +34,7 @@ jobs:
           cp -r site/. _site/
           cp 01-projet-annuel.md 02-programmation-annuelle.md _site/content/
           for d in 03-progressions 04-evaluations; do [ -d "$d" ] && cp -r "$d" _site/content/ || true; done
-      - name: Générer les PDF (documents × zones + cahiers)
+      - name: Générer les PDF (documents de la zone de la classe + cahiers)
         run: bash scripts/generer-pdf.sh _site
       - name: Une page par fiche, une page par planche
         run: python3 scripts/verifier-pagination.py _site

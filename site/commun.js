@@ -6,7 +6,10 @@ var GS = (function () {
   'use strict';
 
   var C = CLASSE;
+  // Le calendrier de la classe : les dates de SA zone (classe.py les tire du
+  // calendrier officiel de l'année), `CAL.zone` en tête.
   var CAL = C.calendrier;
+  var ZONE = CAL.zone;
   var THEMES = C.periodes.map(function (p) { return p.milieu; });
   // Icône de chaque milieu (sprite charte/icones.svg) ; la couleur de la
   // période vient de la charte (--p1 … --p5).
@@ -27,22 +30,22 @@ var GS = (function () {
   function fmtCourt(date) { return fmt(date, { weekday: 'short', day: 'numeric', month: 'short' }); }
   function semaines(a, b) { return Math.round(((b.getTime() - a.getTime()) / DAY + 1) / 7); }
 
-  function periodes(zone) {
+  function periodes() {
     return [
       { n: 1, debut: d(CAL.rentree), fin: veille(CAL.toussaint.debut) },
       { n: 2, debut: d(CAL.toussaint.reprise), fin: veille(CAL.noel.debut) },
-      { n: 3, debut: d(CAL.noel.reprise), fin: veille(CAL.hiver[zone].debut) },
-      { n: 4, debut: d(CAL.hiver[zone].reprise), fin: veille(CAL.printemps[zone].debut) },
-      { n: 5, debut: d(CAL.printemps[zone].reprise), fin: d(CAL.fin) }
+      { n: 3, debut: d(CAL.noel.reprise), fin: veille(CAL.hiver.debut) },
+      { n: 4, debut: d(CAL.hiver.reprise), fin: veille(CAL.printemps.debut) },
+      { n: 5, debut: d(CAL.printemps.reprise), fin: d(CAL.fin) }
     ].map(function (p) { p.sem = semaines(p.debut, p.fin); return p; });
   }
 
-  function badgeText(p, zone) {
-    return 'Zone ' + zone + ' : du ' + fmtCourt(p.debut) + ' au ' + fmtCourt(p.fin) + ' ' + fmt(p.fin, { year: 'numeric' }) + ' · ' + p.sem + ' semaines';
+  function badgeText(p) {
+    return 'Zone ' + ZONE + ' : du ' + fmtCourt(p.debut) + ' au ' + fmtCourt(p.fin) + ' ' + fmt(p.fin, { year: 'numeric' }) + ' · ' + p.sem + ' semaines';
   }
 
-  function annoteTitres(racine, zone) {
-    var ps = periodes(zone);
+  function annoteTitres(racine) {
+    var ps = periodes();
     var re = /P[ée]riode\s*([1-5])/i;
     racine.querySelectorAll('h1, h2, h3').forEach(function (h) {
       var m = h.textContent.match(re);
@@ -50,7 +53,7 @@ var GS = (function () {
       var p = ps[parseInt(m[1], 10) - 1];
       var badge = h.querySelector('.zone-badge');
       if (!badge) { badge = document.createElement('span'); badge.className = 'zone-badge'; h.appendChild(badge); }
-      badge.textContent = badgeText(p, zone);
+      badge.textContent = badgeText(p);
     });
   }
 
@@ -62,7 +65,7 @@ var GS = (function () {
   }
 
   return {
-    CLASSE: C, CAL: CAL, THEMES: THEMES, ICONES_MILIEU: ICONES_MILIEU, DOCS: DOCS, PREFIXE: PREFIXE,
+    CLASSE: C, CAL: CAL, ZONE: ZONE, THEMES: THEMES, ICONES_MILIEU: ICONES_MILIEU, DOCS: DOCS, PREFIXE: PREFIXE,
     d: d, veille: veille, fmt: fmt, fmtLong: fmtLong, fmtCourt: fmtCourt,
     periodes: periodes, badgeText: badgeText, annoteTitres: annoteTitres,
     nettoieMarkdown: nettoieMarkdown

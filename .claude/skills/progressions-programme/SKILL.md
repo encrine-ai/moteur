@@ -68,11 +68,12 @@ P5) attendent encore cette relecture.
 
 - Garder la structure : un `## Période N — <milieu>` par période (le site
   repère « Période N » dans les titres pour y poser le badge de dates de la
-  zone, et en tire les extraits imprimables par période) ; un tableau par
+  zone de la classe, et en tire les extraits imprimables par période) ; un tableau par
   période, une ligne par champ.
 - **Ne jamais écrire une date de période à la main** dans un document : elle
-  dépend de la zone. Le badge la calcule (`GS.annoteTitres`). Une date fixe
-  pour toutes les zones (rentrée, Toussaint, Noël, fin d'année) peut s'écrire.
+  dépend de la zone, que la classe peut changer d'une ligne. Le badge la
+  calcule (`GS.annoteTitres`). Une date fixe pour toutes les zones (rentrée,
+  Toussaint, Noël, fin d'année) peut s'écrire.
 - Chaque situation est **thématisée par le milieu** de la période : c'est le
   principe du projet. Un exercice hors milieu doit avoir une raison.
 - Démarche à respecter en maths : manipulation → représentation →

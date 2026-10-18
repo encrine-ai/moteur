@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Contrôle que chaque cahier imprimé a exactement une page par fiche ou par planche.
+"""Contrôle que chaque cahier imprimé a exactement une page par fiche ou par planche,
+et que chaque document a son PDF, aux dates de la zone de la classe.
 
 Le HTML ne dit rien de la pagination : un navigateur s'allonge, une feuille A4
 non. Les deux pires défauts de ce matériel — des étiquettes qui s'imprimaient
@@ -10,7 +11,9 @@ du PDF fabriqué, et refuse tout écart.
 Usage :
     bash scripts/generer-pdf.sh /tmp/site      # le site assemblé, PDF compris
     python3 scripts/verifier-pagination.py /tmp/site
-Code de sortie 1 s'il reste un cahier dont une section déborde (ou est vide).
+Code de sortie 1 s'il reste un cahier dont une section déborde (ou est vide), un
+document sans PDF, ou un dossier pdf/zone-X/ d'avant (une classe n'a qu'une zone :
+les PDF sont à plat dans pdf/).
 """
 import json
 import pathlib
@@ -32,6 +35,17 @@ def cahiers(site):
             for m in c.get("materiel", []) if m.get("cle") in BALISE for n in m["periodes"]]
 
 
+def documents(site):
+    """Les PDF des documents : pdf/<doc>.pdf, et pdf/<doc>-periode-N.pdf pour
+    les progressions — ce que fabrique generer-pdf.sh, ce que lie app.js."""
+    c = json.loads((site / "classe.json").read_text(encoding="utf-8"))
+    nb = len(c["periodes"])
+    pdfs = ["pdf/%s.pdf" % d["id"] for d in c["documents"] if d.get("md")]
+    pdfs += ["pdf/%s-periode-%d.pdf" % (d["id"], n) for d in c["documents"]
+             if d.get("par_periode") for n in range(1, nb + 1)]
+    return c["calendrier"].get("zone"), pdfs
+
+
 def pages(pdf):
     try:
         from pypdf import PdfReader
@@ -46,6 +60,18 @@ def main():
         sys.exit(__doc__)
     site = pathlib.Path(sys.argv[1])
     anomalies = 0
+    total = 0
+    zone, DOCUMENTS = documents(site)
+    for pdf in DOCUMENTS:
+        if not (site / pdf).exists():
+            print(f"✘ {pdf} : absent (lancer d'abord scripts/generer-pdf.sh)")
+            anomalies += 1
+        else:
+            total += pages(site / pdf)
+    for vieux in sorted((site / "pdf").glob("zone-*")):
+        print(f"✘ pdf/{vieux.name}/ : une classe n'a plus qu'une zone, les PDF sont à plat dans pdf/")
+        anomalies += 1
+    print(f"{len(DOCUMENTS)} documents (zone {zone}), {total} pages")
     CAHIERS = cahiers(site)
     for html, pdf, classe in CAHIERS:
         source, fabrique = site / html, site / pdf
@@ -55,12 +81,14 @@ def main():
             continue
         attendu = len(re.findall(rf'<section class="{classe}\b', source.read_text(encoding="utf-8")))
         obtenu = pages(fabrique)
+        total += obtenu
         if obtenu == attendu:
             print(f"✔ {pdf} : {obtenu} pages")
         else:
             print(f"✘ {pdf} : {obtenu} pages pour {attendu} {classe}s — une section déborde sur la page suivante")
             anomalies += 1
     print(f"{len(CAHIERS)} cahiers contrôlés, {anomalies} anomalie(s)")
+    print(f"{len(DOCUMENTS) + len(CAHIERS)} PDF, {total} pages en tout")
     sys.exit(1 if anomalies else 0)
 
 

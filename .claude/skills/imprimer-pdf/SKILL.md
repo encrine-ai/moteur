@@ -1,6 +1,6 @@
 ---
 name: imprimer-pdf
-description: Fabriquer et contrôler les PDF de Ma Grande Section — les documents par zone (A, B, C) et leurs extraits par période, les cahiers de fiches élève et d'entraînement, les imagiers, les cartes-corpus — avec scripts/generer-pdf.sh et scripts/verifier-pagination.py. À utiliser avant tout commit qui touche à ce qui s'imprime (une fiche, une planche, une feuille CSS du papier, la charte, une police), pour régénérer les PDF, ou quand quelque chose « s'imprime mal ». Se déclenche aussi sans nom de fichier : « la fiche déborde sur deux pages », « le pied de page est tout seul sur une feuille », « vérifie que tout s'imprime bien », « le PDF de la période 3 a une page blanche », « refais les PDF », « les étiquettes passent sur les crédits ». La règle du dépôt : finir par le PDF, jamais par le HTML.
+description: Fabriquer et contrôler les PDF de Ma Grande Section — les documents aux dates de la zone de la classe et leurs extraits par période, les cahiers de fiches élève et d'entraînement, les imagiers, les cartes-corpus — avec scripts/generer-pdf.sh et scripts/verifier-pagination.py. À utiliser avant tout commit qui touche à ce qui s'imprime (une fiche, une planche, une feuille CSS du papier, la charte, une police), pour régénérer les PDF, ou quand quelque chose « s'imprime mal ». Se déclenche aussi sans nom de fichier : « la fiche déborde sur deux pages », « le pied de page est tout seul sur une feuille », « vérifie que tout s'imprime bien », « le PDF de la période 3 a une page blanche », « refais les PDF », « les étiquettes passent sur les crédits ». La règle du dépôt : finir par le PDF, jamais par le HTML.
 ---
 
 # Imprimer, et le prouver
@@ -16,16 +16,20 @@ personne les voie. Toute retouche du papier se termine donc par le PDF.
 
 | Source | PDF (dans `<site>/pdf/`) | Une page = |
 |---|---|---|
-| un document Markdown via `imprimer.html?doc=…&zone=…` | `zone-X/<doc>.pdf` | (libre) |
-| le même, extrait d'une période (`&periode=N`) | `zone-X/<doc>-periode-N.pdf` | (libre) |
+| un document Markdown via `imprimer.html?doc=…` | `<doc>.pdf` | (libre) |
+| le même, extrait d'une période (`&periode=N`) | `<doc>-periode-N.pdf` | (libre) |
 | `site/fiches/periode-N.html` | `fiches-eleve-periode-N.pdf` | une `section.fiche` |
 | `site/fiches/entrainement-periode-N.html` | `fiches-entrainement-periode-N.pdf` | une `section.fiche` |
 | `site/imagier/periode-N.html` | `imagier-periode-N.pdf` | une `section.planche` |
 | `site/cartes-corpus/periode-N.html` | `cartes-corpus-periode-N.pdf` | une `section.planche` |
 
-155 PDF en tout. Ils **ne sont pas versionnés** : le workflow
+Une classe n'a **qu'une zone** (`calendrier.zone` dans `classe.yml`) : chaque
+document s'imprime une fois, à ses dates, et tout est à plat dans `pdf/`. Une
+Grande Section complète, c'est 65 PDF — 45 documents et extraits, 20 cahiers ;
+`verifier-pagination.py` les compte et donne le total des pages. Ils **ne sont pas versionnés** : le workflow
 `.github/workflows/pages.yml` les refait à chaque déploiement, puis lance
-`verifier-pagination.py`, qui bloque la publication s'il reste un débordement.
+`verifier-pagination.py`, qui bloque la publication s'il reste un débordement,
+un document sans PDF, ou un vieux dossier `pdf/zone-X/`.
 
 ## La marche à suivre
 

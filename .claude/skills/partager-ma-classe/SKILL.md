@@ -77,18 +77,21 @@ enregistrement par classe :
   "projet": "<classe.yml : projet>",
   "niveau": "<classe.yml : niveau.libelle>",
   "annee": "<classe.yml : annee>",
-  "zone": "<la zone que l'enseignant indique, ou null>",
+  "zone": "<classe.yml : calendrier.zone>",
   "milieux": [{"nom": "<periodes[].milieu>", "couleur": "<--p1 … --p5 du thème, en hex>"}],
   "auteur": "<nom ou pseudonyme, au choix de l'enseignant>",
   "licence": "CC BY-SA 4.0",
   "restrictions": ["pictogrammes ARASAAC : pas d'usage commercial"],
   "site": "https://<propriétaire>.github.io/<dépôt>/",
   "depot": "https://github.com/<propriétaire>/<dépôt>",
-  "faits": {"attendus": "159/159", "pdf": 155, "pagination": "vérifiée", "moteur": "<moteur.version>"},
+  "faits": {"attendus": "159/159", "pdf": <le total que donne verifier-pagination.py, 65 pour une GS complète>, "pagination": "vérifiée", "moteur": "<moteur.version>"},
   "partage_le": "AAAA-MM-JJ"
 }
 ```
 
+- La zone n'est qu'une information pour qui regarde : « partir de cette
+  classe » ne la reprend jamais, et redemande toujours la sienne à
+  l'enseignant (skill nouvelle-classe).
 - Les couleurs viennent du thème de la classe
   (`site/charte/themes/<theme>/theme.css`, `--p1` … `--p5`), pas de la
   marque : la carte de la galerie porte le style de la classe.
