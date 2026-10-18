@@ -2,6 +2,11 @@
 
 Ce fichier est la source des consignes du dépôt, pour tout agent de code
 (standard `AGENTS.md`) ; Claude Code le lit par l'import de `CLAUDE.md`.
+Claude Code est l'agent recommandé et le seul éprouvé : la qualité attendue
+(maquettes de mini-sites jugées sur captures, contrôles, PDF) tient au
+modèle. La compatibilité avec d'autres agents est un acquis qu'on garde,
+pas un chantier (décidé le 18 octobre 2026) : aucun travail propre à un
+autre agent, et rien n'est promis pour eux.
 
 Ce dépôt est **le modèle** d'Encrine (https://encrine.ai) : le moteur qui
 fabrique l'année d'une classe — programmation, progressions conformes au
