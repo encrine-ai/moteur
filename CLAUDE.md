@@ -4,8 +4,11 @@ Ce dépôt est **le modèle** d'Encrine (https://encrine.ai) : le moteur qui
 fabrique l'année d'une classe — programmation, progressions conformes au
 programme, fiches, imagier, cartes de vocabulaire, PDF — à partir de
 `classe.yml`. Chaque enseignant crée **son** dépôt depuis ce modèle, puis
-tape `/nouvelle-classe`. Le modèle porte une **classe de démonstration**,
-publiée sur https://encrine.ai/moteur/.
+tape `/nouvelle-classe`. Le modèle **ne publie rien** (le déploiement saute
+tant que le dépôt est un modèle) ; la **classe de démonstration** est un
+dépôt à part, `encrine-ai/tour-du-monde`, publié sur
+https://encrine.ai/tour-du-monde/, et créé depuis ce modèle comme toute
+classe.
 
 Tout est écrit **en français**, y compris les noms de fichiers, les
 commentaires et les messages de commit.

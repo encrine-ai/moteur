@@ -6,10 +6,12 @@ cartes de vocabulaire et tous les PDF, prêts à imprimer. On ne programme
 rien : on répond à quelques questions, et le skill **`/nouvelle-classe`**
 écrit la classe dans `classe.yml` et fabrique le reste.
 
-Il porte une petite **classe de démonstration**, publiée sur
-**https://encrine.ai/moteur/** — une Grande Section « Le tour du monde », un
-continent par période, encore en cours d'écriture : ses documents arrivent
-période par période.
+Pour voir ce que cela donne : la **classe de démonstration**, une Grande
+Section « Le tour du monde », un continent par période, publiée sur
+**https://encrine.ai/tour-du-monde/** (dépôt
+[encrine-ai/tour-du-monde](https://github.com/encrine-ai/tour-du-monde)).
+Elle est créée depuis ce modèle, comme la vôtre le sera ; ses documents
+arrivent période par période. Le modèle, lui, ne publie rien.
 
 ▶ **[encrine.ai](https://encrine.ai)** — le principe, et « Les classes » que
 des enseignants ont choisi de partager.
@@ -23,7 +25,8 @@ des enseignants ont choisi de partager.
    **[github.com/new?template_owner=encrine-ai&template_name=moteur](https://github.com/new?template_owner=encrine-ai&template_name=moteur)** ; nommez votre classe (par
    exemple `ma-grande-section`) et choisissez **Public** — GitHub Pages
    publie gratuitement les dépôts publics. Vous obtenez votre propre dépôt :
-   le moteur entier et la classe de démonstration.
+   le moteur entier et une classe de départ, que l'entretien remplace par la
+   vôtre.
 2. **Activez le site** : dans votre dépôt, **Settings → Pages → Source →
    « GitHub Actions »**. C'est le seul réglage à faire à la main.
 3. **Ouvrez le dépôt dans Claude Code, sur la branche `main`**, et tapez

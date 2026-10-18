@@ -15,7 +15,11 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Le modèle ne publie rien : sa démonstration est une classe à part
+  # (encrine-ai/tour-du-monde). Une classe créée depuis le modèle n'est pas
+  # un modèle : elle publie son site, ses PDF compris.
   build:
+    if: ${{ !github.event.repository.is_template }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -30,14 +34,9 @@ jobs:
           cp -r site/. _site/
           cp 01-projet-annuel.md 02-programmation-annuelle.md _site/content/
           for d in 03-progressions 04-evaluations; do [ -d "$d" ] && cp -r "$d" _site/content/ || true; done
-      # Le modèle ne publie que sa classe de démonstration, sans PDF : elle n'a
-      # pas encore de cahiers. Une classe créée depuis le modèle n'est pas un
-      # modèle : elle fabrique ses PDF et vérifie la pagination.
       - name: Générer les PDF (documents × zones + cahiers)
-        if: ${{ !github.event.repository.is_template }}
         run: bash scripts/generer-pdf.sh _site
       - name: Une page par fiche, une page par planche
-        if: ${{ !github.event.repository.is_template }}
         run: python3 scripts/verifier-pagination.py _site
       - name: Setup Pages
         uses: actions/configure-pages@v5
