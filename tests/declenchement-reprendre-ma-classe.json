@@ -1,0 +1,12 @@
+[
+{"query": "Je reprends ma classe. Mets à jour classe.yml avec mon dépôt et vérifie que tout fonctionne.", "should_trigger": true},
+{"query": "on m'a transféré ma classe sur mon compte github, tu peux vérifier que tout marche ?", "should_trigger": true},
+{"query": "c'est mon dépôt maintenant, j'ai accepté le transfert", "should_trigger": true},
+{"query": "depuis le transfert mon site ne s'ouvre plus à l'ancienne adresse", "should_trigger": true},
+{"query": "la classe est passée sur mon compte, il faut changer quelque chose ?", "should_trigger": true},
+{"query": "je reprends ma classe, Jean-Louis me l'a donnée hier", "should_trigger": true},
+{"query": "je veux faire ma classe de moyenne section", "should_trigger": false},
+{"query": "mets l'outil à jour", "should_trigger": false},
+{"query": "je voudrais partager ma classe avec mes collègues", "should_trigger": false},
+{"query": "passe le site en zone B", "should_trigger": false}
+]
