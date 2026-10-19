@@ -44,6 +44,7 @@ commentaires et les messages de commit.
 | `site/fiches/` | les fiches élève imprimables, une page A4 par fiche |
 | `site/imagier/` | l'imagier Montessori, un cahier de cartes par période |
 | `site/cartes-corpus/` | les cartes-corpus de vocabulaire, un cahier par période |
+| `PRISE-EN-MAIN.md` | dans une classe : le guide de l'enseignant (sa classe, la reprise après un transfert, ce qu'il peut demander), fabriqué par `classe.py generer` depuis `classe.yml` (`scripts/prise_en_main.py`) ; seule sa section « Propre à cette classe » s'écrit à la main |
 | `classe.yml` | **la classe** : nom, niveau, année, projet, zone de vacances, milieux, documents — la seule source de ce qui la distingue d'une autre ; `scripts/classe.py verifier` refuse qu'une de ces données soit écrite en dur dans le code |
 | `classe/` | le contenu propre à la classe, que `classe.yml` désigne : les espèces de l'imagier (`imagier.py`), les cartes-corpus (`corpus.py`), ce que l'année traite du programme (`annotations.yml`), le projet en données pour le site (`projet.yml` : fil rouge, albums, œuvres, sorties… par période) |
 | `scripts/` | fabrication des pages et des images |

@@ -98,6 +98,7 @@ REFAITS = [
     "site/classe.json", "site/classe.js", "site/sw.js", "site/manifest.webmanifest",
     "site/favicon.ico", "site/icones/", "site/charte/charte.css",
     "site/charte/gabarits.js", "site/charte/icones.svg", "README.md",
+    "PRISE-EN-MAIN.md",             # le guide de l'enseignant (scripts/prise_en_main.py), section propre gardée
 ]
 
 
@@ -388,7 +389,8 @@ def bilan(depuis=None):
             if f in retouches:
                 genre += " ⚠ retouché ici depuis %s : la copie l'écrase (remonté ? à réappliquer ?)" % depuis
         elif any(_correspond(f, m) for m in REFAITS):
-            genre = "refait" + (" (relire : seul le bloc de tête change)" if f == "README.md" else "")
+            genre = "refait" + {"README.md": " (relire : seul le bloc de tête change)",
+                                "PRISE-EN-MAIN.md": " (relire : la section propre à la classe est gardée)"}.get(f, "")
         elif f == "classe.yml":
             avant = yaml.safe_load(_git("show", "HEAD:classe.yml")) or {}
             apres = _classe()

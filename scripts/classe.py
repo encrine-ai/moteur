@@ -79,6 +79,7 @@ sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import appli  # noqa: E402  (l'appli installable : manifeste, icônes, service worker)
 import apercu  # noqa: E402  (l'aperçu de lien : titre, Open Graph, image de partage)
 import readme  # noqa: E402  (le bloc de tête du README de la classe)
+import prise_en_main  # noqa: E402  (PRISE-EN-MAIN.md, le guide de l'enseignant)
 
 RACINE = pathlib.Path(__file__).resolve().parent.parent
 SOURCE = RACINE / "classe.yml"
@@ -387,6 +388,7 @@ def generer():
     apercu.ecrire(c)      # avant l'appli : index.html entre dans la version de sw.js
     appli.fabriquer(c)
     readme.ecrire(c)
+    prise_en_main.ecrire(c)
 
 
 # Ce que le moteur n'a pas le droit d'écrire en dur : chaque valeur de classe.yml
@@ -798,6 +800,7 @@ def verifier():
     a_appli, w_appli = appli.anomalies(c)
     a_appli += apercu.anomalies(c)
     a_appli += readme.anomalies(c)
+    a_appli += prise_en_main.anomalies(c)
     anomalies += a_appli
     avertissements += w_appli
     for a in avertissements:

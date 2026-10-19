@@ -20,6 +20,7 @@ module y écrit, entre les marqueurs `<!-- encrine:debut -->` et
   changer depuis la relecture (skill partager-ma-classe). Pour la classe
   d'un enseignant, à la place : le lien vers sa carte dans la galerie,
   `partage.carte`, s'il y en a une ; sinon rien ;
+- le renvoi au guide de l'enseignant, PRISE-EN-MAIN.md (scripts/prise_en_main.py) ;
 - le crédit de la classe d'origine, si `origine` existe (CC BY et CC BY-SA
   l'exigent) ;
 - le bandeau « Conçu avec Encrine ».
@@ -160,6 +161,8 @@ def bloc(c):
     elif not encrine and carte.startswith("https://"):
         liens.append("[Dans la galerie d’Encrine](%s)" % carte)
     l += ["", " · ".join(liens)]
+    l += ["", "Vous reprenez cette classe ? **[Prendre en main la classe](PRISE-EN-MAIN.md)** : "
+              "ce qu’elle est, le premier lancement, ce qu’on peut demander, ce qui est protégé."]
     if lic:
         lien = lien_licence(lic)
         l += ["", "Contenu sous licence %s." % ("[%s](%s)" % (lic, lien) if lien else lic)]
