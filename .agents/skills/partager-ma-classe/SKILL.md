@@ -262,6 +262,14 @@ accord.
 Puis le dire simplement : « Quand tu l'auras envoyé, une personne relira ta
 classe ; une copie apparaîtra dans la galerie si elle est acceptée. »
 
+**Une fois la classe publiée** (la galerie le dit sur l'issue, avec
+l'adresse de la copie, `https://encrine.ai/<id>/`) : écrire cette adresse
+dans `classe.yml`, `partage.carte`, puis `python3 scripts/classe.py
+generer`. Le bloc de tête du README de la classe y renvoie (« Dans la
+galerie d'Encrine ») : « Partir de cette classe » ne mène qu'à la copie
+relue, jamais au dépôt de l'enseignant. Au retrait (étape 6), vider
+`partage.carte`.
+
 ## 5. Mettre à jour sa classe dans la galerie
 
 La copie de la galerie est celle du commit relu : elle ne suit pas la
@@ -295,7 +303,8 @@ commence par la marque `genre=retrait` (`commit` = `origin/main`) et dit
 « à la demande de l'auteur » ; il l'envoie de son compte, comme pour
 l'ajout. (Le formulaire « Signaler une classe » de la galerie, choix « Je
 suis l'auteur : retirez ma classe », fait la même chose.) La galerie sort la
-carte et coupe le site de la copie. Supprimer `partage/fiche.json`. Lui dire
+carte et coupe le site de la copie. Supprimer `partage/fiche.json`, vider
+`partage.carte` et relancer `classe.py generer`. Lui dire
 ce qui reste : son site et son dépôt sont à lui, et ne bougent pas ; ceux
 qui sont déjà partis de la copie gardent leur propre classe, avec le crédit
 que demande la licence.

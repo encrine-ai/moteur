@@ -11,9 +11,15 @@ module y écrit, entre les marqueurs `<!-- encrine:debut -->` et
   domaine propre, comme la classe d'exemple sur encrine.ai), sinon
   l'adresse de GitHub Pages tirée de `depot`,
   https://<propriétaire>.github.io/<dépôt>/ ;
-- la licence du contenu (`partage.licence`, sinon LICENCE-CONTENU.md) et,
-  si elle permet la reprise (CC BY, CC BY-SA, CC0), le lien « Partir de
-  cette classe » (github.com/new?template_owner=…&template_name=…) ;
+- la licence du contenu (`partage.licence`, sinon LICENCE-CONTENU.md) ;
+- « Partir de cette classe » (github.com/new?template_owner=…&template_name=…)
+  seulement pour un dépôt qui est lui-même servi par Encrine — la classe
+  d'exemple ou la copie relue d'une classe de la galerie, dans `encrine-ai`
+  — et dont la licence permet la reprise (CC0, CC BY, CC BY-SA). On part
+  toujours de la copie relue, jamais du dépôt d'un enseignant, qui a pu
+  changer depuis la relecture (skill partager-ma-classe). Pour la classe
+  d'un enseignant, à la place : le lien vers sa carte dans la galerie,
+  `partage.carte`, s'il y en a une ; sinon rien ;
 - le crédit de la classe d'origine, si `origine` existe (CC BY et CC BY-SA
   l'exigent) ;
 - le bandeau « Conçu avec Encrine ».
@@ -31,6 +37,7 @@ le `depot` est celui du moteur, est laissée telle quelle.
 """
 import pathlib
 import re
+import subprocess
 import urllib.parse
 
 RACINE = pathlib.Path(__file__).resolve().parent.parent
@@ -62,6 +69,27 @@ def concerne(c):
     """Le bloc vaut pour une classe qui a son dépôt — pas pour le modèle."""
     d = depot(c)
     return bool(d) and d not in (MODELE, (c.get("moteur") or {}).get("depot"))
+
+
+ORGANISATION = "encrine-ai/"
+
+
+def depot_encrine(c):
+    """Le dépôt servi par Encrine que ce dépôt-ci est, ou None. Une copie
+    relue garde dans classe.yml le `depot` de son auteur : c'est alors son
+    remote `origin` (encrine-ai/<id>) qui le dit."""
+    r = subprocess.run(["git", "-C", str(RACINE), "remote", "get-url", "origin"],
+                       capture_output=True, text=True)
+    origin = None
+    if r.returncode == 0:
+        morceaux = [m for m in re.split(r"[/:]", r.stdout.strip().rstrip("/")) if m]
+        if len(morceaux) >= 2:
+            origin = "/".join(morceaux[-2:])
+            origin = origin[:-4] if origin.endswith(".git") else origin
+    for d in (origin, depot(c)):
+        if d and d.startswith(ORGANISATION):
+            return d
+    return None
 
 
 def site(c):
@@ -123,10 +151,14 @@ def bloc(c):
         l += ["", un(c["accroche"])]
     liens = ["**[Voir le site de la classe](%s)**" % site(c)]
     lic = licence(c)
-    if reprenable(lic):
-        proprietaire, nom = depot(c).split("/", 1)
+    encrine = depot_encrine(c)
+    carte = ((c.get("partage") or {}).get("carte") or "").strip()
+    if encrine and reprenable(lic):
+        proprietaire, nom = encrine.split("/", 1)
         liens.append("[Partir de cette classe](https://github.com/new?%s)" % urllib.parse.urlencode(
             {"template_owner": proprietaire, "template_name": nom}))
+    elif not encrine and carte.startswith("https://"):
+        liens.append("[Dans la galerie d’Encrine](%s)" % carte)
     l += ["", " · ".join(liens)]
     if lic:
         lien = lien_licence(lic)

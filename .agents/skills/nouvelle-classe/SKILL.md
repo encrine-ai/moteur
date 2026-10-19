@@ -439,8 +439,11 @@ fois `depot` écrit) remplace le README du modèle — il porte
 `<!-- encrine:moteur -->` — par un README de classe : un bloc tiré de
 `classe.yml`, entre `<!-- encrine:debut -->` et `<!-- encrine:fin -->` (le
 projet, la signature, le niveau, l'année et la zone, l'accroche, le lien du
-site tiré de `depot` ou de `site`, la licence, « Partir de cette classe » si
-elle le permet, le crédit de `origine`, « Conçu avec Encrine »), puis un
+site tiré de `depot` ou de `site`, la licence, « Partir de cette classe »
+pour la seule classe servie par Encrine qui le permet — l'exemple ou une
+copie relue — ou, pour la classe d'un enseignant, le lien de sa copie dans
+la galerie (`partage.carte`, skill partager-ma-classe), le crédit de
+`origine`, « Conçu avec Encrine »), puis un
 court texte « Ce dépôt ». Sous le bloc, le fichier est à l'enseignant : y
 écrire, avec lui, ce que la classe a de propre (le tableau des périodes et
 des vacances, le matériel), jamais la technique du moteur. Le bloc ne se
