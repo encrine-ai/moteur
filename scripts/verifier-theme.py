@@ -10,8 +10,9 @@ partagent : la police de l'élève, la lisibilité, le papier. Ce script vérifi
 que le thème s'en tient à son contrat — le skill charte-graphique le décrit
 (« Le contrat du thème ») :
 
-1. **les fichiers** : theme.yml déclare chaque police et chaque motif, avec
-   une licence libre (OFL, CC0, CC BY, CC BY-SA, domaine public) ; chaque
+1. **les fichiers** : theme.yml déclare chaque police, chaque motif et chaque
+   tracé de l'icône, avec une licence libre (OFL, CC0, CC BY, CC BY-SA,
+   domaine public) ; chaque
    fichier déclaré existe, chaque fichier du dossier est déclaré, chaque url()
    des feuilles pointe sur un fichier déclaré, aucune ne sort sur le réseau
    (les PDF se fabriquent sans lui) ; un motif SVG ne contient ni script, ni
@@ -33,7 +34,11 @@ que le thème s'en tient à son contrat — le skill charte-graphique le décrit
    ornement y est toujours en position absolue — la pagination ne bouge pas ;
    un aplat sombre n'y est permis que sur la couverture, dont l'intérieur
    (à hauteur fixe) se compose librement ;
-6. **le mini-site** : les images du thème (theme.yml, `images:`) ont une
+6. **l'icône d'appli** (`icone:`, facultative) : un tracé du thème (SVG
+   contrôlé comme un motif, avec sa licence et son auteur) ou une image de
+   `images:` recadrée dans ses bornes, une couleur de fond lisible, une marge
+   maskable entre 0 et 25 % (scripts/icone_du_theme.py) ;
+7. **le mini-site** : les images du thème (theme.yml, `images:`) ont une
    licence libre (CC0, domaine public, CC BY, CC BY-SA), un auteur, une
    source, et leur fichier ; les gabarits (gabarits.js), s'il y en a, se
    chargent, rendent chaque page de la vraie classe et posent les accroches
@@ -175,8 +180,9 @@ COMPOSANTS = {
     "fiche": ("papier", ".fiche", {"paysage", "entete", "idext", "champ", "trait", "cartouche", "ref", "dom",
                                   "titre", "niveau", "n1", "n2", "sous-objectif", "consigne", "exo", "num",
                                   "enonce", "defi", "etoile", "pied-fiche", "codage", "credits"}, set()),
-    "bandeau-imprime": ("papier", DC % "bandeau-imprime", {"bandeau"}, set()),
-    "document-imprime": ("papier", DC % "document-imprime", {"zone-badge"}, set()),
+    # Les documents de l'enseignant (imprimer.html) ne sont plus habillables :
+    # ils sont au style de la marque Encrine, le même pour toutes les classes
+    # (site/marque/, impression.css) — un thème qui les nomme est refusé.
 }
 ORNEMENTS = {o: nom for nom, (_, _, _, ornes) in COMPOSANTS.items() for o in ornes}
 # les mots que l'enfant lit : leur police, leur corps et leur espacement sont du socle
@@ -282,6 +288,18 @@ def contraste(a, b):
     return (la + 0.05) / (lb + 0.05)
 
 
+def _couleur_claire(dossier, valeur):
+    """« #rrggbb » ou un jeton du bloc clair de theme.css → (r, g, b), ou None."""
+    jetons = {}
+    f = dossier / "theme.css"
+    if f.is_file():
+        for ctx, prelude, corps in _regles(_sans_commentaires(f.read_text(encoding="utf-8"))):
+            if prelude.strip() == ":root" and _mode(ctx, prelude) == "clair":
+                jetons.update(dict(_declarations(corps)))
+    valeur = str(valeur).strip()
+    return _couleur(_resoudre("var(%s)" % valeur if valeur.startswith("--") else valeur, jetons))
+
+
 def _resoudre(valeur, jetons, profondeur=0):
     m = re.fullmatch(r"var\(\s*(--[\w-]+)\s*(?:,\s*(.+))?\)", valeur.strip())
     if not m or profondeur > 8:
@@ -383,6 +401,15 @@ def anomalies(theme):
                 declares[f] = genre
                 if not (dossier / f).is_file():
                     a.append("theme.yml déclare %s, qui n'existe pas" % f)
+    # — L'icône d'appli du thème (`icone:`, scripts/icone_du_theme.py) —
+    sys.path.insert(0, str(RACINE / "scripts"))
+    import icone_du_theme
+    icone = icone_du_theme.declaration(manifeste)
+    for f in icone_du_theme.fichiers(icone):
+        declares[f] = "icone"
+    if icone:
+        a += icone_du_theme.anomalies(dossier, manifeste, LICENCES,
+                                      lambda v: _couleur_claire(dossier, v))
     for f in sorted(dossier.rglob("*")):
         rel = str(f.relative_to(dossier))
         if f.is_file() and rel not in declares and rel not in HORS_DECLARATION:
@@ -430,10 +457,10 @@ def anomalies(theme):
     projet = RACINE / "classe" / "projet.yml"
     gab += projet.read_text(encoding="utf-8") if projet.is_file() else ""
     for f, genre in declares.items():
-        if genre == "images" and f not in utilisees and f not in gab:
+        if genre == "images" and f not in utilisees and f not in gab and f != (icone or {}).get("image"):
             a.append("image %s déclarée mais ni une feuille, ni gabarits.js, ni classe/projet.yml ne s'en sert" % f)
     for f in declares:
-        if declares[f] != "images" and f not in utilisees and (f.endswith(".svg") or f.endswith(".woff2")):
+        if declares[f] not in ("images", "icone") and f not in utilisees and (f.endswith(".svg") or f.endswith(".woff2")):
             a.append("%s est déclaré mais aucune feuille ne s'en sert" % f)
 
     # — 2. Les jetons, bloc par bloc —

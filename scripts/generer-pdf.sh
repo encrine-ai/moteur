@@ -22,10 +22,23 @@ CHROME_BIN=${CHROME_BIN:-google-chrome}
 PORT=${PORT:-$(python3 -c 'import socket; s = socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1])')}
 OUT="$SITE_DIR/pdf"
 
-python3 -m http.server "$PORT" --directory "$SITE_DIR" >/dev/null 2>&1 &
-SRV=$!
+# Le port choisi peut être pris entre le choix et le démarrage (une autre
+# fabrication, un autre serveur) : http.server meurt alors en silence, et
+# Chromium imprimait les pages de L'AUTRE serveur — deux extraits d'une autre
+# classe se sont glissés ainsi parmi les PDF. On vérifie que le serveur vit
+# et sert bien CE site, sinon on change de port.
+for ESSAI in 1 2 3 4 5; do
+  python3 -m http.server "$PORT" --bind 127.0.0.1 --directory "$SITE_DIR" >/dev/null 2>&1 &
+  SRV=$!
+  sleep 1
+  if kill -0 "$SRV" 2>/dev/null && curl -s --noproxy '*' "http://127.0.0.1:$PORT/classe.json" | cmp -s - "$SITE_DIR/classe.json"; then
+    break
+  fi
+  kill "$SRV" 2>/dev/null || true
+  [ "$ESSAI" = 5 ] && { echo "ÉCHEC : aucun port libre pour servir $SITE_DIR" >&2; exit 1; }
+  PORT=$(python3 -c 'import socket; s = socket.socket(); s.bind(("127.0.0.1", 0)); print(s.getsockname()[1])')
+done
 trap 'kill $SRV 2>/dev/null || true' EXIT
-sleep 1
 
 imprime() { # imprime <url> <fichier-pdf> [budget-temps-ms]
   "$CHROME_BIN" --headless --disable-gpu --no-sandbox --hide-scrollbars \

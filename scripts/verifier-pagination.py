@@ -8,11 +8,16 @@ par-dessus les crédits, le pied de la garde seul sur une page — n'existaient
 pas à l'écran. Ce script compte les sections de chaque cahier HTML et les pages
 du PDF fabriqué, et refuse tout écart.
 
+Il contrôle aussi la mention de la marque, « Conçu avec Encrine · encrine.ai »,
+au pied de CHAQUE page de chaque PDF (documents et cahiers), par extraction
+du texte (pdftotext, ou pypdf) : elle est dans la marge basse (charte/socle.css,
+impression.css), et une police qui n'a pas chargé à temps l'efface sans bruit.
+
 Usage :
     bash scripts/generer-pdf.sh /tmp/site      # le site assemblé, PDF compris
     python3 scripts/verifier-pagination.py /tmp/site
 Code de sortie 1 s'il reste un cahier dont une section déborde (ou est vide), un
-document sans PDF, ou un dossier pdf/zone-X/ d'avant (une classe n'a qu'une zone :
+document sans PDF, une page sans la mention de la marque, ou un dossier pdf/zone-X/ d'avant (une classe n'a qu'une zone :
 les PDF sont à plat dans pdf/).
 """
 import json
@@ -46,6 +51,26 @@ def documents(site):
     return c["calendrier"].get("zone"), pdfs
 
 
+# La mention de la marque, au pied de chaque page imprimée
+MENTION = "Conçu avec Encrine · encrine.ai"
+
+
+def textes(pdf):
+    """Le texte de chaque page du PDF, dans l'ordre."""
+    try:
+        sortie = subprocess.run(["pdftotext", "-enc", "UTF-8", str(pdf), "-"],
+                                capture_output=True, text=True, check=True).stdout
+        return sortie.split("\f")[:pages(pdf)]
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        from pypdf import PdfReader
+        return [p.extract_text() or "" for p in PdfReader(str(pdf)).pages]
+
+
+def sans_mention(pdf):
+    """Les numéros des pages (à partir de 1) où la mention manque."""
+    return [i + 1 for i, t in enumerate(textes(pdf)) if MENTION not in " ".join(t.split())]
+
+
 def pages(pdf):
     try:
         from pypdf import PdfReader
@@ -61,6 +86,18 @@ def main():
     site = pathlib.Path(sys.argv[1])
     anomalies = 0
     total = 0
+    controlees = 0
+
+    def mention(pdf):
+        nonlocal anomalies, controlees
+        manque, n = sans_mention(site / pdf), pages(site / pdf)
+        controlees += n
+        if manque:
+            ou = ("sur ses %d pages" % n if len(manque) == n
+                  else "page(s) " + ", ".join(map(str, manque[:12])) + (" …" if len(manque) > 12 else ""))
+            print(f"✘ {pdf} : la mention « {MENTION} » manque {ou}")
+            anomalies += 1
+
     zone, DOCUMENTS = documents(site)
     for pdf in DOCUMENTS:
         if not (site / pdf).exists():
@@ -68,6 +105,7 @@ def main():
             anomalies += 1
         else:
             total += pages(site / pdf)
+            mention(pdf)
     for vieux in sorted((site / "pdf").glob("zone-*")):
         print(f"✘ pdf/{vieux.name}/ : une classe n'a plus qu'une zone, les PDF sont à plat dans pdf/")
         anomalies += 1
@@ -82,11 +120,13 @@ def main():
         attendu = len(re.findall(rf'<section class="{classe}\b', source.read_text(encoding="utf-8")))
         obtenu = pages(fabrique)
         total += obtenu
+        mention(pdf)
         if obtenu == attendu:
             print(f"✔ {pdf} : {obtenu} pages")
         else:
             print(f"✘ {pdf} : {obtenu} pages pour {attendu} {classe}s — une section déborde sur la page suivante")
             anomalies += 1
+    print(f"mention « {MENTION} » cherchée au pied de {controlees} pages")
     print(f"{len(CAHIERS)} cahiers contrôlés, {anomalies} anomalie(s)")
     print(f"{len(DOCUMENTS) + len(CAHIERS)} PDF, {total} pages en tout")
     sys.exit(1 if anomalies else 0)

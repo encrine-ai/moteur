@@ -32,9 +32,13 @@ Usage :
                                        # (contenu.projet) n'a pas la bonne forme,
                                        # ou si le manifeste, les icônes ou
                                        # sw.js manquent ou sont périmés
-  python3 scripts/classe.py estampiller <site>   # au déploiement : la version
-                                       # de <site>/sw.js recalculée sur le site
-                                       # assemblé (documents de content/ compris)
+  python3 scripts/classe.py estampiller <site> [--adresse <url>]
+                                       # au déploiement : l'image de partage
+                                       # <site>/partage.png (Chromium), l'aperçu
+                                       # de lien de <site>/index.html en adresses
+                                       # absolues (scripts/apercu.py), puis la
+                                       # version de <site>/sw.js recalculée sur le
+                                       # site assemblé (documents de content/ compris)
 
 Le mini-site : classe.json porte aussi ce que les gabarits affichent — le
 projet structuré (`donnees_projet`, lu dans classe/projet.yml), l'imagier
@@ -65,6 +69,7 @@ except ImportError:
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import appli  # noqa: E402  (l'appli installable : manifeste, icônes, service worker)
+import apercu  # noqa: E402  (l'aperçu de lien : titre, Open Graph, image de partage)
 
 RACINE = pathlib.Path(__file__).resolve().parent.parent
 SOURCE = RACINE / "classe.yml"
@@ -370,6 +375,7 @@ def generer():
     GABARITS.write_text(_gabarits(c), encoding="utf-8")
     print("site/classe.json, site/classe.js, site/charte/charte.css et site/charte/gabarits.js "
           "écrits depuis classe.yml")
+    apercu.ecrire(c)      # avant l'appli : index.html entre dans la version de sw.js
     appli.fabriquer(c)
 
 
@@ -718,7 +724,11 @@ def verifier():
         rel = str(f.relative_to(RACINE))
         if rel in EXCLUS:
             continue
-        for i, ligne in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
+        texte_f = f.read_text(encoding="utf-8")
+        if rel == "site/index.html":
+            # le titre et l'aperçu de lien portent la classe par construction
+            texte_f = apercu.sans_bloc(texte_f)
+        for i, ligne in enumerate(texte_f.splitlines(), 1):
             ancien = ANCIEN.search(ligne)
             if ancien:
                 anomalies.append("%s:%d garde « %s » — une classe n'a plus qu'une zone, "
@@ -748,6 +758,7 @@ def verifier():
         anomalies += ["thème « %s » : %s" % (c["theme"], a) for a in vt.anomalies(c["theme"])]
     # L'appli installable : manifeste, icônes, service worker (scripts/appli.py).
     a_appli, w_appli = appli.anomalies(c)
+    a_appli += apercu.anomalies(c)
     anomalies += a_appli
     avertissements += w_appli
     for a in avertissements:
@@ -764,7 +775,10 @@ if __name__ == "__main__":
         generer()
     elif action == "verifier":
         sys.exit(verifier())
-    elif action == "estampiller" and len(sys.argv) == 3:
+    elif action == "estampiller" and len(sys.argv) in (3, 5) and (len(sys.argv) == 3 or sys.argv[3] == "--adresse"):
+        # l'aperçu de lien d'abord (image de partage, adresses absolues) : la
+        # version de sw.js se calcule ensuite, sur ce qui sera publié
+        apercu.estampiller(sys.argv[2], charger(), sys.argv[4] if len(sys.argv) == 5 else None)
         appli.estampiller(sys.argv[2], charger())
     else:
         sys.exit(__doc__)

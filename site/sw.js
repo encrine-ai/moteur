@@ -29,7 +29,7 @@
  */
 'use strict';
 
-var VERSION = "89b0ed9c42ff";
+var VERSION = "d221f471dbe6";
 var PRECACHE = [
   "./",
   "index.html",
@@ -47,6 +47,7 @@ var PRECACHE = [
   "marked.min.js",
   "manifest.webmanifest",
   "charte/charte.css",
+  "marque/marque.css",
   "charte/icones.svg",
   "favicon.ico",
   "icones/appli.svg",
@@ -59,6 +60,11 @@ var PRECACHE = [
   "charte/polices/andika-latin-700.woff2",
   "charte/polices/andika-latin-ext-400.woff2",
   "charte/polices/andika-latin-ext-700.woff2",
+  "marque/polices/figtree-latin-ext.woff2",
+  "marque/polices/figtree-latin.woff2",
+  "marque/polices/marelle.woff2",
+  "marque/polices/unbounded-latin-ext.woff2",
+  "marque/polices/unbounded-latin.woff2",
   "charte/themes/demo/polices/atkinson-next-latin-ext.woff2",
   "charte/themes/demo/polices/atkinson-next-latin-italic.woff2",
   "charte/themes/demo/polices/atkinson-next-latin.woff2",

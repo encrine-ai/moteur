@@ -28,23 +28,26 @@ jobs:
       - name: Polices emoji et outils PDF
         run: sudo apt-get update -qq && sudo apt-get install -y -qq fonts-noto-color-emoji poppler-utils
       - name: La classe vient de classe.yml, et de nulle part ailleurs
-        run: pip install -q pyyaml && python3 scripts/classe.py verifier
+        run: pip install -q pyyaml pillow && python3 scripts/classe.py verifier
       - name: Assembler le site (application + contenus)
         run: |
           mkdir -p _site/content
           cp -r site/. _site/
           cp 01-projet-annuel.md 02-programmation-annuelle.md _site/content/
           for d in 03-progressions 04-evaluations; do [ -d "$d" ] && cp -r "$d" _site/content/ || true; done
-      - name: La version de l'appli (sw.js), sur le site assemblé
-        run: python3 scripts/classe.py estampiller _site
+      # Avant l'estampille : elle a besoin de l'adresse publique du site
+      # (base_url), pour l'aperçu de lien en adresses absolues.
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
+        with:
+          enablement: true
+      - name: L'aperçu de lien (image de partage, adresses absolues) et la version de l'appli (sw.js), sur le site assemblé
+        run: python3 scripts/classe.py estampiller _site --adresse "${{ steps.pages.outputs.base_url }}"
       - name: Générer les PDF (documents de la zone de la classe + cahiers)
         run: bash scripts/generer-pdf.sh _site
       - name: Une page par fiche, une page par planche
         run: python3 scripts/verifier-pagination.py _site
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
 

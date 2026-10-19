@@ -15,7 +15,7 @@ sauf les PDF.
 | `referentiel/calendrier-AAAA-AAAA.yml` | **le calendrier officiel** d'une année scolaire, pour les trois zones : données nationales, communes à toutes les classes, qui font partie du moteur |
 | `scripts/classe.py` | `generer` fabrique `site/classe.json` et `site/classe.js` (versionnés), avec les dates de **la zone de la classe** seulement, tirées du calendrier de son année ; `verifier` sort en code 1 si ces fichiers sont périmés, si la zone n'est pas A, B ou C, si l'année n'a pas de fichier de calendrier, s'il reste des dates (les anciennes clés) dans `classe.yml`, ou si une donnée de la classe — l'année, le projet, un milieu — est écrite en dur dans le moteur. Le déploiement le refait |
 | `site/commun.js` | l'objet `GS`, bâti sur `CLASSE` : le calendrier de la classe (`CAL`, et sa zone `ZONE`), les milieux (`THEMES`, `ICONES_MILIEU`), les documents (`DOCS`), le préfixe des fichiers téléchargés, le calcul des périodes et le badge de dates. Partagé par l'application et la vue d'impression |
-| `site/index.html` | trois emplacements — `#entete`, `#contenu`, `#pied` — et le lien d'évitement ; le manifeste et les meta de l'appli ; charge `modele.js`, `gabarits.js`, puis `charte/gabarits.js` (ceux du thème) et `app.js` |
+| `site/index.html` | le bloc du titre et de l'aperçu de lien (`scripts/apercu.py`, ci-dessous) ; trois emplacements — `#entete`, `#contenu`, `#pied` — et le lien d'évitement ; le manifeste et les meta de l'appli ; charge `modele.js`, `gabarits.js`, puis `charte/gabarits.js` (ceux du thème) et `app.js` |
 | `site/modele.js` | `GS.modele()` : le modèle des pages — périodes datées pour la zone, « Nous y sommes » (une période, ou des vacances : « pendant les vacances de la Toussaint »), vacances, ponts, menu groupé, documents et leurs PDF, cahiers de chaque période, projet, imagier, corpus, images et crédits, signature. `?date=AAAA-MM-JJ` dans l'adresse simule un jour |
 | `site/app.js` | la logique : routes (`#/accueil`, `#/<document>`, `#/periode/<clé>`, `#/credits`), lecture et rendu du Markdown (titre, sections, badges de dates), menu (sous-menus, dialogue du téléphone, Échap, focus), crédits ; la **forme** vient des gabarits (skill charte-graphique, « Le mini-site ») ; aucun sélecteur de zone |
 | `site/gabarits.js` | les gabarits par défaut : l'en-tête et le menu, l'accueil, le document (boutons PDF `pdf/<doc>.pdf`, extraits `pdf/<doc>-periode-N.pdf`), la période, le pied |
@@ -96,7 +96,7 @@ réseau. Tout est fabriqué par `scripts/appli.py`, que lance
 - `classe.py verifier` refuse un manifeste, une icône ou un `sw.js` absent ou
   périmé, un chemin absolu ; une version en retard (un document changé sans
   `generer`) n'est qu'un avertissement : le déploiement la recalcule sur le
-  site assemblé (`python3 scripts/classe.py estampiller _site`).
+  site assemblé (`python3 scripts/classe.py estampiller _site --adresse …`).
 - Pour l'essayer : servir le site assemblé **dans un sous-dossier**
   (`http://127.0.0.1:PORT/<dépôt>/`). Hors connexion : arrêter le serveur —
   `setOffline` de Playwright ne coupe pas les requêtes du service worker.
@@ -220,6 +220,52 @@ refuse qu'elle s'écarte des pages fabriquées : un cahier déclaré sans page,
 ou une page sans déclaration. Les nombres (« 18 animaux et 18 plantes ») et
 l'intitulé de l'imagier (`intitule`, ici « faune et flore ») vivent là, jamais
 dans `site/*.js`.
+
+## Le titre des pages et l'aperçu de lien
+
+Le titre de l'onglet (et du raccourci posé sur l'écran d'accueil) est
+**« Encrine – <projet> »** sur l'accueil, **« <titre de la page> · Encrine –
+<projet> »** ailleurs (« L’Afrique · Encrine – Le tour du monde », « Crédits ·
+… », « Page introuvable · … ») : `titrePage()` dans `app.js`. Le manifeste,
+lui, garde son nom court sous l'icône.
+
+Les messageries (iMessage, WhatsApp, Signal, Slack) et les réseaux
+**n'exécutent pas le JavaScript** : ils lisent le `<head>` statique de
+`index.html`. `scripts/apercu.py` y écrit, entre `<!-- apercu:debut -->` et
+`<!-- apercu:fin -->`, le `<title>` de l'accueil, la meta description, les
+balises Open Graph (`og:type` website, `og:locale` fr_FR, `og:site_name`
+Encrine, `og:title`, `og:description`, `og:url`, `og:image` et ses
+`width`/`height`/`alt`) et Twitter (`summary_large_image`). La description
+est l'`accroche` de `classe.yml`, suivie de « La classe de <signature>. » si
+l'enseignant signe. Ce bloc porte la classe par construction : la chasse aux
+données écrites en dur l'ignore ; ne jamais le retoucher à la main.
+
+- `classe.py generer` écrit le bloc en adresses **relatives** (le dépôt ne
+  connaît pas son adresse) ; `classe.py verifier` refuse un bloc absent ou
+  périmé. Après une synchronisation du moteur, `index.html` arrive avec le
+  bloc du modèle : `generer` le refait.
+- Au déploiement, `classe.py estampiller _site --adresse <base_url>` (l'étape
+  `actions/configure-pages`, `id: pages`, passe donc **avant** l'estampille)
+  fabrique l'image de partage puis réécrit le bloc du site assemblé en
+  adresses **absolues** — Open Graph l'exige ; `og:image` porte `?v=<empreinte>`
+  pour que les messageries ne gardent pas l'ancienne image. Sans `--adresse`,
+  le bloc reste relatif et un avertissement le dit. L'aperçu passe avant la
+  version de `sw.js`, calculée sur ce qui sera publié.
+- **L'image de partage**, `partage.png`, 1200 × 630, n'est pas versionnée :
+  Chromium (celui des PDF) rend le haut de l'accueil à 1200 × 630, sur une
+  copie temporaire de `index.html` sans `appli.js` (ni service worker, ni
+  invitation à installer), avec une discrète pastille « Conçu avec
+  Encrine ». Un thème peut dessiner la sienne : un gabarit `partage`
+  (`GS.theme({ partage: function (m) { … } })`, une vignette de 1200 × 630).
+  Pillow la réduit à une palette (sous 300 Ko ; d'où `pip install pillow`
+  dans le workflow). Piège : le nouveau mode sans tête de Chrome retranche
+  87 px de `--window-size` pour une barre fantôme ; `apercu.py` mesure cet
+  écart, agrandit la fenêtre d'autant et recadre.
+- Pour vérifier : assembler le site comme le workflow, lancer
+  `estampiller --adresse https://<domaine>/<dépôt>/`, lire les balises
+  **sans JavaScript** (le HTML brut), regarder `partage.png` réduite à
+  300 px de large (la taille d'un aperçu sur téléphone) et simuler une bulle
+  d'iMessage ou de WhatsApp.
 
 ## Le déploiement
 

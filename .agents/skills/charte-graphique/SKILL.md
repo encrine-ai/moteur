@@ -13,7 +13,7 @@ partagent ce qui sert l'enfant et le papier. D'où trois couches :
 | Couche | Où | Qui la change |
 |---|---|---|
 | **le socle** | `site/charte/socle.css` (+ Andika dans `site/charte/polices/`) | le moteur seul ; aucun thème ne le défait |
-| **les composants du moteur** | `site/app.css`, `site/impression.css`, `site/fiches/fiches.css`, `site/imagier/imagier.css`, `site/cartes-corpus/cartes-corpus.css`, `site/charte/composants.css` (la couverture) — tous dans `@layer moteur` | le moteur ; ils n'emploient que des jetons |
+| **les composants du moteur** | `site/app.css`, `site/fiches/fiches.css`, `site/imagier/imagier.css`, `site/cartes-corpus/cartes-corpus.css`, `site/charte/composants.css` (la couverture) — tous dans `@layer moteur` ; `site/impression.css` et `site/marque/` (les documents de l'enseignant) sont hors thème, au style de la marque | le moteur ; ils n'emploient que des jetons |
 | **le thème de la classe** | `site/charte/themes/<thème>/` : `theme.yml`, `theme.css`, `habillage.css`, `gabarits.js`, `polices/`, `motifs/`, `images/` | la classe, avec son enseignant |
 
 `python3 scripts/classe.py generer` assemble `socle.css`, `composants.css`,
@@ -32,12 +32,77 @@ contrôle qui empêche le thème d'y toucher.
 ses gabarits dessinent l'en-tête et le menu, l'accueil, la page de document
 et la page de chaque période, avec ses images et son mouvement — « comme un
 site différent, à son image » (décision du propriétaire, 18 octobre 2026).
-Sur le papier (fiches, imagier, cartes-corpus, PDF des documents), le thème
+Sur le papier du matériel des élèves (fiches, imagier, cartes-corpus), le thème
 **habille, il ne restructure pas** : couleurs, polices de l'adulte,
 ornements, couverture, jamais la géométrie. C'est ce qui permet à une classe
 de recevoir les nouvelles versions du moteur (skill synchroniser-moteur)
 sans perdre son style : le moteur garde ses accroches et le contrat des
 gabarits ; tout le reste lui est interne et peut changer.
+
+## La marque sur le papier — les documents de l'enseignant
+
+Décision du propriétaire : **les documents de l'enseignant** (projet annuel,
+programmation, progressions et leurs extraits, mode d'emploi, livret,
+évaluations — `imprimer.html`, donc tous les `pdf/<doc>.pdf`) sont au
+**style de la marque Encrine** (https://encrine.ai/design/), uniforme pour
+toutes les classes, **indépendant du thème** : `imprimer.html` ne charge pas
+`charte.css`, aucun thème ne les habille (`verifier-theme.py` refuse les
+anciennes racines `bandeau-imprime`, `document-imprime`).
+
+| Fichier | Rôle |
+|---|---|
+| `site/marque/marque.css` | les polices (Unbounded, Figtree, Marelle, OFL, dans `site/marque/polices/` avec leurs `LICENCE-*.txt`, copiées du site d'Encrine — jamais appelées sur le réseau) et les jetons `--m-*` (craie, ardoise, cases) ; la couleur d'une période vient de sa **famille** (`periodes[].couleur`) rendue dans la case d'Encrine (`[data-couleur]`) |
+| `site/marque/logo-encrine.svg` | le logo, discret, au pied de la première page |
+| `site/impression.css` | la mise en page : première page, titres, tableaux, en-tête et pied |
+| `site/imprimer.html` | construit la première page, l'en-tête courant, les cases des périodes, le paysage |
+
+Ce qu'on y trouve, et pourquoi :
+- **une première page pour un document complet** (les évaluations de période
+  en sont : `eval-pN`) (`.premiere`, hauteur fixe 258 mm, 171 en paysage) :
+  le groupe du document en Marelle (la seule cursive), le titre en
+  Unbounded, le titre du Markdown en sous-titre (le `h1` quitte le corps),
+  le projet, « La classe de <signature> » si `enseignant.signature`, puis
+  niveau, année, zone, et les dates — de la période (extrait, évaluation de
+  période) ou des cinq périodes. Rien qui imite une couverture d'éditeur ;
+- **un extrait de période n'a PAS de première page** (décision du
+  propriétaire : c'est une feuille d'affichage) : un **bandeau** compact en
+  tête de sa page 1 (`.bandeau-extrait`) — le document, la période avec sa
+  case et son nom, ses dates (et la précision du titre de période, « 3
+  unités »), la classe ; le `h2` de la période s'efface. En-tête et pied
+  courants dès la page 1 ;
+- **les polices demandées dès la première mise en page** (`.precharge`
+  d'imprimer.html) : chargées après le Markdown, elles arrivaient parfois
+  après l'impression, et Chromium imprimait une page **sans aucun texte**
+  (`font-display: block`) — huit extraits sur trente-cinq lors d'un essai ;
+- **en-tête et pied en boîtes de marge `@page`** (Chromium ≥ 131) : à
+  gauche la classe, à droite le document ; en bas « Conçu avec Encrine ·
+  encrine.ai » et « page X / Y ». `imprimer.html` écrit l'en-tête dans
+  `<style id="pages">`, avec le `:first` qui les retire de la première page
+  d'un document complet — écrit après l'en-tête, sinon la règle injectée
+  l'emporte et la première page porte l'en-tête ;
+- **tableaux** à filets fins, `thead` répété à chaque page, `tr` insécable,
+  première colonne en demi-gras ; une colonne de période (« P1 — Europe »)
+  reçoit sa case et un filet de sa couleur. Un tableau d'au moins six
+  colonnes de texte dense (≥ 30 signes par case : la programmation) met
+  **tout le document en paysage** ;
+- **pas d'émoji** (drapeaux, globes) : retirés au rendu ; la période se
+  repère par sa case de couleur, **toujours avec son nom** ;
+- **peu d'encre** : aucun aplat, aucun fond de ligne ; tout se lit en noir et
+  blanc. L'italique d'un titre passe en romain Figtree (Unbounded n'a pas
+  d'italique ; un faux penché fait amateur).
+
+Essayé et écarté : commencer chaque période d'une progression sur une
+nouvelle page (+1 à +4 pages par progression, pour un trou d'un tiers de
+page à un seul endroit).
+
+**Le matériel des élèves garde sa charte**, et ne reçoit de la marque qu'une
+ligne : « Conçu avec Encrine · encrine.ai », 6,8 pt, Figtree, `#4a5566`, dans
+la **marge basse** (`@page { @bottom-center }` du socle, à 8 mm du bord) —
+elle ne prend rien au contenu, donc aucune fiche ne déborde et le nombre de
+pages ne bouge pas. Piège : une boîte de marge ne fait pas charger sa
+police, et sans elle Chromium n'y imprime **rien** ; le socle porte donc un
+`html::before` invisible à la même police — hors `@media print`, où elle
+arrive trop tard. `verifier-pagination.py` cherche la mention sur chaque page.
 
 ## Le socle — non négociable
 
@@ -126,7 +191,6 @@ un thème qui a ses gabarits dessine les siens (« Le mini-site », plus bas).
 | Étiquette-mot, étiquette de tri | `[data-composant="etiquette"]`, `[data-composant="etiquette-tri"]` | `.mot`, `.repere` ; `.mot-tri` | `::before`, `::after` | papier |
 | Crédits | `[data-composant="credits"]` | | | papier |
 | Fiche élève (écrite à la main) | `.fiche` | le **cadre** seulement : `.entete`, `.idext`, `.champ`, `.trait`, `.cartouche`, `.ref`, `.dom`, `.titre`, `.niveau`, `.n1`, `.n2`, `.sous-objectif`, `.consigne`, `.exo`, `.num`, `.enonce`, `.defi`, `.etoile`, `.pied-fiche`, `.codage`, `.paysage` — jamais le matériel de l'exercice | `::before`, `::after` | papier |
-| Document imprimé | `[data-composant="bandeau-imprime"]`, `[data-composant="document-imprime"]` | `.zone-badge` | | papier |
 
 Les **étiquettes de période** sont la `.pastille` (écran), le `.cartouche`
 de la fiche, l'en-tête de planche et le `.repere` des cartes ; les **motifs
@@ -175,6 +239,8 @@ seul : `python3 scripts/verifier-theme.py [thème…]`.
   d'aplat sombre hors de la couverture — dont l'intérieur, à hauteur fixe,
   se compose librement ; à l'écran, tout, sauf un corps sous 12 px.
 
+- **l'icône de l'appli** (`icone:`, ci-dessous « L'icône de l'appli ») :
+  tracé sûr et crédité, image déclarée, recadrage dans ses bornes ;
 - **le mini-site** : les images de `theme.yml` (licence, auteur, source,
   fichier, usage) ; `gabarits.js` sans logique du moteur, et **essayé** par
   `scripts/verifier-gabarits.js` (Node) sur chaque page de la vraie classe —
@@ -327,6 +393,73 @@ la carte de Blaeu et l'Europe de Schenk, retenues en maquette pour l'atlas
 de la démo, ont été écartées ainsi. Et **aucune illustration de contenu
 dessinée** : une image vient d'une source libre, ou n'est pas.
 
+### L'icône de l'appli (`icone:` de `theme.yml`)
+
+L'icône de l'écran d'accueil **fait partie du design system** de la
+classe : l'enseignant installe le site comme une appli, et c'est l'image
+qu'il voit tous les jours. Le thème la dessine ; le moteur
+(`scripts/icone_du_theme.py`, appelé par `appli.py` dans `classe.py
+generer`) en tire toutes les tailles : 192 et 512 (coins arrondis),
+maskable 512 (Android), apple-touch 180 (le carré plein, iOS arrondit
+lui-même), favicon 32, `favicon.ico` (16, 32, 48) et `icones/appli.svg`.
+Sans `icone:`, l'icône reste celle du moteur — les bandes des périodes et
+l'initiale —, un **repli** : jugée « pas très jolie » sur l'atlas de la
+démonstration, elle ne doit pas rester l'icône d'une classe qui a son thème.
+
+Deux manières, combinables :
+
+```yaml
+icone:                      # un tracé du thème
+  svg: icone/rose.svg       # viewBox carré, pensé à 512 px
+  licence: CC0-1.0
+  auteur: tracé pour le thème
+  fond: --feuille           # couleur ou jeton clair du thème (défaut --feuille)
+  marge_maskable: 0.1       # 0 à 0.25 : le motif réduit dans la zone sûre d'Android
+  petite: icone/rose-32.svg # facultatif : une version simplifiée pour ≤ 48 px
+
+icone:                      # une image libre déjà déclarée dans `images:`
+  image: images/carte-monde-delisle.jpg
+  recadrage: {x: 1200, y: 290, cote: 680}       # un carré, en pixels de l'image
+  retouche: {saturation: 2.4, contraste: 1.3}   # facultatif (0.5 à 3)
+  svg: icone/medaillon.svg  # facultatif : le cadre, avec sa place vide
+                            # <image id="image" x= y= width= height= clip-path=…/>
+  licence: CC0-1.0          # (celle du cadre)
+  auteur: tracé pour le thème
+```
+
+- **Le SVG est un tracé**, contrôlé comme un motif : ni script, ni texte
+  (une lettre se trace en chemin, tirée de la police du thème avec
+  fontTools), ni lien ou `url()` externe ; sa seule `<image>` est la place
+  vide `id="image"` que le moteur remplit avec le recadrage.
+- **`id="fond"`** sur le fond du carré (le parchemin, la mer) : dans la
+  version maskable, le fond couvre tout et le reste est réduit de
+  `marge_maskable` de chaque bord. Android découpe l'icône en disque, en
+  goutte ou en carré, et ne garantit que le disque des 80 % centraux.
+- **Remplir le carré** : pas de marge blanche autour du motif, pas de coins
+  arrondis dessinés (le système les fait). **Une lettre au plus.**
+- **Lisible à 60 px et à 32 px** : un motif franc, contrasté, sans
+  filigrane qui disparaît. Une gravure entière devient une tache à 32 px :
+  la serrer (recadrage), la raviver (`retouche`), ou donner une `petite`.
+- **Aucune illustration de contenu dessinée** : ornements géométriques
+  (rose des vents, sceau, cadre, tampon) tracés ici ; un animal ou un
+  personnage ne vient que d'une image libre déclarée dans `images:` (la
+  mascotte d'une gravure doit alors y être déclarée, pas seulement dans
+  `classe/projet.yml`).
+- **Le rendu demande Chromium** (celui des PDF : `CHROME_BIN`,
+  `google-chrome`, ou celui de Playwright). Sans lui, `generer` le dit et
+  garde les icônes existantes ; `verifier` relit l'empreinte inscrite dans
+  chaque PNG et signale une icône périmée.
+- **Se choisit en situation** : des propositions montrées sur une planche
+  d'écran d'accueil d'iPhone (clair et sombre), et à 180, 60 et 32 px ;
+  l'enseignant tranche (skill nouvelle-classe, étape 5). Pour fabriquer
+  les candidates, les passer par le moteur lui-même dans une copie de la
+  classe (hors du dépôt) : la planche montre alors les vrais PNG.
+
+`verifier-theme.py` contrôle la déclaration : clés connues, fichiers
+présents et sûrs, image déclarée dans `images:` (donc sa licence),
+recadrage dans les bornes de l'image et d'au moins 512 px, licence et
+auteur du tracé, fond lisible, marge entre 0 et 25 %.
+
 ### L'habillage du mini-site (`habillage.css`, `@media screen`)
 
 Le HTML des gabarits du thème s'habille dans `habillage.css`, **dans un
@@ -359,7 +492,8 @@ statique : on la **traduit** en thème, sans rien perdre des rubriques.
    (accueil, menu, document, période) et ce que chacun montre.
 2. Écrire `classe/projet.yml` avec les données réelles (le projet annuel
    les porte) ; les données propres au thème sous `periodes.<clé>.theme`.
-3. `themes/<nom>/theme.yml` (polices, images, icônes demandées, contrastes),
+3. `themes/<nom>/theme.yml` (polices, images, icônes demandées, contrastes,
+   l'icône de l'appli),
    `theme.css` (jetons ; les couleurs de période gardent leur **famille**,
    celle que citent les modes d'emploi imprimés), `gabarits.js` (une
    fonction par écran, à partir du HTML de la maquette, les données venant
@@ -392,9 +526,9 @@ faire évoluer un style.
 Une fois le thème construit : `theme: <nom>` dans `classe.yml`,
 `python3 scripts/classe.py generer` puis `verifier`, les icônes
 (`periodes[].icone` et `icones:` de `theme.yml`, puis
-`scripts/generer-icones.py`, qui demande le réseau), les icônes de l'appli
-(refaites par `generer` depuis les couleurs et la police des titres du
-thème), et le PDF (skill imprimer-pdf). Le verdict de l'enseignant s'écrit
+`scripts/generer-icones.py`, qui demande le réseau), l'icône de l'appli
+(proposée dans l'univers du thème, choisie par l'enseignant, déclarée dans
+`icone:` ; `generer` en tire toutes les tailles), et le PDF (skill imprimer-pdf). Le verdict de l'enseignant s'écrit
 dans le message de commit et dans `theme.yml` (`description`,
 `retenu_le`) ; les directions écartées ne restent pas dans le dépôt.
 
