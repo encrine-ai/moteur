@@ -227,6 +227,8 @@ seul : `python3 scripts/verifier-theme.py [thème…]`.
   d'aplat sombre hors de la couverture — dont l'intérieur, à hauteur fixe,
   se compose librement ; à l'écran, tout, sauf un corps sous 12 px.
 
+- **l'icône de l'appli** (`icone:`, ci-dessous « L'icône de l'appli ») :
+  tracé sûr et crédité, image déclarée, recadrage dans ses bornes ;
 - **le mini-site** : les images de `theme.yml` (licence, auteur, source,
   fichier, usage) ; `gabarits.js` sans logique du moteur, et **essayé** par
   `scripts/verifier-gabarits.js` (Node) sur chaque page de la vraie classe —
@@ -379,6 +381,73 @@ la carte de Blaeu et l'Europe de Schenk, retenues en maquette pour l'atlas
 de la démo, ont été écartées ainsi. Et **aucune illustration de contenu
 dessinée** : une image vient d'une source libre, ou n'est pas.
 
+### L'icône de l'appli (`icone:` de `theme.yml`)
+
+L'icône de l'écran d'accueil **fait partie du design system** de la
+classe : l'enseignant installe le site comme une appli, et c'est l'image
+qu'il voit tous les jours. Le thème la dessine ; le moteur
+(`scripts/icone_du_theme.py`, appelé par `appli.py` dans `classe.py
+generer`) en tire toutes les tailles : 192 et 512 (coins arrondis),
+maskable 512 (Android), apple-touch 180 (le carré plein, iOS arrondit
+lui-même), favicon 32, `favicon.ico` (16, 32, 48) et `icones/appli.svg`.
+Sans `icone:`, l'icône reste celle du moteur — les bandes des périodes et
+l'initiale —, un **repli** : jugée « pas très jolie » sur l'atlas de la
+démonstration, elle ne doit pas rester l'icône d'une classe qui a son thème.
+
+Deux manières, combinables :
+
+```yaml
+icone:                      # un tracé du thème
+  svg: icone/rose.svg       # viewBox carré, pensé à 512 px
+  licence: CC0-1.0
+  auteur: tracé pour le thème
+  fond: --feuille           # couleur ou jeton clair du thème (défaut --feuille)
+  marge_maskable: 0.1       # 0 à 0.25 : le motif réduit dans la zone sûre d'Android
+  petite: icone/rose-32.svg # facultatif : une version simplifiée pour ≤ 48 px
+
+icone:                      # une image libre déjà déclarée dans `images:`
+  image: images/carte-monde-delisle.jpg
+  recadrage: {x: 1200, y: 290, cote: 680}       # un carré, en pixels de l'image
+  retouche: {saturation: 2.4, contraste: 1.3}   # facultatif (0.5 à 3)
+  svg: icone/medaillon.svg  # facultatif : le cadre, avec sa place vide
+                            # <image id="image" x= y= width= height= clip-path=…/>
+  licence: CC0-1.0          # (celle du cadre)
+  auteur: tracé pour le thème
+```
+
+- **Le SVG est un tracé**, contrôlé comme un motif : ni script, ni texte
+  (une lettre se trace en chemin, tirée de la police du thème avec
+  fontTools), ni lien ou `url()` externe ; sa seule `<image>` est la place
+  vide `id="image"` que le moteur remplit avec le recadrage.
+- **`id="fond"`** sur le fond du carré (le parchemin, la mer) : dans la
+  version maskable, le fond couvre tout et le reste est réduit de
+  `marge_maskable` de chaque bord. Android découpe l'icône en disque, en
+  goutte ou en carré, et ne garantit que le disque des 80 % centraux.
+- **Remplir le carré** : pas de marge blanche autour du motif, pas de coins
+  arrondis dessinés (le système les fait). **Une lettre au plus.**
+- **Lisible à 60 px et à 32 px** : un motif franc, contrasté, sans
+  filigrane qui disparaît. Une gravure entière devient une tache à 32 px :
+  la serrer (recadrage), la raviver (`retouche`), ou donner une `petite`.
+- **Aucune illustration de contenu dessinée** : ornements géométriques
+  (rose des vents, sceau, cadre, tampon) tracés ici ; un animal ou un
+  personnage ne vient que d'une image libre déclarée dans `images:` (la
+  mascotte d'une gravure doit alors y être déclarée, pas seulement dans
+  `classe/projet.yml`).
+- **Le rendu demande Chromium** (celui des PDF : `CHROME_BIN`,
+  `google-chrome`, ou celui de Playwright). Sans lui, `generer` le dit et
+  garde les icônes existantes ; `verifier` relit l'empreinte inscrite dans
+  chaque PNG et signale une icône périmée.
+- **Se choisit en situation** : des propositions montrées sur une planche
+  d'écran d'accueil d'iPhone (clair et sombre), et à 180, 60 et 32 px ;
+  l'enseignant tranche (skill nouvelle-classe, étape 5). Pour fabriquer
+  les candidates, les passer par le moteur lui-même dans une copie de la
+  classe (hors du dépôt) : la planche montre alors les vrais PNG.
+
+`verifier-theme.py` contrôle la déclaration : clés connues, fichiers
+présents et sûrs, image déclarée dans `images:` (donc sa licence),
+recadrage dans les bornes de l'image et d'au moins 512 px, licence et
+auteur du tracé, fond lisible, marge entre 0 et 25 %.
+
 ### L'habillage du mini-site (`habillage.css`, `@media screen`)
 
 Le HTML des gabarits du thème s'habille dans `habillage.css`, **dans un
@@ -411,7 +480,8 @@ statique : on la **traduit** en thème, sans rien perdre des rubriques.
    (accueil, menu, document, période) et ce que chacun montre.
 2. Écrire `classe/projet.yml` avec les données réelles (le projet annuel
    les porte) ; les données propres au thème sous `periodes.<clé>.theme`.
-3. `themes/<nom>/theme.yml` (polices, images, icônes demandées, contrastes),
+3. `themes/<nom>/theme.yml` (polices, images, icônes demandées, contrastes,
+   l'icône de l'appli),
    `theme.css` (jetons ; les couleurs de période gardent leur **famille**,
    celle que citent les modes d'emploi imprimés), `gabarits.js` (une
    fonction par écran, à partir du HTML de la maquette, les données venant
@@ -444,9 +514,9 @@ faire évoluer un style.
 Une fois le thème construit : `theme: <nom>` dans `classe.yml`,
 `python3 scripts/classe.py generer` puis `verifier`, les icônes
 (`periodes[].icone` et `icones:` de `theme.yml`, puis
-`scripts/generer-icones.py`, qui demande le réseau), les icônes de l'appli
-(refaites par `generer` depuis les couleurs et la police des titres du
-thème), et le PDF (skill imprimer-pdf). Le verdict de l'enseignant s'écrit
+`scripts/generer-icones.py`, qui demande le réseau), l'icône de l'appli
+(proposée dans l'univers du thème, choisie par l'enseignant, déclarée dans
+`icone:` ; `generer` en tire toutes les tailles), et le PDF (skill imprimer-pdf). Le verdict de l'enseignant s'écrit
 dans le message de commit et dans `theme.yml` (`description`,
 `retenu_le`) ; les directions écartées ne restent pas dans le dépôt.
 

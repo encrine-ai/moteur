@@ -379,6 +379,17 @@ choix, puis la construction.**
    écrans maquettés. Le verdict s'écrit dans `theme.yml` (`description`,
    `retenu_le`) et le message de commit ; les directions écartées ne
    restent pas dans le dépôt.
+9. **L'icône de l'appli va avec le thème** : c'est elle que l'enseignant
+   voit sur l'écran d'accueil de son téléphone, tous les matins. Une fois
+   le thème choisi, **proposer quelques icônes dans son univers** (un
+   ornement tracé — rose des vents, sceau, tampon, étiquette —, ou un
+   détail recadré d'une image libre du thème), montrées **en situation** :
+   une planche d'écran d'accueil d'iPhone en clair et en sombre, et chaque
+   icône à 180, 60 et 32 px. Il choisit ; on la déclare dans `theme.yml`
+   (`icone:`, skill charte-graphique, « L'icône de l'appli »). Les bandes
+   de couleur et l'initiale du moteur ne sont qu'un repli, pas une icône
+   de classe : le propriétaire les a trouvées « pas très jolies » sur
+   l'atlas de la démonstration.
 
 S'il ne veut pas s'en occuper maintenant : garder le thème neutre (`demo`,
 les gabarits par défaut) et le dire ; le mini-site peut venir plus tard,

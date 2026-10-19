@@ -8,9 +8,12 @@ sans réseau. Ce module fabrique, pour chaque classe et depuis son thème :
 - site/manifest.webmanifest : le nom et le nom court (classe.yml), l'adresse
   de départ et la portée relatives (le site vit dans un sous-dossier,
   https://<propriétaire>.github.io/<dépôt>/), les couleurs du thème ;
-- site/icones/ : l'icône de la classe — les cinq bandes de ses périodes et
-  son initiale, dans la police des titres du thème — en SVG et en PNG
-  (192, 512, maskable 512, apple-touch 180, favicon 32) et site/favicon.ico ;
+- site/icones/ : l'icône de la classe, en SVG et en PNG (192, 512, maskable
+  512, apple-touch 180, favicon 32) et site/favicon.ico — celle que dessine
+  le thème (theme.yml, `icone:` : un tracé ou une image libre recadrée,
+  scripts/icone_du_theme.py, rendue par Chromium), ou à défaut celle du
+  moteur : les cinq bandes des périodes et l'initiale, dans la police des
+  titres du thème ;
 - site/sw.js : le service worker, tiré de scripts/modele-sw.js, avec la liste
   de ce qu'il met en cache à l'installation et la version du site (une
   empreinte du contenu) : à chaque publication, l'ancien cache est remplacé.
@@ -88,14 +91,29 @@ def _theme_module():
     return importlib.import_module("verifier-theme")
 
 
-def couleurs(c):
-    """Les jetons clairs du thème : --papier, --feuille, --sapin, --p1…--p5."""
+def _jetons_clairs(theme):
     vt = _theme_module()
-    css = vt._sans_commentaires((CHARTE / "themes" / c["theme"] / "theme.css").read_text(encoding="utf-8"))
+    css = vt._sans_commentaires((CHARTE / "themes" / theme / "theme.css").read_text(encoding="utf-8"))
     jetons = {}
     for contexte, prelude, corps in vt._regles(css):
         if prelude.strip() == ":root" and vt._mode(contexte, prelude) == "clair":
             jetons.update(dict(vt._declarations(corps)))
+    return jetons
+
+
+def couleur_du_theme(theme, valeur):
+    """« #rrggbb » ou un jeton clair du thème (« --feuille ») → (r, g, b), ou None."""
+    vt = _theme_module()
+    valeur = str(valeur).strip()
+    if valeur.startswith("--"):
+        valeur = "var(%s)" % valeur
+    return vt._couleur(vt._resoudre(valeur, _jetons_clairs(theme)))
+
+
+def couleurs(c):
+    """Les jetons clairs du thème : --papier, --feuille, --sapin, --p1…--p5."""
+    vt = _theme_module()
+    jetons = _jetons_clairs(c["theme"])
     out = {}
     for nom in ("papier", "feuille", "sapin", "encre", "p1", "p2", "p3", "p4", "p5"):
         v = vt._resoudre(jetons.get("--" + nom, ""), jetons)
@@ -121,9 +139,29 @@ def police_titre(c):
     return CHARTE / "polices" / "andika-latin-700.woff2"
 
 
+def icone_theme(c):
+    """(dossier, déclaration, fond) si le thème dessine l'icône (theme.yml,
+    `icone:`), sinon None : l'icône est alors celle du moteur."""
+    import yaml
+    import icone_du_theme
+    dossier = CHARTE / "themes" / c["theme"]
+    f = dossier / "theme.yml"
+    t = yaml.safe_load(f.read_text(encoding="utf-8")) if f.is_file() else {}
+    decl = icone_du_theme.declaration(t or {})
+    if not decl:
+        return None
+    rgb = couleur_du_theme(c["theme"], decl.get("fond", "--feuille"))
+    return dossier, decl, "#%02x%02x%02x" % (rgb or (255, 255, 255))
+
+
 def empreinte_icones(c):
     """Ce dont l'icône est faite : le dessin, les couleurs, l'initiale, la
-    police. Inscrite dans chaque icône, relue par `verifier`."""
+    police — ou la déclaration et les fichiers de l'icône du thème. Inscrite
+    dans chaque icône, relue par `verifier`."""
+    it = icone_theme(c)
+    if it:
+        import icone_du_theme
+        return icone_du_theme.empreinte(*it)
     h = hashlib.sha256()
     h.update(DESSIN.encode())
     h.update(json.dumps([couleurs(c), identite(c)["initiale"]], sort_keys=True).encode())
@@ -245,9 +283,52 @@ def _png(c, cote, forme, empreinte):
     return sortie.getvalue(), img
 
 
+def _png_info_texte(img, empreinte):
+    from PIL import PngImagePlugin
+    info = PngImagePlugin.PngInfo()
+    info.add_text("encrine-empreinte", empreinte)
+    sortie = io.BytesIO()
+    img.save(sortie, "PNG", pnginfo=info, optimize=True)
+    return sortie.getvalue()
+
+
+def icones_du_theme(c, it):
+    """Les icônes que dessine le thème : rendues une fois par forme, à
+    1024 px, puis réduites à chaque taille."""
+    try:
+        from PIL import Image
+        import icone_du_theme
+    except ImportError as e:
+        print("⚠ icônes de l'appli non refaites (%s) : pip install pillow" % e.name)
+        return False
+    if not icone_du_theme.chrome():
+        print("⚠ icônes de l'appli non refaites : l'icône du thème se rend avec Chromium "
+              "(CHROME_BIN, google-chrome, ou celui de Playwright)")
+        return False
+    e = icone_du_theme.empreinte(*it)
+    rendus, svg = icone_du_theme.images(*it)
+    ICONES.mkdir(exist_ok=True)
+    (SITE / SVG).write_text(svg, encoding="utf-8")
+
+    def taille(nom, cote):
+        img = rendus[nom].resize((cote, cote), Image.LANCZOS)
+        return img.convert("RGB") if nom in ("pleine", "maskable") else img   # iOS noircit la transparence
+    for rel, cote, forme in PNG:
+        nom = "maskable" if "maskable" in rel else ("petite" if cote <= 48 else forme)
+        (SITE / rel).write_bytes(_png_info_texte(taille(nom, cote), e))
+    petites = [taille("petite", cote) for cote in (16, 32, 48)]
+    petites[-1].save(SITE / ICO, format="ICO", sizes=[(16, 16), (32, 32), (48, 48)],
+                     append_images=petites[:-1])
+    return True
+
+
 def icones(c):
     """Écrit les icônes de la classe ; rend False (et le dit) s'il manque
-    Pillow, fontTools ou brotli — les icônes existantes restent alors."""
+    Pillow, fontTools ou brotli (ou Chromium, pour l'icône d'un thème) — les
+    icônes existantes restent alors."""
+    it = icone_theme(c)
+    if it:
+        return icones_du_theme(c, it)
     try:
         import PIL  # noqa: F401
         import fontTools  # noqa: F401
@@ -450,7 +531,7 @@ def anomalies(c):
         if not info or info[:2] != (cote, cote):
             a.append("site/%s : %s au lieu de %d×%d px" % (rel, info and "%d×%d" % info[:2], cote, cote))
         elif info[2] != e:
-            a.append("site/%s périmée (le thème, l'initiale ou la police ont changé) : "
+            a.append("site/%s périmée (le thème, son icône, l'initiale ou la police ont changé) : "
                      "relancer  python3 scripts/classe.py generer" % rel)
     svg = SITE / SVG
     if not svg.is_file() or ("empreinte %s" % e) not in svg.read_text(encoding="utf-8"):
