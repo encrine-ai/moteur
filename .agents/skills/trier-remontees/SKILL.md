@@ -271,7 +271,10 @@ même, le dire, et proposer au propriétaire de supprimer la vieille branche).
 - Chaque élément du lot finit par **capitaliser** : la leçon va dans le bon
   skill ou le bon contrôle, avec l'incident qui l'a fait naître.
 
-**Contrôler** — sur le moteur, puis par un **essai à blanc sur chaque classe
+**Contrôler** — sur le moteur (les contrôles rapides tournent aussi tout
+seuls sur la demande de fusion : `.github/workflows/controles.yml` ; leur
+résultat se lit avant de proposer, `gh api
+"repos/encrine-ai/moteur/commits/<sha>/check-runs"`), puis par un **essai à blanc sur chaque classe
 de la liste** (la synchronisation de la phase B depuis la branche du lot,
 dans un clone jetable, tous ses contrôles, rien de poussé) : un lot n'est
 proposé que s'il passe sur les vraies classes, pas seulement sur la

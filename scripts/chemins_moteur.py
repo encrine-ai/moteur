@@ -83,6 +83,7 @@ FABRIQUES = [
 PROPRES_AU_MOTEUR = [
     ".agents/skills/trier-remontees/",          # la boîte du moteur : qualifier, intégrer, propager
     "tests/declenchement-trier-remontees.json",
+    ".github/workflows/controles.yml",          # les contrôles des demandes de fusion du moteur
 ]
 
 # La ligne du skill trier-remontees dans la table d'AGENTS.md : une classe

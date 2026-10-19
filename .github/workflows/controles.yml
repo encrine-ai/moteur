@@ -1,0 +1,48 @@
+name: Contrôles du moteur
+
+# Les contrôles rapides et sans réseau, sur chaque demande de fusion et
+# chaque envoi sur main du moteur. Ce fichier est propre au moteur : la
+# synchronisation ne le copie jamais dans une classe
+# (scripts/chemins_moteur.py, PROPRES_AU_MOTEUR), et la condition ci-dessous
+# le rendrait muet s'il y arrivait quand même.
+
+on:
+  pull_request:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: read
+
+jobs:
+  controles:
+    if: ${{ github.repository == 'encrine-ai/moteur' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Outils
+        run: pip install -q pyyaml pillow
+      - name: Les scripts se compilent
+        run: python3 -m py_compile scripts/*.py classe/*.py
+      - name: La syntaxe du JavaScript (site, gabarits des thèmes, scripts)
+        run: |
+          shopt -s nullglob
+          for f in site/*.js site/charte/*.js site/charte/themes/*/gabarits.js scripts/*.js; do
+            node --check "$f" || { echo "::error file=$f::syntaxe JavaScript"; exit 1; }
+          done
+      - name: La classe vient de classe.yml, et de nulle part ailleurs
+        run: python3 scripts/classe.py verifier
+      - name: Le thème tient son contrat
+        run: python3 scripts/verifier-theme.py
+      - name: Le contrôle de partage voit ses trois pièges (vu à l'envers)
+        run: python3 scripts/verifier-partage.py tester
+      - name: Rien d'un élève, rien d'une œuvre protégée
+        run: python3 scripts/verifier-partage.py
+      - name: La couche moteur est à sa place
+        run: python3 scripts/chemins_moteur.py verifier
+      # La démonstration du modèle est en cours d'écriture : couverture.py y
+      # sort en code 1 (des attendus manquent). On l'affiche sans l'exiger ;
+      # une classe, elle, doit le passer en code 0 (skill progressions-programme).
+      - name: Le programme couvert (pour information dans le modèle)
+        run: python3 scripts/couverture.py || echo "::warning::couverture.py en code $? — attendu tant que la classe de démonstration du modèle est en cours d'écriture"
