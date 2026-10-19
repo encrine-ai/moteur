@@ -188,9 +188,15 @@
     if (modele.images.length && !pied.querySelector('a[href="#/credits"]')) {
       pied.insertAdjacentHTML('beforeend', '<p class="pied-credits"><a href="#/credits">Crédits des images</a></p>');
     }
+    /* Les mentions légales se glissent juste après le lien des crédits (ou,
+       sans lui, après la signature) : elles prennent ainsi le style que le
+       thème donne à ce coin du pied, sans bloc à elles. */
     var ment = modele.mentions;
     if (ment && !pied.querySelector('a[href="' + ment.lien + '"]')) {
-      pied.insertAdjacentHTML('beforeend', '<p class="pied-mentions"><a href="' + ment.lien + '">' + ment.texte + '</a></p>');
+      var ancre = pied.querySelector('a[href="#/credits"]') || pied.querySelector('a[href="' + GS.SIGNATURE.lien + '"]');
+      var lien = '<a class="pied-mentions" href="' + ment.lien + '">' + ment.texte + '</a>';
+      if (ancre) ancre.insertAdjacentHTML('afterend', ' · ' + lien);
+      else pied.insertAdjacentHTML('beforeend', '<p class="pied-mentions">' + lien + '</p>');
     }
     var org = modele.classe.origine;
     if (org && !pied.querySelector('[data-origine]')) {
