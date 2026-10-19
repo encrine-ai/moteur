@@ -69,11 +69,16 @@ def titre(c):
     return "%s – %s" % (MARQUE, c["projet"])
 
 
+def de(nom):
+    """« de Mme Martin », « d’Aurélie » (comme readme.py)."""
+    return ("d’" if re.match(r"[AEIOUYÀÂÉÈÊËÎÏÔÛÙÜaeiouyàâéèêëîïôûùü]", nom) else "de ") + nom
+
+
 def description(c):
     texte = " ".join(str(c.get("accroche") or "").split()) or DESCRIPTION
     signature = ((c.get("enseignant") or {}).get("signature") or "").strip()
     if signature:
-        texte = "%s%s La classe de %s." % (texte, "" if texte.endswith((".", "!", "?", "…")) else ".", signature)
+        texte = "%s%s La classe %s." % (texte, "" if texte.endswith((".", "!", "?", "…")) else ".", de(signature))
     return texte
 
 
