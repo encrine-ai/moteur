@@ -23,11 +23,11 @@ personne les voie. Toute retouche du papier se termine donc par le PDF.
 | `site/imagier/periode-N.html` | `imagier-periode-N.pdf` | une `section.planche` (la couverture comprise) |
 | `site/cartes-corpus/periode-N.html` | `cartes-corpus-periode-N.pdf` | une `section.planche` (la couverture comprise) |
 
-Chaque **document** s'ouvre sur une **première page** (le document, la
-classe, ses dates) au style de la marque Encrine, avec en-tête courant et
-pied « Conçu avec Encrine · encrine.ai » · « page X / Y » (skill
-charte-graphique, « La marque sur le papier ») : une page de plus par
-document et par extrait. **Chaque page de chaque PDF** — documents et
+Chaque **document complet** s'ouvre sur une **première page** (le document,
+la classe, ses dates) au style de la marque Encrine — une page de plus par
+document ; un **extrait de période** n'a qu'un bandeau de titre en tête de
+sa page 1. En-tête courant et pied « Conçu avec Encrine · encrine.ai » ·
+« page X / Y » (skill charte-graphique, « La marque sur le papier »). **Chaque page de chaque PDF** — documents et
 cahiers — porte la mention « Conçu avec Encrine · encrine.ai » ; sur le
 matériel des élèves, elle est dans la marge basse, sans rien prendre au
 contenu.
@@ -42,9 +42,9 @@ document s'imprime une fois, à ses dates, et tout est à plat dans `pdf/`. Une
 Grande Section complète, c'est 65 PDF — 45 documents et extraits, 20 cahiers ;
 `verifier-pagination.py` les compte, donne le total des pages et cherche la
 mention au pied de chaque page (`pdftotext`). Mesure sur la démonstration
-lors du passage à la marque : 65 PDF, 366 → 409 pages ; documents 96 → 139
-(+45 premières pages, −2 : deux extraits tiennent sur une page de moins),
-les 20 cahiers inchangés, fichier par fichier. Ils **ne sont pas versionnés** : le workflow
+lors du passage à la marque : 65 PDF, 366 → 381 pages ; documents 96 → 111
+(+15 premières pages ; les 35 pages d'extraits inchangées), les 20 cahiers
+inchangés, fichier par fichier. Ils **ne sont pas versionnés** : le workflow
 `.github/workflows/pages.yml` les refait à chaque déploiement, puis lance
 `verifier-pagination.py`, qui bloque la publication s'il reste un débordement,
 un document sans PDF, ou un vieux dossier `pdf/zone-X/`.
@@ -78,11 +78,19 @@ Puis **regarder** : `pdftoppm -f N -l N -r 60 -png fichier.pdf /tmp/p` rend
 la page N en image. Le compte de pages ne voit pas une étiquette tronquée, une
 image manquante ni une consigne illisible.
 
-## La mention de la marque manque
+## La mention de la marque manque, ou une page est vide
 
 `verifier-pagination.py` dit « la mention … manque » : presque toujours une
 police pas chargée à temps. Une boîte de marge `@page` sans sa police
-n'imprime rien, sans erreur. Vérifier que la page charge bien Figtree
+n'imprime rien, sans erreur — et avec `font-display: block`, une police
+arrivée après l'impression laisse **toute la page sans texte** (filets
+seuls). Les polices doivent être demandées dès la première mise en page
+(`.precharge` d'imprimer.html, `html::before` du socle).
+
+Autre cause, vue en parallèle d'autres fabrications : le port choisi pris
+entre-temps, `http.server` mort en silence, et Chromium imprimant les pages
+d'un **autre** serveur (une autre classe !). `generer-pdf.sh` vérifie
+désormais que son serveur vit et sert bien `classe.json` du site. Vérifier que la page charge bien Figtree
 (`pdffonts`), que le `html::before` du socle est là (matériel) ou que le
 texte du document est en Figtree (documents), et que `site/marque/polices/`
 a été copié dans le site assemblé.

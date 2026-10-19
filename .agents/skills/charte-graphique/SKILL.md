@@ -57,16 +57,28 @@ anciennes racines `bandeau-imprime`, `document-imprime`).
 | `site/imprimer.html` | construit la première page, l'en-tête courant, les cases des périodes, le paysage |
 
 Ce qu'on y trouve, et pourquoi :
-- **une première page** (`.premiere`, hauteur fixe 258 mm, 171 en paysage) :
+- **une première page pour un document complet** (les évaluations de période
+  en sont : `eval-pN`) (`.premiere`, hauteur fixe 258 mm, 171 en paysage) :
   le groupe du document en Marelle (la seule cursive), le titre en
   Unbounded, le titre du Markdown en sous-titre (le `h1` quitte le corps),
   le projet, « La classe de <signature> » si `enseignant.signature`, puis
   niveau, année, zone, et les dates — de la période (extrait, évaluation de
   période) ou des cinq périodes. Rien qui imite une couverture d'éditeur ;
+- **un extrait de période n'a PAS de première page** (décision du
+  propriétaire : c'est une feuille d'affichage) : un **bandeau** compact en
+  tête de sa page 1 (`.bandeau-extrait`) — le document, la période avec sa
+  case et son nom, ses dates (et la précision du titre de période, « 3
+  unités »), la classe ; le `h2` de la période s'efface. En-tête et pied
+  courants dès la page 1 ;
+- **les polices demandées dès la première mise en page** (`.precharge`
+  d'imprimer.html) : chargées après le Markdown, elles arrivaient parfois
+  après l'impression, et Chromium imprimait une page **sans aucun texte**
+  (`font-display: block`) — huit extraits sur trente-cinq lors d'un essai ;
 - **en-tête et pied en boîtes de marge `@page`** (Chromium ≥ 131) : à
   gauche la classe, à droite le document ; en bas « Conçu avec Encrine ·
   encrine.ai » et « page X / Y ». `imprimer.html` écrit l'en-tête dans
-  `<style id="pages">` et **y redit le `:first`** : sinon la règle injectée
+  `<style id="pages">`, avec le `:first` qui les retire de la première page
+  d'un document complet — écrit après l'en-tête, sinon la règle injectée
   l'emporte et la première page porte l'en-tête ;
 - **tableaux** à filets fins, `thead` répété à chaque page, `tr` insécable,
   première colonne en demi-gras ; une colonne de période (« P1 — Europe »)

@@ -15,6 +15,11 @@
   <style id="pages"></style>
 </head>
 <body>
+  <!-- Les trois polices de la marque, demandées dès la première mise en page :
+       chargées plus tard (après le Markdown), elles arrivaient parfois après
+       l'impression, et Chromium imprimait une page sans texte (font-display:
+       block). Voir le skill imprimer-pdf. -->
+  <div class="precharge" aria-hidden="true"><span class="p-texte">Aa</span><span class="p-titre">Aa</span><span class="p-cursive">Aa</span></div>
   <section id="premiere" class="premiere" hidden></section>
   <article id="contenu" class="document"></article>
   <script src="marked.min.js"></script>
@@ -34,9 +39,9 @@
       var PERIODES = GS.periodes();
       var signature = (C.enseignant && C.enseignant.signature || '').trim();
       var laClasse = signature ? 'La classe de ' + signature : C.nom;
-      // La période dont parle le document : celle de l'extrait, ou celle
-      // d'une évaluation de période (`fiches` dans classe.yml).
-      var nPeriode = periode || doc.fiches || 0;
+      // La période dont parle un document complet : celle d'une évaluation
+      // de période (`fiches` dans classe.yml). Un extrait a son bandeau.
+      var nPeriode = doc.fiches || 0;
       var suffixe = periode ? ' · Période ' + periode : '';
       document.title = C.niveau.code + ' ' + C.annee + ' — ' + doc.titre + suffixe + ' (zone ' + zone + ')';
 
@@ -124,9 +129,38 @@
           '@page { ' + (paysage ? 'size: A4 landscape; ' : '') +
           '@top-left { content: ' + chaineCss(laClasse + ' · ' + C.niveau.libelle + ' · ' + C.annee) + '; } ' +
           '@top-right { content: ' + chaineCss(droite) + '; } } ' +
-          // redit ici : Chromium laisse la règle écrite la dernière l'emporter
-          // sur le :first d'impression.css, et la première page aurait l'en-tête
-          '@page :first { @top-left { content: none; } @top-right { content: none; } }';
+          // la première page d'un document complet porte son propre pied ;
+          // écrit ici, APRÈS l'en-tête : Chromium laisse la dernière règle
+          // l'emporter sur un :first écrit avant
+          (periode ? '' : '@page :first { @top-left { content: none; } @top-right { content: none; } ' +
+            '@bottom-left { content: none; } @bottom-right { content: none; } }');
+
+        if (periode) {
+          // Un extrait (l'affichage en classe) : pas de première page entière,
+          // un bandeau de titre en tête de sa page 1. Le titre de la période
+          // dans le texte le redirait : il s'efface.
+          // Sa précision entre parenthèses (« 2 unités + course quotidienne »)
+          // passe dans le bandeau.
+          var hp = contenu.querySelector('h2.titre-periode'), precision = '';
+          if (hp) {
+            var copie = hp.cloneNode(true);
+            copie.querySelectorAll('.zone-badge, .case').forEach(function (x) { x.remove(); });
+            var mp = copie.textContent.trim().match(/\(([^()]*)\)$/);
+            precision = mp && !/^\d+ semaines?$/.test(mp[1].trim()) ? mp[1].trim() : '';  // les semaines y sont déjà
+            hp.remove();
+          }
+          contenu.insertAdjacentHTML('afterbegin',
+            '<header class="bandeau-extrait">' +
+              '<p class="be-sur">' + esc((doc.groupe ? doc.groupe + ' · ' : '') + 'extrait de la période ' + periode) + '</p>' +
+              '<h1 class="be-titre">' + esc(doc.titre) + '</h1>' +
+              '<p class="be-periode"><span>' + kase(periode) + '<b>' + esc(nomPeriode(periode)) + '</b></span>' +
+                '<span>' + esc(dates(PERIODES[periode - 1]) + (precision ? ' · ' + precision : '')) + '</span></p>' +
+              '<p class="be-classe">' + esc(laClasse + ' · ' + C.niveau.libelle + ' · ' + C.annee + ' · Zone ' + zone +
+                ' · ' + C.projet) + '</p>' +
+            '</header>');
+          document.body.dataset.pret = '1';
+          return;
+        }
 
         // La première page : le document, la classe, et ses dates
         var lignes = [
@@ -135,7 +169,7 @@
           ['Zone de vacances', 'Zone ' + esc(zone)]
         ];
         if (nPeriode && PERIODES[nPeriode - 1]) {
-          // le nom de la période est déjà au titre (l'extrait, l'évaluation)
+          // le nom de la période est déjà au titre (l'évaluation de période)
           lignes.push(['Dates de la période', esc(dates(PERIODES[nPeriode - 1]))]);
         } else {
           lignes.push(['L’année', '<ol class="annee">' + PERIODES.map(function (p) {
@@ -148,8 +182,7 @@
             esc(C.niveau.libelle + ' · ' + C.annee + ' · Zone ' + zone) + '</span></div>' +
           '<div class="premiere-centre">' +
             (doc.groupe ? '<p class="premiere-groupe">' + esc(doc.groupe) + '</p>' : '') +
-            '<h1 class="premiere-titre">' + (doc.fiches && !periode ? kase(doc.fiches) : '') + esc(doc.titre) + '</h1>' +
-            (periode ? '<p class="premiere-extrait">' + kase(periode) + esc(nomPeriode(periode)) + '</p>' : '') +
+            '<h1 class="premiere-titre">' + (doc.fiches ? kase(doc.fiches) : '') + esc(doc.titre) + '</h1>' +
             (sousTitre ? '<p class="premiere-sous">' + esc(sousTitre) + '</p>' : '') +
             '<p class="premiere-projet"><span>Le projet de l’année</span>' + esc(C.projet) + '</p>' +
             (signature ? '<p class="premiere-classe">La classe de ' + esc(signature) + '</p>' : '') +
