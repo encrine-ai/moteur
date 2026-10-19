@@ -62,6 +62,8 @@ AUTEUR = re.compile(r"^\s*(-\s*)?auteur\s*:")
 CREDIT = re.compile(r"CC0|CC BY|licence|domaine public|iNaturalist|Wikimedia|Openverse|"
                     r"ARASAAC|Mulberry|Global Symbols|OpenMoji|SIL Open Font", re.I)
 IMAGES = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg", ".heic", ".tif", ".tiff", ".bmp"}
+# Le logo de la marque, que le bloc de tête du README charge depuis encrine.ai.
+MARQUE = "https://encrine.ai/assets/"
 IGNORES = {".git", ".agents", ".claude", "node_modules", "_site"}
 
 
@@ -165,6 +167,8 @@ def images(racine):
             anomalies.append("%s : une image collée dans la page (data:) — photo ou scan ?"
                              % f.relative_to(racine))
         for src in re.findall(r'<img[^>]+src="(https?://[^"]+)"', texte):
+            if src.startswith(MARQUE):
+                continue   # le logo d'Encrine du bloc de tête du README (scripts/readme.py)
             anomalies.append("%s : image chargée d'ailleurs (%s)" % (f.relative_to(racine), src))
     return anomalies
 
