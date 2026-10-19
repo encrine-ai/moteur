@@ -59,6 +59,9 @@ git checkout moteur/main -- scripts/ referentiel/ .agents/skills/ .github/workfl
   site/app.js site/commun.js site/marked.min.js site/index.html site/imprimer.html \
   site/app.css site/impression.css site/charte/socle.css site/charte/composants.css site/charte/polices/ \
   site/fiches/fiches.css site/imagier/imagier.css site/cartes-corpus/cartes-corpus.css
+# trier-remontees est l'entretien de la boîte du moteur : il ne vit que dans
+# encrine-ai/moteur, et n'entre jamais dans une classe.
+git rm -rqf --ignore-unmatch .agents/skills/trier-remontees tests/declenchement-trier-remontees.json
 # Les skills vivent dans .agents/skills ; .claude/skills n'est qu'un lien,
 # pour Claude Code. Une classe d'avant ce découpage a encore un vrai dossier :
 # il est remplacé par le lien (ses leçons propres ont été remontées à l'étape 0).

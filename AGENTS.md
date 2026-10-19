@@ -116,6 +116,7 @@ matériel qu'il couvre, et finir par [`capitaliser`](.agents/skills/capitaliser/
 | [`retours-enseignant`](.agents/skills/retours-enseignant/SKILL.md) | l'enseignant fait ses retours avec ses mots (une fiche, une image, une idée) : les trier, corriger la classe, remonter ce qui vaut pour toutes |
 | [`remonter-au-moteur`](.agents/skills/remonter-au-moteur/SKILL.md) | un défaut, une amélioration ou une idée qui servirait à toutes les classes devient une issue sur le dépôt du moteur (`moteur` dans `classe.yml`) |
 | [`synchroniser-moteur`](.agents/skills/synchroniser-moteur/SKILL.md) | mettre à jour le moteur d'une classe depuis le dépôt modèle, sans toucher à son contenu, contrôles et PDF compris |
+| [`trier-remontees`](.agents/skills/trier-remontees/SKILL.md) | **dans le moteur seulement** (jamais copié dans une classe) : chaque nuit ou à la demande du propriétaire, qualifier les issues remontées par les classes, les intégrer en un seul lot qui attend son OK, puis l'installer dans ses classes, contrôles et PDF compris, et fermer les issues |
 | [`partager-ma-classe`](.agents/skills/partager-ma-classe/SKILL.md) | à la demande de l'enseignant seulement : vérifier (dont `verifier-partage.py` : aucun prénom d'élève, aucune photo de classe, aucun texte recopié), préparer la fiche et proposer la classe à « Les classes » d'encrine.ai, ou l'en retirer |
 | [`capitaliser`](.agents/skills/capitaliser/SKILL.md) | en fin de tâche : verser ce qu'elle a appris dans le bon skill, le bon script ou ce fichier |
 
