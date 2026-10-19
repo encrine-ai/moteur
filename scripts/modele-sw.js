@@ -63,7 +63,8 @@ PRECACHE.forEach(function (rel) { INSTANTANE[url(rel)] = true; });
 function memeVersion(rel, rep) {
   if (!/(^|\/|\.html)$/.test(rel)) return Promise.resolve(rep);
   return rep.clone().text().then(function (html) {
-    var m = /\?v=([0-9a-f]+)/.exec(html);
+    // la version d'un script ou d'une feuille (pas celle de l'image de partage)
+    var m = /\.(?:js|css)\?v=([0-9a-f]+)/.exec(html);
     if (m && m[1] !== VERSION) throw new Error(rel + ' est de la version ' + m[1] + ', pas ' + VERSION);
     return rep;
   });
