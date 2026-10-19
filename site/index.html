@@ -42,7 +42,7 @@
   <link rel="stylesheet" href="app.css">
   <!-- Le garde-fou : jamais « Chargement… » pour toujours. Une erreur avant
        le premier rendu (un script qui manque, ou d'une autre publication),
-       ou pas de rendu au bout de 8 s : un message et « Recharger », qui
+       ou pas de rendu au bout de 15 s (sur un réseau lent, plus tôt serait un faux départ) : un message et « Recharger », qui
        désinscrit le service worker de la classe, vide ses caches et
        recharge. app.js pose data-rendu="ok" sur <html> au premier rendu.
        Autonome et en ES5 : il doit marcher quand tout le reste échoue. -->
@@ -81,7 +81,7 @@
       if (!rendu()) secours();
     }, true);
     window.addEventListener('unhandledrejection', function () { if (!rendu()) secours(); });
-    setTimeout(secours, 8000);
+    setTimeout(secours, 15000);
   })();
   </script>
 </head>

@@ -80,7 +80,7 @@ réseau. Tout est fabriqué par `scripts/appli.py`, que lance
   enregistrement).
 - **Le garde-fou** (`<script id="garde-fou">`, en ligne et en ES5, avant
   tous les autres dans `index.html`) : une erreur de script ou une promesse
-  rejetée avant le premier rendu, ou pas de rendu au bout de 8 s, et
+  rejetée avant le premier rendu, ou pas de rendu au bout de 15 s, et
   « Chargement… » laisse place à « Le site n'a pas pu se charger. » et un
   bouton « Recharger », qui désinscrit le service worker de la classe, vide
   ses caches (`encrine <portée>`) et recharge. `app.js` pose
