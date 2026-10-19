@@ -205,8 +205,8 @@ La procédure complète — sources dans l'ordre, pièges des noms trompeurs,
 planche de candidats obligatoire, installation, contrôles — est dans le
 skill [`fiches-illustrations`](.agents/skills/fiches-illustrations/SKILL.md),
 outillée par `scripts/chercher-pictos.py` (chercher / installer / verifier).
-`scripts/chercher-images.py` et `scripts/images-manifest.py` sont l'ancienne
-moisson Commons : ne pas les relancer.
+L'ancienne moisson Commons a été retirée du moteur ; une classe qui en garde
+les scripts (`chercher-images.py`, `images-manifest.py`) ne les relance pas.
 
 ### Vérifier la licence avant de retenir une image
 
