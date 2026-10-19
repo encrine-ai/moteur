@@ -81,7 +81,9 @@ collègue ? », puis suivre la ligne qui correspond.
      reprise_le: AAAA-MM-JJ          # aujourd'hui
    ```
 
-   puis **mettre `depot` au dépôt courant**. `classe.py verifier` refuse une
+   puis **mettre `depot` au dépôt courant**. `moteur` ne change pas : sa
+   `version` est celle de la classe d'origine, dont on a copié le moteur
+   (étape 2). `classe.py verifier` refuse une
    `origine` sans titre ni licence, et une `origine.depot` égale à `depot`.
    Le pied du site crédite alors l'original (« Classe partie de « … », de …
    (…) », avec le lien) : c'est l'obligation de CC BY et CC BY-SA.
@@ -261,7 +263,7 @@ au moment où le matériel concerné se fabrique.
    mot, question 7), `depot` (ce dépôt-ci,
    `propriétaire/dépôt`, tiré de `git remote get-url origin`), `origine` si
    la classe est partie d'une autre (mode « enrichir »), `moteur` (le dépôt modèle d'où vient
-   ce dépôt et le commit copié : skill synchroniser-moteur), `calendrier`
+   ce dépôt et **le commit copié**, ci-dessous), `calendrier`
    — la zone seule, plus un pont propre à l'école s'il y en a
    (`calendrier.ponts`), les dates venant du moteur —, les cinq `periodes` (clé, milieu,
    icône du sprite, couleur, phrase de l'imagier), la section `contenu` et
@@ -271,6 +273,26 @@ au moment où le matériel concerné se fabrique.
    python3 scripts/classe.py generer    # site/classe.json et site/classe.js
    python3 scripts/classe.py verifier   # code 0 attendu
    ```
+
+   **`moteur.version`** — le commit du moteur d'où vient la copie. Le
+   modèle la laisse à `null` (il n'est la copie de rien) ; une classe ne la
+   garde jamais ainsi : sans elle, la première mise à jour ne sait ni ce qui
+   a changé, ni ce que la classe a retouché (skill synchroniser-moteur).
+   « Use this template » ne garde aucun historique : le commit se retrouve
+   en comparant les fichiers du moteur de la classe à ceux de chaque commit
+   du moteur, sur la liste unique.
+
+   ```sh
+   git remote add moteur https://github.com/<moteur.depot>.git
+   git fetch moteur main
+   python3 scripts/chemins_moteur.py version moteur/main --ecrire   # « identiques » attendu
+   ```
+
+   Partie **d'une autre classe** (mode « enrichir », ou le repli par
+   l'adresse) : la version **hérite** de celle de la classe d'origine, qui
+   est arrivée avec son `classe.yml` — la garder telle quelle, ce sont ses
+   fichiers du moteur qu'on a copiés. Si elle vaut `null`, la reconstituer
+   de même.
 2. **Le dossier `classe/`** : `annotations.yml` vide de blocs pour commencer,
    `imagier.py` et `corpus.py` sur le modèle de ceux de la classe de départ
    (garder leur structure : les scripts en dépendent), et `projet.yml` (le

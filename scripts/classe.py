@@ -693,6 +693,12 @@ def verifier():
     moteur = c.get("moteur")
     if not isinstance(moteur, dict) or "depot" not in moteur or "version" not in moteur:
         anomalies.append("moteur : il faut `depot` et `version` (skill synchroniser-moteur)")
+    elif moteur.get("version") in NON_DEFINI:
+        import chemins_moteur
+        if chemins_moteur.ou(c) == "classe":
+            avertissements.append("moteur.version : inconnue — le commit du moteur d'où vient la "
+                                  "classe ; la reconstituer : python3 scripts/chemins_moteur.py "
+                                  "version moteur/main --ecrire (skill synchroniser-moteur)")
     galerie = c.get("galerie")
     if not isinstance(galerie, dict) or "depot" not in galerie:
         anomalies.append("galerie : il faut `depot` (skill partager-ma-classe)")

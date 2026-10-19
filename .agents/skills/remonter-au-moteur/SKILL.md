@@ -69,6 +69,12 @@ journal ferait doublon).
 ## 4. Écrire l'issue — elle est publique
 
 Titre : `[genre] description courte et générale` (sans le nom de la classe).
+La marque de première ligne dit de quelle version du moteur part la classe
+(`moteur.version`) : un défaut vu sur une vieille version est peut-être déjà
+corrigé. Si elle vaut `null`, la reconstituer d'abord et l'écrire
+(`git fetch moteur main` puis `python3 scripts/chemins_moteur.py version
+moteur/main --ecrire`, skill synchroniser-moteur, étape 0) ; sans accès au
+moteur, écrire `moteur=inconnue`, jamais `null` ni une version devinée.
 Corps, en français :
 
 ```

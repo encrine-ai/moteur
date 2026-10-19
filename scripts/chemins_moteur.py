@@ -20,6 +20,9 @@ Usage (à la racine du dépôt) :
   python3 scripts/chemins_moteur.py version [<réf>] [--ecrire]
                                      # le commit de <réf> (moteur/main) dont les fichiers du moteur
                                      # égalent le mieux ceux d'ici ; --ecrire le met dans moteur.version
+                                     # (une classe dont moteur.version est null : la copie d'un modèle
+                                     # par « Use this template » n'a aucun historique commun avec lui)
+  python3 scripts/chemins_moteur.py ecrire-version <sha>  # moteur.version, après une synchronisation
   python3 scripts/chemins_moteur.py copier <commit> [--depuis <version>]
                                      # copie la couche moteur de <commit> (index compris) ; refuse dans le moteur
   python3 scripts/chemins_moteur.py verifier            # dans une classe : rien de ce qui est propre au moteur
@@ -348,6 +351,11 @@ def main(args):
             if not ecrire_version(sha):
                 sys.exit("classe.yml : pas de `moteur.version` à remplir")
             print("moteur.version : %s écrit dans classe.yml" % sha, file=sys.stderr)
+    elif cmd == "ecrire-version" and reste:
+        sha = _git("rev-parse", "--short=7", reste[0]).strip()
+        if not ecrire_version(sha):
+            sys.exit("classe.yml : pas de `moteur.version` à remplir")
+        print("moteur.version : %s écrit dans classe.yml" % sha)
     elif cmd == "copier" and reste:
         depuis = reste[reste.index("--depuis") + 1] if "--depuis" in reste else None
         copier(reste[0], depuis)

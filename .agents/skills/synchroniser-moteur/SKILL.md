@@ -43,6 +43,22 @@ thème nouveau du modèle ne s'ajoute que si l'enseignant le demande.
   celui où le moteur se développe, il n'y a rien à synchroniser. Arrêter.
 - L'arbre de travail doit être **propre** (`git status`) : sinon, finir ou
   committer le travail en cours d'abord.
+- **`moteur.version` vaut `null`** (une classe créée avant que
+  nouvelle-classe ne l'écrive, ou dont personne ne l'a noté) : sans elle, on
+  ne sait ni ce qui a changé ni ce que la classe a retouché. La
+  reconstituer, une fois le dépôt modèle récupéré (étape 1) : le commit du
+  moteur dont les fichiers du moteur égalent le mieux ceux de la classe,
+  sur la liste unique.
+
+  ```sh
+  python3 scripts/chemins_moteur.py version moteur/main --ecrire
+  ```
+
+  Il dit combien de fichiers diffèrent encore de ce commit : zéro, la
+  classe est une copie exacte ; quelques-uns, ce sont ses retouches (les
+  voir avec `ecarts`, ci-dessous). L'annoncer à l'enseignant en une phrase
+  (« ta classe venait de la version de septembre de l'outil »), et le
+  garder dans le commit de l'étape 5.
 - **Les modifications faites ici au moteur** : comparer les fichiers du
   moteur à la version d'où la classe dérive (`moteur.version`), une fois le
   dépôt modèle récupéré (étape 1) :
@@ -158,12 +174,13 @@ bash scripts/generer-pdf.sh <site assemblé> && python3 scripts/verifier-paginat
 Assembler le site comme le déploiement (skill imprimer-pdf, étape 1). Un
 contrôle rouge : ne pas committer ; corriger s'il s'agit du contenu de la
 classe, sinon **remonter** le défaut et revenir à la version précédente du
-moteur (`git checkout HEAD -- <chemins>`).
+moteur (`git checkout HEAD -- $(python3 scripts/chemins_moteur.py chemins)`).
 
 ## 5. Committer, noter la version
 
 Mettre `moteur.version` à jour dans `classe.yml` (le commit du moteur
-copié, `git rev-parse moteur/main`), `classe.py generer`, puis un seul
+copié : `python3 scripts/chemins_moteur.py ecrire-version moteur/main`),
+`classe.py generer`, puis un seul
 commit : `Moteur <version courte> : <ce qui change pour la classe>`, avec
 dans le corps la liste des contrôles et leurs résultats chiffrés. Fusionner
 sur `main` une fois les contrôles verts (AGENTS.md, « Branches, commits,
