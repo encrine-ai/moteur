@@ -33,7 +33,7 @@ fichiers moteur/main` liste ce qui sera copié).
 | **fabriqué** | `site/charte/charte.css` (socle + thème), `site/charte/gabarits.js` (le renvoi vers les gabarits du thème), `site/charte/icones.svg` (icônes génériques + celles des milieux de `classe.yml`), l'appli installable : `site/manifest.webmanifest`, `site/sw.js` (malgré `site/*.js`), `site/icones/`, `site/favicon.ico` ; `PRISE-EN-MAIN.md`, le guide de l'enseignant (sa section « Propre à cette classe », entre `<!-- classe:debut -->` et `<!-- classe:fin -->`, est gardée) | **jamais copiés** : refaits après la synchronisation, `python3 scripts/classe.py generer` puis `python3 scripts/generer-icones.py` (réseau) |
 | **à la main** | `AGENTS.md` (les consignes de l'agent : il mêle les règles du moteur et l'identité de la classe ; jamais la ligne de `trier-remontees`) ; `CLAUDE.md` (l'import `@AGENTS.md` et quelques lignes propres à Claude Code) | ne reprendre que les règles générales, par une lecture attentive ; une classe d'avant `AGENTS.md`, dont tout tient dans `CLAUDE.md`, y déplace ses consignes et ne garde dans `CLAUDE.md` que l'import |
 
-La charte est scindée (`docs/vers-un-moteur.md`, « Deux couches de style ») :
+La charte est scindée en deux couches :
 le socle suit le moteur, **les thèmes jamais** — même celui que le modèle
 apporterait sous le même nom, puisque la classe a pu retoucher le sien. Un
 thème nouveau du modèle ne s'ajoute que si l'enseignant le demande.

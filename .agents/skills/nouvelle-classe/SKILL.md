@@ -127,7 +127,7 @@ simple, selon son niveau :
 |---|---|
 | **Grande Section** | tout : la liste numérotée du programme existe (`referentiel/cycle1-gs.yml`, 159 attendus), le contrôle de couverture tourne, tous les cahiers se fabriquent |
 | **Petite ou Moyenne Section** | les cahiers et le site se fabriquent, mais **la liste du programme de ce niveau n'existe pas encore** : il faut d'abord l'écrire, ligne par ligne, BO à l'appui (skill progressions-programme), sinon personne ne peut dire que l'année couvre le programme |
-| **Double niveau** (MS-GS…) | pas encore traité par le moteur : une seule liste du programme, un seul jeu de fiches. Proposer de commencer par le niveau le plus nombreux, et noter le besoin dans `docs/vers-un-moteur.md` |
+| **Double niveau** (MS-GS…) | pas encore traité par le moteur : une seule liste du programme, un seul jeu de fiches. Proposer de commencer par le niveau le plus nombreux, et, avec son accord, signaler le besoin au moteur (skill remonter-au-moteur), s'il n'y a pas déjà une issue |
 | **Élémentaire** (CP → CM2) | pas encore : ni programme, ni gabarits de fiches. Le dire franchement |
 
 ## Une période, ou les cinq : l'enseignant choisit
@@ -279,12 +279,12 @@ seulement si les réponses ne permettent pas de trancher :
    s'écrit `enseignant.contact` (une adresse e-mail ou une page https://),
    ou s'il a déjà ses pages légales (`mentions_legales: https://…`).
 
-Les réglages que cette classe-ci avait fixés sans qu'on les demande (rythme
-des fiches, codage A / EC / NE, nombre d'espèces de l'imagier, espèces
-sensibles, albums, sorties, piscine, modèle de cursive, matériel de la
-classe) sont listés dans `docs/vers-un-moteur.md` §3 : les reprendre comme
-**valeurs par défaut annoncées**, et ne les poser en question que plus tard,
-au moment où le matériel concerné se fabrique.
+Les réglages qu'une classe fixe sans qu'on les demande (rythme des fiches,
+codage A / EC / NE, nombre d'espèces de l'imagier, espèces sensibles,
+albums, sorties, piscine, modèle de cursive, matériel de la classe) : les
+reprendre de la classe de départ comme **valeurs par défaut annoncées**, et
+ne les poser en question que plus tard, au moment où le matériel concerné se
+fabrique.
 
 **Règles de l'entretien**, celles du dépôt :
 
@@ -497,7 +497,7 @@ déploiement échoue.
 - **Le moteur ne se modifie pas pour du contenu.** S'il manque une capacité
   (un double niveau, un nouveau type de cahier), l'ajouter de façon
   générique, sans un mot de la classe dedans — `classe.py verifier` vert —
-  et la noter dans `docs/vers-un-moteur.md`.
+  et, dans une classe, la remonter au moteur (skill remonter-au-moteur).
 - **Une modification faite à la main par l'enseignant n'est jamais écrasée**
   par une régénération : relire avant de régénérer.
 - **Licences** : CC0, domaine public, CC BY, CC BY-SA ; jamais ND ; NC
