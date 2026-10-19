@@ -5,7 +5,7 @@ description: Créer, modifier ou corriger une fiche élève imprimable de la cla
 
 # Les fiches élève
 
-Des feuilles **A4 individuelles, à photocopier**. L'enseignante donne la
+Des feuilles **A4 individuelles, à photocopier**. L'enseignant donne la
 consigne **à l'oral** ; la fiche la rappelle en encadré pour les familles. Les
 enfants ont cinq ans et ne lisent pas encore : l'image et la mise en page
 portent l'exercice.
@@ -42,19 +42,19 @@ portent l'exercice.
   revoir** sur une fiche d'entraînement.
 - Les énoncés sont à la première personne de l'enfant (« J'entoure si
   j'entends « ou » à la fin »). La consigne est numérotée comme les
-  exercices et écrite **telle que l'enseignante la dit à l'enfant**, au
+  exercices et écrite **telle que l'enseignant la dit à l'enfant**, au
   tutoiement : « Entoure toutes les lettres de ton prénom dans la grille. »
   Les familles lisent ainsi ce qui a été dit en classe. Jamais de mention
-  « consigne dite à l'oral » : l'enseignante l'a refusée, l'encadré
+  « consigne dite à l'oral » : l'enseignant l'a refusée, l'encadré
   *Consigne :* suffit. (Une version antérieure de ce skill disait que la
   consigne « s'adresse à l'adulte » ; les fiches, elles, suivent la demande
-  de l'enseignante, et c'est la règle.)
+  de l'enseignant, et c'est la règle.)
 - Chaque fiche d'entraînement dit quelle fiche d'évaluation elle prépare ; la
   série B reprend les notions de la série A à un niveau supérieur.
 
 ## Ce qu'une fiche doit contenir
 
-Ce sont des demandes de l'enseignante, chacune née d'un premier jet refusé.
+Ce sont des demandes de l'enseignant, chacune née d'un premier jet refusé.
 
 - **Une fiche remplit sa page** : trois à cinq exercices, de quoi occuper
   vraiment l'enfant. Les premiers cahiers ont été jugés « trop légers en
@@ -76,7 +76,7 @@ Ce sont des demandes de l'enseignante, chacune née d'un premier jet refusé.
   lettres —, la fiche passe en `fiche paysage` : il faut de grosses lettres.
   Portrait et paysage cohabitent dans un même PDF par les `@page` nommées de
   `fiches.css`.
-- **Le modèle de cursive est écrit par l'enseignante**, à la main (« lettres
+- **Le modèle de cursive est écrit par l'enseignant**, à la main (« lettres
   données par la maîtresse », « la maîtresse ajoute la cursive au dos ») :
   aucune police n'imite correctement le modèle de l'école. Si une police
   devait un jour s'imposer, la piste retenue est *Marelle* (cursive

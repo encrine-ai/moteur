@@ -110,7 +110,7 @@ qu'il a raisonné.
   `Retry-After: 600`) ; le compteur est partagé et le moindre `curl` de
   vérification le relance. Une moisson y prend des heures. Ne pas y
   retourner, même « pour un seul fichier ».
-- **Dessiner des SVG à main levée.** Interdit par l'enseignante (« tu fais
+- **Dessiner des SVG à main levée.** Interdit par l'enseignant (« tu fais
   ça très très mal »). Seules les formes géométriques élémentaires (dés,
   ronds, triangles, frises, escaliers de carrés) sont acceptées. Adapter
   mécaniquement un pictogramme existant est en revanche permis : la
@@ -148,7 +148,7 @@ qu'il a raisonné.
 2. **Adapté à cinq ans** : ni arme, ni peur, ni ambiguïté.
 3. **Cohérence de style dans un même exercice** : tout en pictogrammes.
    Mélanger picto et photo dans une grille fausse les exercices de tri. Et
-   sur une même page, Mulberry partout où il existe : l'enseignante a jugé
+   sur une même page, Mulberry partout où il existe : l'enseignant a jugé
    les images du premier mélange « pas du tout cohérentes les unes avec
    les autres », et les
    pictogrammes-photos de PiCom cassent le trait Mulberry.
@@ -165,11 +165,11 @@ qu'il a raisonné.
 
 ## Montrer avant de conclure
 
-L'enseignante veut **voir** les images et trancher (« n'hésite pas à me
+L'enseignant veut **voir** les images et trancher (« n'hésite pas à me
 montrer régulièrement ce que tu produis ») : lui montrer la planche des
 candidats retenus pour les cas douteux, plutôt qu'annoncer « 64 images
-installées ». Son jugement prime sur les critères ci-dessus : elle a désigné
-elle-même la photographie de la grange, délabrée (« une grange ce n'est
+installées ». Son jugement prime sur les critères ci-dessus : il a désigné
+lui-même la photographie de la grange, délabrée (« une grange ce n'est
 jamais en bon état », commit « La grange : une vraie grange, et tant pis
 pour la tôle »), et gardé l'écume avec sa flèche. Une décision de ce genre
 s'écrit dans le message de commit, pour qu'une revue future ne la

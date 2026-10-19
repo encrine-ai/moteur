@@ -14,7 +14,7 @@ Trois vérifications, chacune née d'une erreur passée inaperçue :
 - **les chiffres annoncés** : le site et les documents disent combien
   d'espèces contient chaque cahier. Quand l'imagier a doublé, les pages
   générées ont suivi — elles comptent le manifeste — mais le site est resté
-  sur les anciens chiffres, et l'enseignante a lu « 9 espèces » devant un
+  sur les anciens chiffres, et l'enseignant a lu « 9 espèces » devant un
   cahier qui en contenait trente-six.
 
 Usage : python3 scripts/verifier-imagier.py

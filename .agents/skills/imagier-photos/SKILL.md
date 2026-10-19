@@ -25,7 +25,7 @@ la sélection évite d'y revenir.
    poule au milieu de ses poussins, une moule dans une main : l'enfant ne
    sait pas lequel on nomme. Un autre animal au second plan compte aussi —
    le cheval qui portait un héron garde-bœufs sur le dos a été écarté.
-   **Une exception, tranchée par l'enseignante** : un second animal *flou*,
+   **Une exception, tranchée par l'enseignant** : un second animal *flou*,
    loin derrière, se tolère quand le cliché est nettement plus net et plus
    serré que les autres candidats (« je préfère quand même le premier, même
    s'il y a un autre sanglier derrière » — commit « Le sanglier : la netteté
@@ -54,9 +54,9 @@ doit avoir l'air de la ferme** — un cochon rose plutôt qu'un cochon
 sombre et poilu qui ressemble au sanglier, et assez grand dans l'image (le
 premier remplaçant était « tout petit »).
 
-## Montrer à l'enseignante
+## Montrer à l'enseignant
 
-Elle tranche les cas limites, et elle veut voir. Ne lui montrer que les
+Il tranche les cas limites, et il veut voir. Ne lui montrer que les
 **candidats réellement en lice, recadrés comme la carte les affichera**
 (`CADRE=1 zoom-imagier.py`) : une comparaison qui contenait un cochon déjà
 écarté l'a fait choisir une image qui n'était plus proposée.
@@ -278,7 +278,7 @@ Choisir l'espèce elle-même :
 - **caractéristique du milieu et observable en sortie** par la classe ;
 - **la forme type plutôt qu'une sous-espèce lointaine** : le loup des
   Alpes, pas le loup grec ;
-- une espèce **toxique** reste possible, mais se signale à l'enseignante
+- une espèce **toxique** reste possible, mais se signale à l'enseignant
   avec la consigne qui va avec (la digitale : on ne la cueille pas) ; une espèce **qui peut faire peur ou mordre**
   (la vipère aspic, dans une Grande Section sur la montagne) se soumet à
   l'enseignant — et l'on **attend sa réponse** au lieu de trancher seul. Sa
@@ -288,5 +288,5 @@ Choisir l'espèce elle-même :
 
 Changer le nombre d'espèces change le **volume d'impression** — passer de
 neuf à dix-huit espèces par groupe a fait passer l'imagier d'environ 45 à 80
-pages A4 par an, à plastifier. Le dire à l'enseignante au moment de le
+pages A4 par an, à plastifier. Le dire à l'enseignant au moment de le
 faire, pas après.

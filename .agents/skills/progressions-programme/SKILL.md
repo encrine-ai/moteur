@@ -44,7 +44,7 @@ notion ajoutée à l'une s'ajoute à l'autre.
 
 **Une modification pédagogique se propose, elle ne se glisse pas.** Ce qui
 part en classe, et que les familles lisent sur le site, est relu par
-l'enseignante : présenter la séance ajoutée et la faire valider, sauf
+l'enseignant : présenter la séance ajoutée et la faire valider, sauf
 demande explicite de l'écrire directement. Les sept lignes ajoutées pour
 combler les trous (cinq « Articulation » en langage, deux « Environnement »
 — charte du promeneur en P2, ramassage raisonné des déchets de plage en

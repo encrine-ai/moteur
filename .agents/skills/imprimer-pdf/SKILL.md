@@ -110,9 +110,9 @@ a été copié dans le site assemblé.
   de la page (aucune tolérance d'arrondi : c'est ce qui faisait passer le pied
   de la garde seul sur une page).
 
-## Quand l'enseignante dit que « ça s'imprime mal »
+## Quand l'enseignant dit que « ça s'imprime mal »
 
-**La croire, et chercher ce qui touche le bord.** « Tous les PDF sont un peu
+**Le croire, et chercher ce qui touche le bord.** « Tous les PDF sont un peu
 tronqués sur le bord droit » : la première réponse a été que les fichiers
 étaient sains — marges mesurées, symétriques — et que l'imprimante était en
 cause. Sa photo de la feuille imprimée a montré la vraie raison : la bordure
@@ -124,7 +124,7 @@ de la feuille plutôt que de défendre le fichier.
 
 **Prévenir quand le volume change.** Une modification qui ajoute des pages
 (l'imagier doublé : de 45 à 80 pages A4 par an, à plastifier) se signale à
-l'enseignante au moment où elle est faite.
+l'enseignant au moment où elle est faite.
 
 ## Après le contrôle
 
