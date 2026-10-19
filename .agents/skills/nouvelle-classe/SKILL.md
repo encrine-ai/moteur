@@ -173,6 +173,40 @@ partir de <adresse> ») : son site, son dépôt, ou sa carte de galerie.
    dépôt courant : le bloc de tête du README cite l'auteur (étape 7). Les images gardent
    leurs propres crédits, à recopier avec elles.
 
+## Pour quelqu'un d'autre : un accompagnant prépare la classe
+
+Quand la personne qui parle **prépare la classe pour un enseignant** (« je
+fais la classe de ma femme », « je prépare sa classe pour une collègue »),
+le demander dès l'entretien et le noter. Ce qui change :
+
+- **On parle à l'accompagnant**, mais la classe est celle de l'enseignant :
+  la signature (`enseignant.signature`) est la sienne, ses choix de
+  pédagogie l'emportent — l'accompagnant les rapporte, ou on attend sa
+  réponse. Le ton (`ton`) est celui qu'on aura avec l'enseignant.
+- `classe.yml` reçoit **`accompagnant`** : `nom` (le prénom qui apparaîtra
+  dans `PRISE-EN-MAIN.md`) et `github` (son identifiant, pour le garder
+  collaborateur) ; et, quand l'enseignant a relu et validé le contenu,
+  **`valide_le`** (la date). `PRISE-EN-MAIN.md`, fabriqué par `classe.py
+  generer`, lui explique sa classe et la reprise.
+- Le dépôt est d'abord sur le compte de l'accompagnant.
+
+**La passation**, à la fin (étape 7 faite, site en ligne) — à dire à
+l'accompagnant, dans l'ordre :
+
+1. l'enseignant crée son compte GitHub (gratuit) ;
+2. l'accompagnant transfère le dépôt : *Settings → General → Danger Zone →
+   Transfer ownership*, vers ce compte ; l'enseignant **accepte** le
+   transfert (courriel de GitHub) ;
+3. l'enseignant active Pages s'il le faut (*Settings → Pages → Source :
+   GitHub Actions*), ouvre sa session Claude Code sur sa classe et dit
+   « **Je reprends ma classe** » (skill reprendre-ma-classe : nouveau
+   `depot`, contrôles, PDF, publication à sa nouvelle adresse) ;
+4. il ajoute l'accompagnant comme collaborateur, s'il doit continuer à
+   aider (la session le propose).
+
+L'ancienne adresse du site cesse de répondre au transfert : ne la donner à
+personne d'ici là, ou prévenir qu'elle changera.
+
 ## Étape 1 — L'entretien
 
 Peu de questions : un ou deux appels à l'outil de questions interactives
