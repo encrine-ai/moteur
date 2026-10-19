@@ -89,7 +89,15 @@ else:
             ennuis.append("le tableau des corpus de %s a %d ligne(s) pour %d périodes"
                           % (nom_projet, len(mots_corpus), NB_PERIODES))
 
+# Une période dont le cahier n'est pas encore déclaré (classe.yml, `materiel`)
+# n'a que l'esquisse de ses corpus : on ne lui demande pas encore ses cartes,
+# comme generer-cartes-corpus.py ne lui fabrique pas encore de cahier.
+declarees = {n for m in CLASSE.get("materiel", []) if m.get("cle") == "cartes-corpus"
+             for n in m.get("periodes", [])}
 for p, mots in sorted(mots_corpus.items()):
+    if p not in declarees:
+        print("P%d : pas de cahier de cartes-corpus déclaré, couverture des mots sautée" % p)
+        continue
     cartes = {normalise(nom) for _, _, _, nom, _ in entrees(p)}
     declares = {normalise(m) for m in NON_ILLUSTRES.get(p, ())}
     for mot in mots:
