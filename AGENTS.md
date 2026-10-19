@@ -105,6 +105,10 @@ exemple) n'y a pas sa place : elle vit dans le script du matériel concerné.
 Chaque capacité du dépôt a son skill : c'est par eux qu'une session reprend
 le travail sans repartir de zéro. Charger le skill **avant** de toucher au
 matériel qu'il couvre, et finir par [`capitaliser`](.agents/skills/capitaliser/SKILL.md).
+Dans une classe, un skill peut finir par sa section **« Propre à cette
+classe »** (entre `<!-- classe:debut -->` et `<!-- classe:fin -->`) : elle
+appartient à la classe, la synchronisation du moteur la garde, et le moteur
+n'en porte jamais.
 
 | Skill | Quand |
 |---|---|

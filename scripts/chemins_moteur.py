@@ -168,30 +168,57 @@ def ou(c=None):
     return "moteur" if moteur and moteur in courants else "classe"
 
 
-# Copiés, puis retouchés pour la classe par `classe.py generer` : un écart
-# n'y compte que hors du bloc fabriqué (le titre et l'aperçu de lien).
-RETOUCHES = {"site/index.html"}
+# La section propre à la classe d'un skill : ce que la classe a appris pour
+# elle seule (son thème, une décision de l'enseignant sur une espèce…), à la
+# fin du SKILL.md, entre deux marqueurs seuls sur leur ligne. Le moteur n'en
+# porte jamais ; `copier` la garde et la repose à la fin du skill neuf, si
+# bien qu'une synchronisation ne l'écrase pas, et l'agent la lit avec le
+# skill. Elle commence par un titre « ## Propre à cette classe ».
+CLASSE_DEBUT, CLASSE_FIN = "<!-- classe:debut -->", "<!-- classe:fin -->"
+SECTION_CLASSE = re.compile(r"\n*^%s$.*?^%s$\n?" % (re.escape(CLASSE_DEBUT), re.escape(CLASSE_FIN)),
+                            re.S | re.M)
+SKILL = re.compile(r"^\.agents/skills/[^/]+/SKILL\.md$")
+
+
+def sans_classe(texte):
+    """Le SKILL.md sans sa section propre à la classe."""
+    return SECTION_CLASSE.sub("\n", texte).rstrip("\n") + "\n"
+
+
+def section_classe(texte):
+    m = SECTION_CLASSE.search(texte)
+    return m.group(0).strip("\n") if m else None
+
+
+def _hors_fabrique(f, texte):
+    """Le fichier sans ce que la classe y ajoute par construction : le bloc
+    du titre et de l'aperçu de lien d'index.html (refait par `classe.py
+    generer`), la section propre à la classe d'un skill."""
+    if SKILL.match(f):
+        return sans_classe(texte)
+    if f == "site/index.html":
+        try:
+            sys.path.insert(0, str(RACINE / "scripts"))
+            import apercu
+            return apercu.sans_bloc(texte)
+        except Exception:
+            return texte
+    return texte
+
+
+def _retouche(f):
+    return f == "site/index.html" or bool(SKILL.match(f))
 
 
 def _meme_hors_bloc(commit, f):
-    try:
-        sys.path.insert(0, str(RACINE / "scripts"))
-        import apercu
-    except Exception:
-        return False
     ici = (RACINE / f).read_text(encoding="utf-8")
     la = _git("show", "%s:%s" % (commit, f))
-    return apercu.sans_bloc(ici) == apercu.sans_bloc(la)
+    return _hors_fabrique(f, ici) == _hors_fabrique(f, la)
 
 
 def _meme_hors_bloc_head(commit, f):
-    try:
-        sys.path.insert(0, str(RACINE / "scripts"))
-        import apercu
-    except Exception:
-        return False
-    return (apercu.sans_bloc(_git("show", "HEAD:%s" % f))
-            == apercu.sans_bloc(_git("show", "%s:%s" % (commit, f))))
+    return (_hors_fabrique(f, _git("show", "HEAD:%s" % f))
+            == _hors_fabrique(f, _git("show", "%s:%s" % (commit, f))))
 
 
 def ecarts(commit):
@@ -199,7 +226,7 @@ def ecarts(commit):
     sortie = _git("diff", "--no-renames", "--name-status", commit, "--", *chemins())
     lignes = [tuple(l.split("\t", 1)) for l in sortie.splitlines() if l.strip()]
     return [(e, f) for e, f in lignes
-            if not (e == "M" and f in RETOUCHES and _meme_hors_bloc(commit, f))]
+            if not (e == "M" and _retouche(f) and _meme_hors_bloc(commit, f))]
 
 
 def version(ref="moteur/main", limite=1000):
@@ -239,6 +266,13 @@ def copier(commit, depuis=None):
     if ou() == "moteur":
         sys.exit("Ce dépôt est le moteur : rien à synchroniser, on corrige sur place.")
     nouveaux = fichiers(commit)
+    # les sections propres à la classe, gardées avant la copie
+    sections = {}
+    for f in fichiers():
+        if SKILL.match(f) and (RACINE / f).is_file():
+            sec = section_classe((RACINE / f).read_text(encoding="utf-8"))
+            if sec:
+                sections[f] = sec
     lien = RACINE / ".claude" / "skills"
     if lien.is_dir() and not lien.is_symlink():
         # une classe d'avant le lien : son vrai dossier cède la place au lien
@@ -248,6 +282,20 @@ def copier(commit, depuis=None):
     _git("checkout", commit, "--pathspec-from-file=-", "--pathspec-file-nul", "--",
          entree="\0".join(nouveaux))
     _git("rm", "-rqf", "--ignore-unmatch", "--", *[m.rstrip("/") for m in PROPRES_AU_MOTEUR])
+    reposees, orphelines = [], []
+    for f, sec in sorted(sections.items()):
+        cible = RACINE / f
+        if not cible.is_file():
+            # le skill a disparu du moteur : la section se garde à part
+            cible = RACINE / "classe" / ("notes-%s.md" % f.split("/")[2])
+            cible.write_text(sec + "\n", encoding="utf-8")
+            orphelines.append(str(cible.relative_to(RACINE)))
+            _git("add", "--", str(cible.relative_to(RACINE)))
+            continue
+        cible.write_text(sans_classe(cible.read_text(encoding="utf-8")) + "\n" + sec + "\n",
+                         encoding="utf-8")
+        _git("add", "--", f)
+        reposees.append(f)
     retires, gardes = [], []
     if depuis:
         # ce que le moteur a retiré depuis la version de la classe : retiré
@@ -264,6 +312,10 @@ def copier(commit, depuis=None):
                 gardes.append(f)
     seuls_ici = sorted(set(fichiers()) - set(nouveaux))
     print("%d fichiers du moteur copiés depuis %s" % (len(nouveaux), commit))
+    for f in reposees:
+        print("  section propre à la classe gardée : %s" % f)
+    for f in orphelines:
+        print("  ⚠ skill disparu du moteur : sa section propre à la classe est gardée dans %s" % f)
     for f in retires:
         print("  retiré (le moteur l'a retiré) : %s" % f)
     for f in gardes:
@@ -273,12 +325,36 @@ def copier(commit, depuis=None):
             print("  · seulement dans cette classe : %s" % f)
 
 
+def _sections_mal_formees(moteur):
+    anomalies = []
+    for f in fichiers():
+        if not SKILL.match(f) or not (RACINE / f).is_file():
+            continue
+        t = (RACINE / f).read_text(encoding="utf-8")
+        n_debut = len(re.findall(r"^%s$" % re.escape(CLASSE_DEBUT), t, re.M))
+        n_fin = len(re.findall(r"^%s$" % re.escape(CLASSE_FIN), t, re.M))
+        if moteur and (n_debut or n_fin):
+            anomalies.append("%s : une section propre à une classe dans le moteur — elle vit dans "
+                             "la classe, jamais ici" % f)
+        elif (n_debut, n_fin) not in ((0, 0), (1, 1)):
+            anomalies.append("%s : la section propre à la classe doit avoir un %s et un %s"
+                             % (f, CLASSE_DEBUT, CLASSE_FIN))
+        elif n_debut and sans_classe(t) + "\n" + section_classe(t) + "\n" != t:
+            anomalies.append("%s : la section propre à la classe doit finir le fichier "
+                             "(la synchronisation l'y repose)" % f)
+    return anomalies
+
+
 def verifier():
     if ou() == "moteur":
-        print("Dépôt du moteur : ce qui lui est propre y est à sa place.")
-        return 0
+        anomalies = _sections_mal_formees(True)
+        for a in anomalies:
+            print("✘ " + a)
+        print("Dépôt du moteur : %d anomalie(s)" % len(anomalies))
+        return 1 if anomalies else 0
     anomalies = ["%s : propre au dépôt du moteur, à retirer (git rm -r)" % m.rstrip("/")
                  for m in PROPRES_AU_MOTEUR if (RACINE / m.rstrip("/")).exists()]
+    anomalies += _sections_mal_formees(False)
     for nom in ("AGENTS.md", "CLAUDE.md"):
         f = RACINE / nom
         if not f.is_file():
@@ -303,7 +379,7 @@ def bilan(depuis=None):
     if depuis:
         retouches = {f for e, f in (tuple(l.split("\t", 1)) for l in _git(
             "diff", "--no-renames", "--name-status", depuis, "HEAD", "--", *chemins()).splitlines()
-            if l.strip()) if e == "M" and not (f in RETOUCHES and _meme_hors_bloc_head(depuis, f))}
+            if l.strip()) if e == "M" and not (_retouche(f) and _meme_hors_bloc_head(depuis, f))}
     contenu = 0
     for l in sortie.splitlines():
         f = l[3:]

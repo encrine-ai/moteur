@@ -280,9 +280,11 @@ Choisir l'espèce elle-même :
   Alpes, pas le loup grec ;
 - une espèce **toxique** reste possible, mais se signale à l'enseignante
   avec la consigne qui va avec (la digitale : on ne la cueille pas) ; une espèce **qui peut faire peur ou mordre**
-  (la vipère aspic, période 3) se soumet à l'enseignante — et l'on
-  **attend sa réponse** au lieu de trancher seul. Cette question-là a été
-  posée trois fois sans réponse ; la vipère reste en attendant.
+  (la vipère aspic, dans une Grande Section sur la montagne) se soumet à
+  l'enseignant — et l'on **attend sa réponse** au lieu de trancher seul. Sa
+  décision est propre à la classe : elle s'écrit dans la section « Propre à
+  cette classe », à la fin de ce skill (skill capitaliser), jamais dans le
+  texte du moteur.
 
 Changer le nombre d'espèces change le **volume d'impression** — passer de
 neuf à dix-huit espèces par groupe a fait passer l'imagier d'environ 45 à 80
