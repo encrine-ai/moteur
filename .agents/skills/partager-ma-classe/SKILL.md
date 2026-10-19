@@ -39,11 +39,11 @@ jamais « pull request », « JSON », « merge », « fork ».
 
 ## 0. Où partager
 
-Lire `galerie.depot` dans `classe.yml`. **À définir** : la galerie n'existe
-pas encore. Faire quand même les contrôles et la fiche (étapes 1 et 2), les
-garder sous `partage/fiche.json` dans la classe, et le dire : « Tout est
-prêt ; la galerie n'est pas encore ouverte, je la proposerai dès qu'elle le
-sera. »
+Lire `galerie.depot` dans `classe.yml` : le dépôt de la galerie d'Encrine
+(`encrine-ai/encrine-ai.github.io`), où arrive la demande. S'il manque —
+une classe d'avant ce champ ; `classe.py verifier` le signale —, le
+reprendre du modèle (`galerie: {depot: encrine-ai/encrine-ai.github.io}`)
+et le dire en une phrase, sans en faire une question.
 
 Avant tout :
 
