@@ -17,16 +17,28 @@
   var C = GS.CLASSE;
   var DAY = 86400000;
   var SIGNATURE = { texte: 'Conçu avec Encrine', lien: 'https://encrine.ai' };
-  /* Une classe servie par Encrine — la classe d'exemple, ou la copie relue
-     d'une classe de la galerie (encrine-ai/<id>, https://encrine.ai/<id>/) —
-     porte au pied les mentions légales d'Encrine, qui l'héberge, comme Ludea
-     sur ses copies. La copie garde dans classe.yml le `depot` et le `site`
-     de son auteur : c'est l'adresse où la page est servie qui tranche. */
+  /* Les mentions légales du pied, une seule entrée (m.mentions), toujours là :
+     - une classe servie par Encrine — la classe d'exemple, ou la copie relue
+       d'une classe de la galerie (encrine-ai/<id>, https://encrine.ai/<id>/) —
+       porte celles d'Encrine, qui l'héberge, comme Ludea sur ses copies. La
+       copie garde dans classe.yml le `depot` et le `site` de son auteur :
+       c'est l'adresse où la page est servie qui tranche ;
+     - une classe qui a ses propres pages légales les nomme dans classe.yml
+       (`mentions_legales: https://…`) : le pied pointe dessus ;
+     - toute autre classe — le cas ordinaire, le site de l'enseignant — a la
+       page que le moteur fabrique depuis classe.yml (#/mentions-legales,
+       app.js, prepareMentions). */
   var MENTIONS = { texte: 'Mentions légales', lien: 'https://encrine.ai/mentions-legales/' };
+  var MENTIONS_PAGE = '#/mentions-legales';
   function hebergeeParEncrine() {
     var hote = (typeof location !== 'undefined' && location.hostname) || '';
     return /^(www\.)?encrine\.ai$/.test(hote) ||
       /^encrine-ai\//.test(C.depot || '') || /^https:\/\/(www\.)?encrine\.ai\//.test(C.site || '');
+  }
+  function mentions() {
+    if (hebergeeParEncrine()) return { texte: MENTIONS.texte, lien: MENTIONS.lien, source: 'encrine' };
+    if (/^https:\/\/\S+$/.test(C.mentions_legales || '')) return { texte: MENTIONS.texte, lien: C.mentions_legales, source: 'classe' };
+    return { texte: MENTIONS.texte, lien: MENTIONS_PAGE, source: 'page' };
   }
 
   /* ——— Outils de rendu, offerts aux gabarits ——— */
@@ -231,7 +243,7 @@
         nom: C.nom, projet: C.projet, niveau: C.niveau, annee: C.annee, sous_titre: C.sous_titre,
         accroche: C.accroche, conformite: C.conformite, zone: GS.ZONE, periodes_nom: nomPeriodes,
         origine: C.origine && C.origine.titre ? C.origine : null,
-        enseignant: { signature: ens.signature || '', mot: ens.mot || '', ecole: ens.ecole || '', ville: ens.ville || '' }
+        enseignant: { signature: ens.signature || '', mot: ens.mot || '', ecole: ens.ecole || '', ville: ens.ville || '', contact: ens.contact || '' }
       },
       aujourdhui: auj,
       annee: { semaines: total, debut: ps[0].debut, fin: ps[ps.length - 1].fin,
@@ -242,7 +254,7 @@
       projet: projet, imagier: C.imagier || {}, corpus: C.corpus || {},
       images: lesImages, image: image,
       signature: SIGNATURE,
-      mentions: hebergeeParEncrine() ? MENTIONS : null,
+      mentions: mentions(),
       pied: {
         conformite: C.conformite,
         calendrier: 'Dates des vacances : calendrier scolaire officiel ' + C.annee + ', zone ' + GS.ZONE + '.',
@@ -275,5 +287,6 @@
   GS.modele = modele;
   GS.SIGNATURE = SIGNATURE;
   GS.MENTIONS = MENTIONS;
+  GS.MENTIONS_PAGE = MENTIONS_PAGE;
   GS.outils = { esc: esc, texte: texte, icone: icone, romain: romain, nombre: nombre };
 })();

@@ -17,7 +17,7 @@ sauf les PDF.
 | `site/commun.js` | l'objet `GS`, bâti sur `CLASSE` : le calendrier de la classe (`CAL`, et sa zone `ZONE`), les milieux (`THEMES`, `ICONES_MILIEU`), les documents (`DOCS`), le préfixe des fichiers téléchargés, le calcul des périodes et le badge de dates. Partagé par l'application et la vue d'impression |
 | `site/index.html` | le bloc du titre et de l'aperçu de lien (`scripts/apercu.py`, ci-dessous) ; trois emplacements — `#entete`, `#contenu`, `#pied` — et le lien d'évitement ; le manifeste et les meta de l'appli ; charge `modele.js`, `gabarits.js`, puis `charte/gabarits.js` (ceux du thème) et `app.js` |
 | `site/modele.js` | `GS.modele()` : le modèle des pages — périodes datées pour la zone, « Nous y sommes » (une période, ou des vacances : « pendant les vacances de la Toussaint »), vacances, ponts, menu groupé, documents et leurs PDF, cahiers de chaque période, projet, imagier, corpus, images et crédits, signature. `?date=AAAA-MM-JJ` dans l'adresse simule un jour |
-| `site/app.js` | la logique : routes (`#/accueil`, `#/<document>`, `#/periode/<clé>`, `#/credits`), lecture et rendu du Markdown (titre, sections, badges de dates), menu (sous-menus, dialogue du téléphone, Échap, focus), crédits ; la **forme** vient des gabarits (skill charte-graphique, « Le mini-site ») ; aucun sélecteur de zone |
+| `site/app.js` | la logique : routes (`#/accueil`, `#/<document>`, `#/periode/<clé>`, `#/credits`, `#/mentions-legales`), lecture et rendu du Markdown (titre, sections, badges de dates), menu (sous-menus, dialogue du téléphone, Échap, focus), crédits ; la **forme** vient des gabarits (skill charte-graphique, « Le mini-site ») ; aucun sélecteur de zone |
 | `site/gabarits.js` | les gabarits par défaut : l'en-tête et le menu, l'accueil, le document (boutons PDF `pdf/<doc>.pdf`, extraits `pdf/<doc>-periode-N.pdf`), la période, le pied |
 | `site/imprimer.html` | la vue que Chromium imprime : `?doc=…[&periode=N]`, aux dates de la zone de la classe |
 | `.github/workflows/pages.yml` | à chaque push sur `main` : contrôler `classe.yml`, assembler `_site/`, fabriquer les PDF (un par document et par extrait de période, plus les cahiers : 65 pour une classe de Grande Section complète), contrôler la pagination, publier |
@@ -271,6 +271,50 @@ données écrites en dur l'ignore ; ne jamais le retoucher à la main.
   **sans JavaScript** (le HTML brut), regarder `partage.png` réduite à
   300 px de large (la taille d'un aperçu sur téléphone) et simuler une bulle
   d'iMessage ou de WhatsApp.
+
+## Les mentions légales
+
+Le pied de **chaque** classe porte « Mentions légales » (`m.mentions`,
+`site/modele.js` ; `garantirPied` dans `app.js` l'ajoute si le gabarit
+l'oublie). Où mène le lien, dans cet ordre :
+
+1. **Une classe servie par Encrine** — la classe d'exemple, une copie relue
+   de la galerie : l'adresse de la page (`encrine.ai`), ou `depot` dans
+   `encrine-ai/`, ou `site` sous `https://encrine.ai/` → les mentions
+   d'Encrine, https://encrine.ai/mentions-legales/ (Encrine l'héberge).
+2. **`mentions_legales: https://…`** dans `classe.yml` (facultatif) : la
+   classe a déjà ses pages légales, le pied y pointe.
+3. **Sinon — le cas ordinaire, le site de l'enseignant** : la page
+   `#/mentions-legales`, que `prepareMentions()` (`app.js`) fabrique depuis
+   `classe.yml` et que le gabarit `document` du thème rend, comme les
+   crédits (`page.type === 'mentions'`). Elle dit :
+   - **Éditeur** : `enseignant.signature` (sinon « L’enseignant de cette
+     classe »), « site personnel non professionnel » ; **contact** :
+     `enseignant.contact` (une adresse e-mail ou une page https://,
+     facultatif), sinon le compte GitHub du propriétaire de `depot`
+     (https://github.com/<propriétaire>) ; sans `depot` défini, pas de
+     contact ;
+   - **Hébergeur** : GitHub B.V. (GitHub Pages), Vijzelstraat 68-72,
+     1017 HL Amsterdam, Pays-Bas — https://support.github.com (une seule
+     constante, `HEBERGEUR` dans `app.js`) ;
+   - **Données personnelles** : aucune collecte (ni compte, ni formulaire,
+     ni cookie, ni publicité, ni mesure d’audience), aucune page n'appelle un
+     autre site ; restent sur l'appareil le refus de l'invitation à installer
+     l'appli (`localStorage`, `appli.js`) et la copie hors ligne (`sw.js`) ;
+     GitHub traite l'adresse IP comme tout hébergeur. **Ce paragraphe décrit
+     le code** : un changement du moteur qui appelle un autre site (une
+     police en ligne, une mesure d'audience, un formulaire) ou stocke autre
+     chose doit le réécrire dans le même commit ;
+   - **Fait avec Encrine** : outil libre (MIT) ; « Encrine n’est pas
+     l’éditeur de ce site et n’en a pas vérifié le contenu » ;
+   - **Contenu** : `partage.licence` (et `licence_note`) s'il existe, la
+     classe d'origine (`origine`), le lien vers la page des crédits.
+
+Le modèle est celui des jeux de Ludea (« Made with Ludea + legal notice »).
+Le texte **n'a pas été relu par un juriste** : il reprend les mentions
+qu'impose la LCEN (art. 6, III) à un site personnel, où un particulier peut
+ne pas publier son nom quand l'hébergeur est nommé. Ne pas l'écrire sur le
+site ; le dire si l'enseignant pose la question.
 
 ## Le déploiement
 

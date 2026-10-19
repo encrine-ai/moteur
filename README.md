@@ -130,3 +130,24 @@ la licence choisie par chaque enseignant ; les **polices et les images**
 gardent leurs propres licences (SIL Open Font License pour Andika, Bricolage
 Grotesque et Atkinson Hyperlegible Next ; ISC pour les icônes Lucide ; la
 licence de chaque image dans les crédits de son cahier).
+
+## Vos mentions légales, et le nom « Encrine »
+
+**Vos mentions légales.** Le pied de votre site porte « Conçu avec Encrine »
+et « Mentions légales », une page fabriquée depuis `classe.yml` : sur votre
+site, **c’est vous l’éditeur** (un site personnel non professionnel, signé
+comme vous signez votre classe ; contact : votre compte GitHub, ou
+`enseignant.contact`), GitHub Pages l’hébergeur, et le site ne collecte
+aucune donnée personnelle. Encrine n’est pas l’éditeur de votre site et n’en
+a pas vérifié le contenu ; la copie relue d’une classe de la galerie, servie
+sur encrine.ai, porte les mentions d’Encrine. Si vous avez déjà vos propres
+pages, `mentions_legales: https://…` y renvoie.
+
+**Utiliser le nom « Encrine ».** Vous pouvez dire que votre site est « conçu
+avec Encrine » ou « fait avec Encrine », avec un lien vers
+https://encrine.ai — l’outil le pose de lui-même au pied de chaque page.
+Vous ne pouvez pas laisser croire qu’Encrine a relu, approuvé ou publie votre
+site (seules les copies relues de la galerie, servies sur encrine.ai, le
+sont), utiliser le logo d’Encrine comme le vôtre, ni nommer votre classe ou
+votre site « Encrine ». Pour signaler un site qui utilise le nom de façon
+trompeuse : https://encrine.ai/contact/.

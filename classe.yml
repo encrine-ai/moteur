@@ -19,6 +19,10 @@ ton: tu
 # (« Claire Martin », « Mme Martin », un prénom), ou rien ; `mot`, un petit
 # mot d'accueil, facultatif. Le site est public : ni l'école ni la ville par
 # défaut (`ecole`, `ville` seulement s'il y tient).
+# La signature fait aussi l'éditeur des mentions légales que le moteur
+# fabrique (#/mentions-legales), avec pour contact le compte GitHub du
+# propriétaire de `depot` ; `contact`, facultatif, le remplace (une adresse
+# e-mail ou une page https://).
 enseignant:
   signature: ''
   mot: ''
@@ -32,6 +36,9 @@ enseignant:
 # https://<propriétaire>.github.io/<dépôt>/ (un domaine propre) — le bloc de
 # tête du README.md en tire son lien.
 depot: à définir
+# `mentions_legales`, facultatif : l'adresse (https://) des pages légales que
+# la classe a déjà ; le pied y pointe au lieu de la page fabriquée par le
+# moteur. Une classe servie par Encrine porte, elle, celles d'Encrine.
 moteur:
   depot: encrine-ai/moteur
   version: null

@@ -8,7 +8,8 @@
  * rien, ne calcule rien, ne réécrit pas cette logique. Skill
  * charte-graphique, « Les gabarits ».
  *
- * Routes : #/accueil, #/<document>, #/periode/<clé>, #/credits.
+ * Routes : #/accueil, #/<document>, #/periode/<clé>, #/credits,
+ * #/mentions-legales.
  */
 (function () {
   'use strict';
@@ -28,6 +29,7 @@
     var h = (location.hash || '').replace(/^#\/?/, '');
     if (!h || h === 'accueil') return { type: 'accueil' };
     if (h === 'credits') return { type: 'credits' };
+    if ('#/' + h === GS.MENTIONS_PAGE) return { type: 'mentions' };
     var m = /^periode\/([\w-]+)$/.exec(h);
     if (m) {
       var p = modele.periodes.find(function (x) { return x.cle === m[1]; });
@@ -118,6 +120,89 @@
     return Promise.resolve(page);
   }
 
+  /* L'hébergeur d'une classe publiée par son enseignant : GitHub Pages
+     (le déploiement du moteur, .github/workflows/pages.yml). Repris des
+     mentions légales que Ludea fabrique pour ses jeux. */
+  var HEBERGEUR = {
+    nom: 'GitHub B.V. (GitHub Pages)',
+    adresse: 'Vijzelstraat 68-72, 1017 HL Amsterdam, Pays-Bas',
+    lien: 'https://support.github.com/', lienTexte: 'support.github.com'
+  };
+
+  /* La page des mentions légales d'une classe publiée par son enseignant
+     (modele.mentions.source === 'page') : fabriquée ici depuis classe.yml,
+     rendue par le gabarit des documents, comme les crédits.
+     - L'éditeur est l'enseignant (`enseignant.signature`), « site personnel
+       non professionnel » : la loi (LCEN, art. 6, III, 2) permet à un
+       particulier de ne pas publier son nom quand l'hébergeur est nommé et
+       le connaît ; le contact est son compte GitHub (le propriétaire de
+       `depot`), ou `enseignant.contact` s'il en a donné un.
+     - Les données personnelles décrivent ce que fait vraiment le site (à
+       revoir si le moteur change) : aucune requête vers un autre site (les
+       polices, les images et les scripts viennent du site lui-même), ni
+       cookie, ni compte, ni formulaire, ni mesure d'audience ; localStorage
+       ne garde que le refus de l'invitation à installer l'appli et
+       sessionStorage l'heure du dernier rechargement après une mise à jour
+       (appli.js) ; le service worker (sw.js) garde une copie des pages pour
+       le hors-ligne.
+     Ce texte n'a pas été relu par un juriste : il reprend le modèle de Ludea
+     et les mentions qu'impose la LCEN à un site personnel. Une classe qui a
+     ses propres pages les nomme dans classe.yml (`mentions_legales`). */
+  function prepareMentions(page) {
+    var esc = GS.outils.esc;
+    var C = GS.CLASSE;
+    var ens = modele.classe.enseignant;
+    var proprio = /^([A-Za-z0-9-]{1,39})\/[A-Za-z0-9._-]+$/.exec(C.depot || '');
+    var lien = function (href, texte) { return '<a href="' + esc(href) + '">' + esc(texte) + '</a>'; };
+    var contact = '';
+    if (/^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/.test(ens.contact)) contact = lien('mailto:' + ens.contact, ens.contact);
+    else if (/^https:\/\/\S+$/.test(ens.contact)) contact = lien(ens.contact, ens.contact.replace(/^https:\/\/(www\.)?/, '').replace(/\/$/, ''));
+    else if (proprio) contact = lien('https://github.com/' + proprio[1], 'github.com/' + proprio[1]) + ' (son compte GitHub)';
+    var sections = [];
+    var corps = '';
+    function section(id, titre, html) {
+      corps += '<h2 id="' + id + '">' + titre + '</h2>' + html;
+      sections.push({ id: id, titre: titre });
+    }
+    section('editeur', 'Éditeur',
+      '<p>' + (ens.signature ? esc(ens.signature) : 'L’enseignant de cette classe') +
+      ', site personnel non professionnel.</p>' +
+      (contact ? '<p>Contact : ' + contact + '.</p>' : ''));
+    section('hebergeur', 'Hébergeur',
+      '<p>' + esc(HEBERGEUR.nom) + ', ' + esc(HEBERGEUR.adresse) + ' — ' + lien(HEBERGEUR.lien, HEBERGEUR.lienTexte) + '.</p>');
+    section('donnees', 'Données personnelles',
+      '<p>Ce site ne collecte aucune donnée personnelle : pas de compte, pas de formulaire, pas de cookie, ' +
+      'pas de publicité, pas de mesure d’audience. Les polices, les images et les documents viennent du site ' +
+      'lui-même : aucune page n’appelle un autre site.</p>' +
+      '<p>Seuls restent dans le navigateur, sur l’appareil : le choix de ne plus voir l’invitation à installer ' +
+      'l’appli, s’il a été fait, et une copie des pages déjà ouvertes, pour s’en servir sans réseau. ' +
+      'Vider les données du site dans le navigateur les efface.</p>' +
+      '<p>Comme tout hébergeur, GitHub traite des données techniques, comme l’adresse IP, pour délivrer les pages.</p>');
+    section('encrine', 'Fait avec Encrine',
+      '<p>Ce site est fait avec ' + lien(GS.SIGNATURE.lien, 'Encrine') + ', un outil libre (licence MIT) qui fabrique ' +
+      'l’année d’une classe. Encrine n’est pas l’éditeur de ce site et n’en a pas vérifié le contenu.</p>');
+    var p = C.partage || {};
+    var org = modele.classe.origine;
+    var contenu = '';
+    if (p.licence) {
+      contenu += '<p>Le contenu de cette classe (documents, fiches, cahiers) est sous licence ' + esc(p.licence) +
+        (p.licence_note ? ', ' + esc(p.licence_note) : '') + '.</p>';
+    }
+    if (org) {
+      contenu += '<p>Cette classe est partie de « ' + (org.site ? lien(org.site, org.titre) : esc(org.titre)) + ' »' +
+        (org.auteur ? ', de ' + esc(org.auteur) : '') + ' (' + esc(org.licence) + ').</p>';
+    }
+    contenu += '<p>Les images, les photographies et les polices ont leurs propres auteurs et licences, ' +
+      'tous nommés sur la page ' + lien('#/credits', 'Crédits') + '.</p>';
+    section('contenu', 'Contenu', contenu);
+    page.titre = 'Mentions légales';
+    page.sections = sections;
+    page.corps = corps;
+    page.html = '<h1>Mentions légales</h1>' + corps;
+    page.doc = { id: 'mentions-legales', titre: 'Mentions légales', desc: '', icone: 'file-text', groupe: '', lien: GS.MENTIONS_PAGE, pdf: null, extraits: [] };
+    return Promise.resolve(page);
+  }
+
   /* ——— Le rendu ——— */
   function poser(id, nom, page) {
     var el = document.getElementById(id);
@@ -129,7 +214,8 @@
   function rend() {
     var page = route();
     var pret = page.type === 'document' ? prepareDocument(page)
-      : page.type === 'credits' ? prepareCredits(page) : Promise.resolve(page);
+      : page.type === 'credits' ? prepareCredits(page)
+      : page.type === 'mentions' ? prepareMentions(page) : Promise.resolve(page);
     var contenu = document.getElementById('contenu');
     contenu.setAttribute('aria-busy', 'true');
     pret.catch(function () {
@@ -143,7 +229,7 @@
       document.body.dataset.page = page.type;
       if (page.periode) document.body.dataset.periode = page.periode.n; else delete document.body.dataset.periode;
       poser('entete', 'entete', page);
-      poser('contenu', page.type === 'credits' ? 'document' : page.type, page);
+      poser('contenu', page.type === 'credits' || page.type === 'mentions' ? 'document' : page.type, page);
       poser('pied', 'pied', page);
       garantirPied();
       marqueActifs();
@@ -176,9 +262,10 @@
 
   /* Ce que le pied doit toujours porter, quel que soit le gabarit : la
      signature « Conçu avec Encrine », le lien des crédits, le crédit de
-     la classe d'origine (CC BY et CC BY-SA l'exigent), et, pour une classe
-     servie par Encrine (modele.mentions), ses mentions légales. Un gabarit qui les
-     oublie les reçoit ici, sous leur forme sobre. */
+     la classe d'origine (CC BY et CC BY-SA l'exigent), et les mentions
+     légales (modele.mentions : celles d'Encrine pour une classe qu'elle
+     sert, les pages de la classe si elle en a, sinon #/mentions-legales).
+     Un gabarit qui les oublie les reçoit ici, sous leur forme sobre. */
   function garantirPied() {
     var pied = document.getElementById('pied');
     var esc = GS.outils.esc;
@@ -192,9 +279,12 @@
        sans lui, après la signature) : elles prennent ainsi le style que le
        thème donne à ce coin du pied, sans bloc à elles. */
     var ment = modele.mentions;
-    if (ment && !pied.querySelector('a[href="' + ment.lien + '"]')) {
+    var dejaLa = ment && Array.prototype.some.call(pied.querySelectorAll('a[href]'), function (a) {
+      return a.getAttribute('href') === ment.lien;
+    });
+    if (ment && !dejaLa) {
       var ancre = pied.querySelector('a[href="#/credits"]') || pied.querySelector('a[href="' + GS.SIGNATURE.lien + '"]');
-      var lien = '<a class="pied-mentions" href="' + ment.lien + '">' + ment.texte + '</a>';
+      var lien = '<a class="pied-mentions" href="' + esc(ment.lien) + '">' + esc(ment.texte) + '</a>';
       if (ancre) ancre.insertAdjacentHTML('afterend', ' · ' + lien);
       else pied.insertAdjacentHTML('beforeend', '<p class="pied-mentions">' + lien + '</p>');
     }

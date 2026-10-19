@@ -287,7 +287,10 @@ Un gabarit est une fonction `(m, page) → HTML` (une chaîne), sans cadriciel.
   titre, corps, html, sections}` — `html` est le Markdown rendu, `corps` le
   même sans son titre, `sections` les `h2` (`id`, `titre`, `periode`), les
   badges de dates de la zone déjà posés ; `{type: 'periode', periode}` ;
-  `{type: 'credits', …}` (rendu par `document`) ; `{type: 'introuvable'}`.
+  `{type: 'credits', …}` et `{type: 'mentions', …}` (les mentions légales
+  fabriquées par le moteur), tous deux rendus par `document` — un `monter`
+  qui traite les crédits comme un document traite aussi `mentions` ;
+  `{type: 'introuvable'}`.
 - **`m`, le modèle** : `m.classe` (nom, projet, niveau, annee, accroche,
   zone, periodes_nom, origine, **enseignant** : signature, mot) ;
   `m.periodes[]` (n, cle, milieu, icone, romain, lien `#/periode/<cle>`,
@@ -302,9 +305,10 @@ Un gabarit est une fonction `(m, page) → HTML` (une chaîne), sans cadriciel.
   groupe des périodes) ; `m.documents`, `m.groupes` (chaque document avec
   `pdf` et `extraits`) ; `m.sortes`, `m.materielNote` ; `m.projet` ;
   `m.images`, `m.image(fichier)` (chemin, crédit) ; `m.signature` ;
-  `m.mentions` (« Mentions légales » d'Encrine, ou `null` : seulement pour
-  une classe servie par Encrine — l'exemple ou une copie relue de la
-  galerie, sur `encrine.ai`) ;
+  `m.mentions` (`texte`, `lien`, `source`, toujours là : `encrine` pour une
+  classe servie par Encrine — l'exemple ou une copie relue de la galerie —,
+  lien vers https://encrine.ai/mentions-legales/ ; `classe` pour les pages
+  de la classe, `mentions_legales` ; sinon `page`, `#/mentions-legales`) ;
   `m.pied` (conformite, calendrier, credits) ; `m.mouvement` (faux si
   `prefers-reduced-motion`) ; `m.outils` (esc, texte, icone, pastille,
   romain, nombre, jourLong, jourCourt). Un gabarit **échappe** tout texte
@@ -321,9 +325,11 @@ Un gabarit est une fonction `(m, page) → HTML` (une chaîne), sans cadriciel.
 - **Le moteur garantit** : le lien d'évitement, le focus sur `<main>` à
   chaque page, le titre de l'onglet, la signature « Conçu avec Encrine »,
   le lien des crédits (`#/credits`), le crédit de la classe d'origine
-  (CC BY) et, pour une classe servie par Encrine, le lien « Mentions
-  légales » vers https://encrine.ai/mentions-legales/ (Encrine l'héberge,
-  comme Ludea sur ses copies) — un pied qui les oublie les reçoit sous leur forme sobre —, et
+  (CC BY), le lien « Mentions légales » (`m.mentions` : celles d'Encrine
+  pour une classe qu'elle sert, sinon la page que le moteur fabrique depuis
+  `classe.yml`, skill site-et-calendrier, « Les mentions légales ») — un
+  pied qui les oublie les reçoit sous leur forme sobre, juste après le lien
+  des crédits —, et
   l'invitation à installer l'appli (`appli.js`, composant `invitation`).
 - **Interdit à un gabarit** (refusé par `verifier-theme.py`) : lire
   (`fetch`, `import`), stocker (`localStorage`…), changer la route, écouter

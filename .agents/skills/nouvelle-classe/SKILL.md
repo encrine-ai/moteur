@@ -239,6 +239,11 @@ seulement si les réponses ne permettent pas de trancher :
    public (et que l'école se reconnaît, et donc ses élèves). La signature
    sert aussi d'auteur sur la carte de la galerie, s'il partage sa classe
    (skill partager-ma-classe).
+   Elle fait enfin l'éditeur des **mentions légales** que le site fabrique
+   tout seul (lien au pied ; contact : son compte GitHub) : le lui dire en
+   une phrase, sans question de plus — sauf s'il veut un autre contact, qui
+   s'écrit `enseignant.contact` (une adresse e-mail ou une page https://),
+   ou s'il a déjà ses pages légales (`mentions_legales: https://…`).
 
 Les réglages que cette classe-ci avait fixés sans qu'on les demande (rythme
 des fiches, codage A / EC / NE, nombre d'espèces de l'imagier, espèces

@@ -7,6 +7,7 @@
  *   { type: 'document', doc, periode?, titre, corps, html, sections }
  *   { type: 'periode', periode }
  *   { type: 'credits', doc, titre, corps, sections }   (rendu par `document`)
+ *   { type: 'mentions', doc, titre, corps, sections }  (rendu par `document`)
  *   { type: 'introuvable' }
  * Les gabarits attendus : entete, accueil, document, periode, pied ;
  * facultatifs : introuvable, monter (après chaque rendu : le mouvement, s'il
@@ -17,8 +18,10 @@
  *     GS.theme({ entete: function (m, page) { … }, … });
  * Le menu s'anime par des accroches que app.js connaît (data-sous-menu,
  * data-menu-ouvrir, data-menu-panneau, data-menu-fermer) ; le pied reçoit de
- * toute façon la signature « Conçu avec Encrine », le lien des crédits et,
- * pour une classe servie par Encrine (m.mentions), « Mentions légales ».
+ * toute façon la signature « Conçu avec Encrine », le lien des crédits et
+ * « Mentions légales » (m.mentions : celles d'Encrine pour une classe qu'elle
+ * sert, sinon la page #/mentions-legales fabriquée par le moteur, ou les
+ * pages de la classe, `mentions_legales` dans classe.yml).
  * Skill charte-graphique, « Les gabarits ».
  */
 (function () {
@@ -249,7 +252,7 @@
       '<p>' + esc(m.pied.conformite) + ' ' + esc(m.pied.calendrier) + '</p>' +
       '<p class="pied-liens">' + (m.images.length ? '<a href="' + m.pied.credits + '">Crédits des images</a> · ' : '') +
       '<a class="pied-signature" href="' + m.signature.lien + '">' + esc(m.signature.texte) + '</a>' +
-      (m.mentions ? ' · <a class="pied-mentions" href="' + m.mentions.lien + '">' + esc(m.mentions.texte) + '</a>' : '') + '</p>' +
+      (m.mentions ? ' · <a class="pied-mentions" href="' + esc(m.mentions.lien) + '">' + esc(m.mentions.texte) + '</a>' : '') + '</p>' +
       '</div>';
   };
 })();

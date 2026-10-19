@@ -4,8 +4,8 @@
  * Usage : node scripts/verifier-gabarits.js <dossier-site> <gabarits.js du thème | ->
  * Charge classe.json, commun.js, modele.js, gabarits.js (ceux du moteur),
  * puis le gabarits.js du thème, dans un bac à sable ; rend chaque page —
- * l'accueil, chaque document, chaque période, les crédits, une page
- * introuvable — et contrôle ce que le moteur attend du HTML :
+ * l'accueil, chaque document, chaque période, les crédits, les mentions
+ * légales, une page introuvable — et contrôle ce que le moteur attend du HTML :
  *   - chaque gabarit rend un texte, sans erreur ;
  *   - l'en-tête a un menu de téléphone (data-menu-ouvrir → data-menu-panneau),
  *     et chaque aria-controls nomme un élément présent ;
@@ -81,13 +81,15 @@ m.documents.forEach(function (d) {
 m.periodes.forEach(function (p) { pages.push({ type: 'periode', periode: p }); });
 pages.push({ type: 'credits', doc: { id: 'credits', titre: 'Crédits', desc: '', icone: 'image', groupe: '', lien: '#/credits', pdf: null, extraits: [] },
              titre: 'Crédits', html: '<h1>Crédits</h1><p>TEXTE-DU-DOCUMENT</p>', corps: '<p>TEXTE-DU-DOCUMENT</p>', sections: [] });
+pages.push({ type: 'mentions', doc: { id: 'mentions-legales', titre: 'Mentions légales', desc: '', icone: 'file-text', groupe: '', lien: '#/mentions-legales', pdf: null, extraits: [] },
+             titre: 'Mentions légales', html: '<h1>Mentions légales</h1><p>TEXTE-DU-DOCUMENT</p>', corps: '<p>TEXTE-DU-DOCUMENT</p>', sections: [] });
 pages.push({ type: 'introuvable' });
 
 var liens = {};
 pages.forEach(function (page) {
   var ou = page.type + (page.doc ? ' ' + page.doc.id : page.periode ? ' ' + page.periode.cle : '');
   var entete = rend('entete', page);
-  var corps = rend(page.type === 'credits' ? 'document' : page.type, page);
+  var corps = rend(page.type === 'credits' || page.type === 'mentions' ? 'document' : page.type, page);
   var pied = rend('pied', page);
   var tout = entete + corps + pied;
   controle(tout, ou);
@@ -101,7 +103,7 @@ pages.forEach(function (page) {
     });
     if (!/<nav\b/.test(entete)) ko('en-tête : le menu est un <nav>');
   }
-  if (page.type === 'document' || page.type === 'credits') {
+  if (page.type === 'document' || page.type === 'credits' || page.type === 'mentions') {
     if (corps.indexOf('TEXTE-DU-DOCUMENT') === -1) ko(ou + ' : le gabarit n’affiche pas le texte (page.corps ou page.html)');
     if (page.doc.pdf && corps.indexOf(page.doc.pdf.href) === -1) ko(ou + ' : pas de lien vers son PDF (' + page.doc.pdf.href + ')');
     if (page.doc.extraits.length && corps.indexOf(page.doc.extraits[0].href) === -1) ko(ou + ' : pas de lien vers les extraits par période');

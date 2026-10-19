@@ -13,9 +13,10 @@ var CLASSE = {
   "theme": "demo",
   "ton": "tu",
   "enseignant": {
-    "signature": "",
-    "mot": "",
+    "contact": "",
     "ecole": "",
+    "mot": "",
+    "signature": "",
     "ville": ""
   },
   "depot": "à définir",
