@@ -66,7 +66,8 @@ if [ -d .claude/skills ] && [ ! -L .claude/skills ]; then git rm -rq .claude/ski
 mkdir -p .claude && { [ -L .claude/skills ] || ln -s ../.agents/skills .claude/skills; }
 git add .claude/skills
 git ls-files -s .claude/skills         # doit montrer le mode 120000 (un lien, pas un dossier)
-python3 scripts/classe.py generer      # refait charte.css : nouveau socle + thème de la classe
+python3 scripts/classe.py generer      # refait charte.css : nouveau socle + thème de la classe ;
+                                       # et le titre et l'aperçu de lien d'index.html (venu du modèle)
 python3 scripts/verifier-theme.py      # le thème de la classe tient-il le contrat du nouveau moteur ?
 ```
 

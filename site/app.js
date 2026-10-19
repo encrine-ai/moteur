@@ -160,9 +160,12 @@
     });
   }
 
+  /* Le titre de l'onglet (et du raccourci sur l'écran d'accueil) :
+     « Encrine – <projet> » sur l'accueil, celui qu'écrit `classe.py generer`
+     dans index.html pour les aperçus de lien (scripts/apercu.py), et
+     « <titre de la page> · Encrine – <projet> » ailleurs. */
   function titrePage(page) {
-    var C = GS.CLASSE;
-    var fin = C.nom + ' ' + C.annee + ' · ' + C.projet;
+    var fin = 'Encrine – ' + GS.CLASSE.projet;
     if (page.type === 'accueil') return fin;
     if (page.type === 'periode') return page.periode.milieu + ' · ' + fin;
     if (page.doc) return page.doc.titre + ' · ' + fin;
