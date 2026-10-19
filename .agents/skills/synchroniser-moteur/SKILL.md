@@ -16,8 +16,8 @@ le veut.
 
 **La liste des chemins du moteur n'est écrite qu'à un endroit** :
 `scripts/chemins_moteur.py` (`MOTEUR`, `FABRIQUES`, `PROPRES_AU_MOTEUR`).
-Ce skill, remonter-au-moteur et trier-remontees la lisent ; aucun ne la
-recopie. La commande de copie écrite ici à la main oubliait
+Ce skill, remonter-au-moteur et l'agent moteur d'Encrine (sa procédure
+vit dans `encrine-ai/agents`) la lisent ; aucun ne la recopie. La commande de copie écrite ici à la main oubliait
 `site/modele.js`, `site/gabarits.js`, `site/appli.js` et `site/marque/`,
 que la table ci-dessous annonçait pourtant (« `site/*.js` ») : une liste
 recopiée vieillit sans que personne le voie. La table résume ; en cas de
@@ -28,10 +28,10 @@ fichiers moteur/main` liste ce qui sera copié).
 |---|---|---|
 | **le moteur** | `scripts/`, `site/*.js` (sauf `site/classe.js` et `site/sw.js`), `site/*.html`, `site/*.css`, `site/marque/` (le logo et les polices d'Encrine), les feuilles des cahiers (`site/fiches/fiches.css`, `site/imagier/imagier.css`, `site/cartes-corpus/cartes-corpus.css`), le socle de la charte : `site/charte/socle.css`, `site/charte/composants.css` et `site/charte/polices/` (Andika), `referentiel/` (la liste du programme **et le calendrier officiel de chaque année**, `calendrier-AAAA-AAAA.yml`), `.agents/skills/` (les skills, au standard ouvert) et le lien symbolique `.claude/skills` qui y renvoie pour Claude Code, `.github/workflows/`, `tests/` | **oui** |
 | **propre à la classe, dans un skill** | la section qui finit un `SKILL.md`, entre `<!-- classe:debut -->` et `<!-- classe:fin -->` (« ## Propre à cette classe » : son thème, une décision de l'enseignant…) | **jamais écrasée** : `copier` la garde et la repose à la fin du skill neuf ; `ecarts` et `bilan` ne la comptent pas comme une retouche du moteur |
-| **propre au moteur** | le skill `trier-remontees` et ses cas de `tests/`, et la ligne qui le présente dans la table des skills d'`AGENTS.md` : la boîte du moteur ne vit que dans `encrine-ai/moteur` ; `.github/workflows/controles.yml`, les contrôles de ses demandes de fusion | **jamais** : la copie les écarte, `chemins_moteur.py verifier` refuse de les trouver dans une classe |
+| **propre au moteur** | `.github/workflows/controles.yml`, les contrôles de ses demandes de fusion (la boîte du moteur, elle, est traitée par l'agent moteur, dont la procédure vit dans `encrine-ai/agents` : elle n'arrive jamais dans une classe) | **jamais** : la copie les écarte, `chemins_moteur.py verifier` refuse de les trouver dans une classe |
 | **la classe** | `classe.yml`, `classe/`, les documents `01-…` à `04-…`, `README.md` (jamais écrasé par celui du modèle : seul son bloc de tête, entre `<!-- encrine:debut -->` et `<!-- encrine:fin -->`, est refait par `classe.py generer`), les cahiers fabriqués (`site/fiches/*.html`, `site/imagier/`, `site/cartes-corpus/`, leurs images et crédits), `site/classe.json`, `site/classe.js`, les thèmes `site/charte/themes/` | **jamais** |
 | **fabriqué** | `site/charte/charte.css` (socle + thème), `site/charte/gabarits.js` (le renvoi vers les gabarits du thème), `site/charte/icones.svg` (icônes génériques + celles des milieux de `classe.yml`), l'appli installable : `site/manifest.webmanifest`, `site/sw.js` (malgré `site/*.js`), `site/icones/`, `site/favicon.ico` ; `PRISE-EN-MAIN.md`, le guide de l'enseignant (sa section « Propre à cette classe », entre `<!-- classe:debut -->` et `<!-- classe:fin -->`, est gardée) | **jamais copiés** : refaits après la synchronisation, `python3 scripts/classe.py generer` puis `python3 scripts/generer-icones.py` (réseau) |
-| **à la main** | `AGENTS.md` (les consignes de l'agent : il mêle les règles du moteur et l'identité de la classe ; jamais la ligne de `trier-remontees`) ; `CLAUDE.md` (l'import `@AGENTS.md` et quelques lignes propres à Claude Code) | ne reprendre que les règles générales, par une lecture attentive ; une classe d'avant `AGENTS.md`, dont tout tient dans `CLAUDE.md`, y déplace ses consignes et ne garde dans `CLAUDE.md` que l'import |
+| **à la main** | `AGENTS.md` (les consignes de l'agent : il mêle les règles du moteur et l'identité de la classe) ; `CLAUDE.md` (l'import `@AGENTS.md` et quelques lignes propres à Claude Code) | ne reprendre que les règles générales, par une lecture attentive ; une classe d'avant `AGENTS.md`, dont tout tient dans `CLAUDE.md`, y déplace ses consignes et ne garde dans `CLAUDE.md` que l'import |
 
 La charte est scindée en deux couches :
 le socle suit le moteur, **les thèmes jamais** — même celui que le modèle
@@ -123,12 +123,12 @@ sait quels sont ses fichiers. On le prend du moteur avant de s'en servir.
 git checkout moteur/main -- scripts/chemins_moteur.py
 python3 scripts/chemins_moteur.py copier moteur/main --depuis <moteur.version>
 # copie (index compris) les fichiers du moteur de moteur/main, et eux seuls ;
-# écarte ce qui est propre au moteur (trier-remontees et ses tests, controles.yml) ;
+# écarte ce qui est propre au moteur (controles.yml) ;
 # repose à la fin de chaque skill neuf sa section propre à la classe ;
 # remplace un vieux dossier .claude/skills par le lien vers .agents/skills ;
 # retire ce que le moteur a retiré depuis <moteur.version>, s'il n'a pas été
 # retouché ici (sinon il le garde et le dit) ; liste ce qui n'existe qu'ici
-python3 scripts/chemins_moteur.py verifier   # rien de propre au moteur, AGENTS.md compris
+python3 scripts/chemins_moteur.py verifier   # rien de propre au moteur, sections « Propre à cette classe » bien formées
 git ls-files -s .claude/skills         # doit montrer le mode 120000 (un lien, pas un dossier)
 python3 scripts/classe.py generer      # refait charte.css : nouveau socle + thème de la classe ;
                                        # et le titre et l'aperçu de lien d'index.html (venu du modèle) ;

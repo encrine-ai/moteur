@@ -2,10 +2,11 @@
 """Les chemins du moteur : la seule liste de ce qui, dans le dépôt d'une
 classe, appartient au moteur.
 
-Trois skills s'en servent, et aucun ne la recopie :
+Deux skills et un agent s'en servent, et aucun ne la recopie :
   - synchroniser-moteur copie ces fichiers-là, et eux seuls, depuis le moteur ;
   - remonter-au-moteur ne montre que leur diff dans une remontée ;
-  - trier-remontees ne reprend qu'eux du commit d'une classe.
+  - l'agent moteur (sa procédure, trier-remontees, vit dans encrine-ai/agents)
+    ne reprend qu'eux du commit d'une classe.
 
 Une liste écrite dans un skill vieillit : celle de la commande de copie
 oubliait `site/modele.js`, `site/gabarits.js`, `site/appli.js` et
@@ -79,16 +80,13 @@ FABRIQUES = [
     "site/sw.js",
 ]
 
-# Propre au dépôt du moteur : n'arrive jamais dans une classe.
+# Propre au dépôt du moteur : n'arrive jamais dans une classe. (La boîte du
+# moteur — qualifier, intégrer, propager — n'est plus un skill d'ici : c'est
+# la procédure de l'agent moteur, dans encrine-ai/agents, jamais chez un
+# enseignant.)
 PROPRES_AU_MOTEUR = [
-    ".agents/skills/trier-remontees/",          # la boîte du moteur : qualifier, intégrer, propager
-    "tests/declenchement-trier-remontees.json",
     ".github/workflows/controles.yml",          # les contrôles des demandes de fusion du moteur
 ]
-
-# La ligne du skill trier-remontees dans la table d'AGENTS.md : une classe
-# reprend AGENTS.md à la main (synchroniser-moteur), jamais cette ligne.
-LIGNE_PROPRE = re.compile(r"\[`trier-remontees`\]")
 
 NON_DEFINI = (None, "", "à définir")
 
@@ -356,14 +354,6 @@ def verifier():
     anomalies = ["%s : propre au dépôt du moteur, à retirer (git rm -r)" % m.rstrip("/")
                  for m in PROPRES_AU_MOTEUR if (RACINE / m.rstrip("/")).exists()]
     anomalies += _sections_mal_formees(False)
-    for nom in ("AGENTS.md", "CLAUDE.md"):
-        f = RACINE / nom
-        if not f.is_file():
-            continue
-        for i, l in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
-            if LIGNE_PROPRE.search(l):
-                anomalies.append("%s:%d : la ligne du skill trier-remontees, qui ne vit que "
-                                 "dans le moteur — à retirer" % (nom, i))
     for a in anomalies:
         print("✘ " + a)
     print("Couche moteur : %d anomalie(s)" % len(anomalies))

@@ -8,8 +8,9 @@ description: Envoyer au dépôt du moteur ce qu'une classe a appris et qui servi
 Une classe vit dans **son propre dépôt**, créé depuis le dépôt modèle : ce
 qu'elle corrige ou ajoute au moteur y reste, si personne ne le signale. Ce
 skill l'envoie à la **boîte du moteur** — les issues du dépôt modèle — où il
-sera qualifié, intégré au moteur (skill trier-remontees, qui ne vit que
-dans le dépôt du moteur), puis propagé à toutes les classes (skill
+sera qualifié, intégré au moteur par l'agent moteur d'Encrine, qui lit ces
+issues chaque nuit (sa procédure vit dans `encrine-ai/agents`, jamais dans
+une classe), puis propagé à toutes les classes (skill
 synchroniser-moteur). On remonte des apprentissages, jamais la classe
 elle-même — la montrer aux autres est le rôle de partager-ma-classe.
 
