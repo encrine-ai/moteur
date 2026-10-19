@@ -108,12 +108,12 @@ n'a rien à traduire. Un enregistrement :
 
 ```json
 {
-  "id": "<propriétaire>-<dépôt>",
   "titre": "<classe.yml : projet>",
   "niveau": "<classe.yml : niveau.libelle>",
   "annee": "<classe.yml : annee>",
   "zone": "<classe.yml : calendrier.zone>",
   "accroche": "<classe.yml : accroche, une ou deux phrases>",
+  "semaines": 36,
   "milieux": [{"nom": "<periodes[].milieu, minuscule initiale : « l’Europe »>", "couleur": "<--p1 … --p5 du thème, en hex>", "semaines": 7}],
   "auteur": "<le nom choisi ici>",
   "licence": "CC BY-SA 4.0",
@@ -121,21 +121,24 @@ n'a rien à traduire. Un enregistrement :
   "site": "<https://<propriétaire>.github.io/<dépôt>/, ou `site` de classe.yml>",
   "depot": "<propriétaire>/<dépôt>",
   "origine": {"depot": "<classe.yml : origine.depot>", "titre": "…", "auteur": "…"},
-  "verifie": {"attendus": "159/159", "pdf": 65, "pagination": true, "le": "AAAA-MM-JJ", "commit": "<sha de origin/main>", "moteur": "<moteur.version>"},
+  "verifie": {"attendus": "159/159", "pdf": 65, "pagination": true, "le": "AAAA-MM-JJ", "commit": "<sha de origin/main, 40 caractères>"},
   "partagee_le": "AAAA-MM-JJ"
 }
 ```
 
-- **`id`** : `<propriétaire>-<dépôt>`, en minuscules et tirets. C'est aussi
-  le nom de la copie (`encrine-ai/<id>`) et l'adresse où elle sera servie
-  (`https://encrine.ai/<id>/`) ; la galerie peut le raccourcir s'il est
-  déjà pris, et le dit dans sa réponse.
+- **Pas d'`id`** : c'est la galerie qui le choisit (le nom de la copie,
+  `encrine-ai/<id>`, et son adresse, `https://encrine.ai/<id>/`), et le dit
+  dans sa réponse.
 - **`site` et `depot`** sont ceux **de la classe de l'enseignant** : c'est
   là que la relecture commence. Sur la carte publiée, la galerie les
-  remplace par ceux de la copie relue ; les siens restent la source citée.
-- **`milieux`** : une entrée par période, dans l'ordre. `semaines` est le
-  nombre que son site affiche pour la période dans sa zone (« … · 7
-  semaines »). Les couleurs viennent du thème de la classe
+  remplace par ceux de la copie relue, et garde les siens comme source
+  (« Par <auteur> » mène à son dépôt). La copie garde dans son `classe.yml`
+  le `depot` de l'enseignant : la classe qui partira d'elle le créditera
+  (`origine`, skill nouvelle-classe).
+- **`milieux`** : une entrée par période, dans l'ordre ; son `semaines` est
+  le nombre que son site affiche pour la période dans sa zone (« … · 7
+  semaines »). **`semaines`**, au premier niveau, est le total de l'année :
+  la somme des `semaines` des milieux. Les couleurs viennent du thème de la classe
   (`site/charte/themes/<theme>/theme.css`, `--p1` … `--p5`), pas de la
   marque : la carte porte le style de la classe.
 - **`accroche`** : celle de `classe.yml` si elle se lit seule ; sinon une
@@ -146,7 +149,7 @@ n'a rien à traduire. Un enregistrement :
   (`origine` dans `classe.yml`) ; la carte crédite alors l'original.
 - **`verifie`** : les faits que les contrôles de l'étape 1 viennent de
   produire (`pdf` : le total que donne `verifier-pagination.py`), jamais de mémoire, et **le commit** sur lequel ils ont tourné
-  (`git rev-parse origin/main`, celui du site en ligne) — c'est ce commit
+  (`git rev-parse origin/main`, en entier, celui du site en ligne) — c'est ce commit
   que la galerie relit et copie. La galerie refait ses propres contrôles
   et écrit les siens sur la carte ; un écart se signale.
 - **`partagee_le`** : la date de la demande.
@@ -197,7 +200,7 @@ ce que la licence n'autorise pas).
 ## 3. Demander l'accord — une phrase explicite, rien de public sans un oui
 
 Montrer la fiche en clair (le titre, les périodes, le nom affiché, la
-licence, ce qui sera visible), puis lui lire **la phrase d'accord**, en mots
+licence, ce qui sera visible), puis lui lire **ce qu'il accepte**, en mots
 simples, avec son nom et sa licence dedans :
 
 > « J'accepte qu'Encrine héberge une copie de ma classe telle qu'elle aura
@@ -211,59 +214,53 @@ un (`AskUserQuestion` dans Claude Code), sinon dans la conversation :
 passe ensuite : « Une personne relit avant que ta classe apparaisse. Ce qui
 sera montré, c'est une copie de ta classe telle qu'elle est aujourd'hui ; ta
 classe et ton site restent à toi. » Un « pas maintenant » est respecté : ne
-pas reposer la question dans la séance. **Ne jamais écrire l'accord sans
-son oui** : c'est la phrase qui part dans la demande (étape 4), avec la
-date.
+pas reposer la question dans la séance.
+
+Ce oui ne suffit pas à lui seul : **l'accord se donne sur le formulaire de
+la galerie, de sa main**. Ses trois cases (l'accord ci-dessus, « aucune
+donnée d'élève », « chaque image et chaque texte peuvent être partagés ») ne
+se préremplissent pas, et c'est voulu : seul l'enseignant, depuis son
+compte, peut les cocher. Le lui dire avant de donner le lien (étape 4).
 
 ## 4. Proposer la classe à la galerie
 
-La demande — issue ou demande de fusion — commence par **une marque**, sur
-sa première ligne, que l'agent de la galerie lit pour savoir quoi faire :
+La demande est une **issue sur `galerie.depot`, ouverte par le formulaire
+« Proposer ma classe »** de la galerie, prérempli par un lien. Ses champs :
 
-```
-<!-- partage v1 genre=<ajout|mise-a-jour|retrait> classe=<propriétaire/dépôt> commit=<sha> moteur=<moteur.version> -->
-```
+| Champ du formulaire | Ce qu'on y met |
+|---|---|
+| `classe` | `depot` de `classe.yml` (`propriétaire/dépôt`) |
+| `site` | le site de la classe (`site` de la fiche) |
+| `commit` | `verifie.commit` : le commit relu et copié |
+| `marque` | `<!-- partage v1 genre=<ajout\|mise-a-jour\|retrait> classe=<propriétaire/dépôt> commit=<sha> moteur=<moteur.version> -->` (`moteur=inconnue` si on n'a pas pu la reconstituer, jamais `null`) |
+| `fiche` | la fiche de l'étape 2, en JSON |
+| `controles` | chaque contrôle de l'étape 1 et son résultat chiffré, sur ce commit |
 
-`commit` est `verifie.commit` (le commit relu et copié), `moteur` la
-version du moteur de la classe (`moteur=inconnue` si on n'a pas pu la
-reconstituer, jamais `null`). Puis le corps, en français :
-
-```
-### La classe
-<titre> — <niveau>, <annee>, zone <zone>
-Site : <site> · Dépôt : https://github.com/<depot>/tree/<commit>
-### L'accord de l'auteur
-> J'accepte qu'Encrine héberge une copie de ma classe telle qu'elle aura été relue,
-> la montre dans la galerie « Les classes » sous le nom « <auteur> », et que d'autres
-> enseignants en partent selon sa licence (<licence>). Je peux la retirer à tout moment.
-Donné le <AAAA-MM-JJ>.
-### La fiche
-<la fiche, en bloc de code json>
-### Les contrôles
-<chaque contrôle de l'étape 1 et son résultat chiffré, sur ce commit>
+```python
+import urllib.parse
+lien = "https://github.com/%s/issues/new?" % galerie_depot + urllib.parse.urlencode({
+    "template": "proposer-ma-classe.yml",
+    "title": "Partage : %s (%s)" % (titre, niveau),
+    "classe": depot, "site": site, "commit": commit,
+    "marque": marque, "fiche": fiche_json, "controles": controles,
+}, quote_via=urllib.parse.quote)
 ```
 
 Titre : **« Partage : <titre> (<niveau>) »** pour un ajout ;
 **« Partage (mise à jour) : <titre> (<niveau>) »** pour une mise à jour
-(étape 5) ; **« Retrait : <titre> »** pour un retrait (étape 6).
+(étape 5). Au-delà de 8 000 caractères, raccourcir `controles` (les lignes
+de résultat seulement), jamais la fiche.
 
-Le premier chemin qui marche :
+Le donner **en une phrase, avec les cases** : « Un clic pour proposer ta
+classe : … — en bas du formulaire, coche les trois cases (ton accord, aucune
+donnée d'élève, des images et des textes partageables), puis *Submit new
+issue*. » Il l'envoie **de son compte GitHub**, celui de sa classe : la
+galerie ne partage pas la classe de quelqu'un d'autre. La session n'ouvre
+pas l'issue à sa place, même si elle en a les droits : les cases sont son
+accord.
 
-1. **Le serveur GitHub de la session** : une branche `classe/<id>` sur une
-   copie (fork) du dépôt de la galerie, qui ajoute ou remplace
-   l'enregistrement dans `classes.json`, puis une demande de fusion vers
-   `galerie.depot`, avec ce titre et ce corps. La personne qui relit ne la
-   fusionne pas telle quelle : c'est elle qui écrit la carte de la copie.
-   Sans droits suffisants, passer au chemin 2.
-2. **Un lien prérempli** : une issue sur `galerie.depot`
-   (`https://github.com/<galerie.depot>/issues/new?title=<titre encodé>&body=<corps encodé>`,
-   `urllib.parse.quote`) ; l'enseignant clique sur *Submit new issue* — de
-   **son** compte GitHub, celui de sa classe : la galerie ne partage pas la
-   classe de quelqu'un d'autre. Le donner en une phrase : « Un clic pour
-   proposer ta classe : … ».
-
-Puis le dire simplement : « J'ai proposé ta classe à la galerie. Une copie
-apparaîtra quand elle aura été relue. »
+Puis le dire simplement : « Quand tu l'auras envoyé, une personne relira ta
+classe ; une copie apparaîtra dans la galerie si elle est acceptée. »
 
 ## 5. Mettre à jour sa classe dans la galerie
 
@@ -281,27 +278,33 @@ changements y arrivent après une nouvelle relecture. »), puis :
    copie : ils gardent celle qu'ils ont reçue ;
 3. l'accord, redemandé en une question (étape 3) : il porte sur la copie
    telle qu'elle sera relue, donc sur ce nouveau commit ;
-4. la demande (étape 4), `genre=mise-a-jour`, titrée « Partage (mise à
-   jour) : … », dont les contrôles disent aussi, en une ligne, ce qui a
-   changé depuis la dernière copie relue.
+4. la demande (étape 4), même formulaire, `genre=mise-a-jour`, titrée
+   « Partage (mise à jour) : … », dont les contrôles disent aussi, en une
+   ligne, ce qui a changé depuis la dernière copie relue — et les trois
+   cases, à recocher de sa main.
 
 La copie garde sa version précédente tant que la nouvelle n'est pas relue
 et acceptée.
 
 ## 6. Retirer sa classe
 
-L'enseignant dit « retire ma classe de la galerie » : une demande
-`genre=retrait` (même chemin qu'à l'étape 4, `commit` = `origin/main`),
-titrée « Retrait : <titre> », avec la mention « à la demande de l'auteur ».
-C'est sans discussion : la galerie retire la carte et la copie qu'elle
-hébergeait. Supprimer `partage/fiche.json`. Lui dire ce qui reste : son site
-et son dépôt sont à lui, et ne bougent pas ; ceux qui sont déjà partis de la
-copie gardent leur propre classe, avec le crédit que demande la licence.
+L'enseignant dit « retire ma classe de la galerie » : c'est sans
+discussion. Lui donner un lien prérempli simple (sans formulaire), une
+issue sur `galerie.depot` titrée « Retrait : <titre> », dont le corps
+commence par la marque `genre=retrait` (`commit` = `origin/main`) et dit
+« à la demande de l'auteur » ; il l'envoie de son compte, comme pour
+l'ajout. (Le formulaire « Signaler une classe » de la galerie, choix « Je
+suis l'auteur : retirez ma classe », fait la même chose.) La galerie sort la
+carte et coupe le site de la copie. Supprimer `partage/fiche.json`. Lui dire
+ce qui reste : son site et son dépôt sont à lui, et ne bougent pas ; ceux
+qui sont déjà partis de la copie gardent leur propre classe, avec le crédit
+que demande la licence.
 
 ## Garde-fous
 
 - Jamais de partage sans la demande puis le oui de l'enseignant, et
-  jamais une phrase d'accord qu'il n'a pas acceptée.
+  jamais une case d'accord cochée à sa place : il envoie le formulaire
+  lui-même.
 - Jamais un prénom d'élève, une photo d'enfant, une production d'élève, un
   texte d'album ou de chanson recopié, une adresse électronique.
 - Jamais de faits de mémoire : seulement la sortie des contrôles du jour,

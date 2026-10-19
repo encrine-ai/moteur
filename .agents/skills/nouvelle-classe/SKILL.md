@@ -77,7 +77,7 @@ collègue ? », puis suivre la ligne qui correspond.
 
    ```yaml
    origine:
-     depot: <l'ancienne valeur de `depot` : le dépôt de l'auteur>
+     depot: <l'ancienne valeur de `depot` : le dépôt de l'auteur — la copie relue de la galerie le garde tel quel>
      titre: <le projet de la classe d'origine>
      auteur: <LICENCE-CONTENU.md, sinon partage.auteur ou partage/fiche.json>
      licence: CC BY-SA 4.0
