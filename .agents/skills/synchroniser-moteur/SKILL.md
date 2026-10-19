@@ -85,13 +85,13 @@ thème nouveau du modèle ne s'ajoute que si l'enseignant le demande.
   copie le laisse en place) ; `D` : un fichier du moteur absent d'ici. Le
   titre et l'aperçu de lien d'`index.html`, refaits pour chaque classe, ne
   comptent pas, ni la section « Propre à cette classe » d'un skill. Deux
-  sortes d'écarts, vus en octobre 2026 :
-  - **une leçon qui vaut pour toutes les classes** (la retouche de
-    `verifier-cartes-corpus.py` du tour du monde) : la remonter ; elle est
-    depuis dans le moteur ;
-  - **du contenu de la classe écrit dans un skill** (la Grande Section : son
-    thème « La Promenade » dans `charte-graphique`, la vipère gardée dans
-    `imagier-photos`) : le déplacer **une fois**, dans un commit à lui, dans
+  sortes d'écarts :
+  - **une leçon qui vaut pour toutes les classes** (un contrôle retouché
+    dans la classe, par exemple `verifier-cartes-corpus.py`) : la remonter
+    (skill remonter-au-moteur) ;
+  - **du contenu de la classe écrit dans un skill** (le nom de son thème
+    dans `charte-graphique`, une décision de l'enseignant sur une espèce
+    dans `imagier-photos`) : le déplacer **une fois**, dans un commit à lui, dans
     la section balisée qui finit le skill (`<!-- classe:debut -->`, « ##
     Propre à cette classe », `<!-- classe:fin -->`), et rendre au reste du
     skill le texte du moteur ; `chemins_moteur.py verifier` contrôle la

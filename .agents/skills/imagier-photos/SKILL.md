@@ -157,7 +157,7 @@ lire le titre avec `--dump-dom`.
 ## Les pièges d'iNaturalist
 
 La source est `https://api.inaturalist.org/v1/observations`, sans limitation
-gênante — les cent quatre-vingts photographies se fabriquent en quelques
+gênante — une période entière de l'imagier se fabrique en quelques
 minutes. Trois pièges, tous vérifiés à leurs dépens :
 
 **Chercher par `taxon_id`, jamais par `taxon_name`.** Le paramètre

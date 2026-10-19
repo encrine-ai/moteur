@@ -223,8 +223,8 @@ l'accueil ; sans aucun cahier, la section disparaît. `generer-pdf.sh` et
 `verifier-pagination.py` lisent la même liste, et `classe.py verifier`
 refuse qu'elle s'écarte des pages fabriquées : un cahier déclaré sans page,
 ou une page sans déclaration. Les nombres (« 18 animaux et 18 plantes ») et
-l'intitulé de l'imagier (`intitule`, ici « faune et flore ») vivent là, jamais
-dans `site/*.js`.
+l'intitulé de l'imagier (`intitule`, par exemple « faune et flore ») vivent
+là, jamais dans `site/*.js`.
 
 ## Le titre des pages et l'aperçu de lien
 
