@@ -34,6 +34,15 @@
   function lire(cle) { try { return window.localStorage.getItem(cle); } catch (e) { return null; } }
   function ecrire(cle, v) { try { window.localStorage.setItem(cle, v); } catch (e) { /* stockage bloqué : tant pis */ } }
 
+  /* L'icône de l'invitation porte la version de la publication, comme les
+   * scripts (?v=, posé par estampiller) : sans elle, une ancienne copie de
+   * l'image pouvait survivre à un changement d'icône. */
+  var VERSION_ICONE = (function () {
+    var s = document.currentScript && document.currentScript.src;
+    var m = s && /[?&]v=([^&#]+)/.exec(s);
+    return m ? '?v=' + m[1] : '';
+  })();
+
   function icone(nom) {
     return '<svg class="ic" aria-hidden="true"><use href="charte/icones.svg#i-' + nom + '"/></svg>';
   }
@@ -98,7 +107,7 @@
         icone('square-plus') + '<b>« Sur l’écran d’accueil »</b> : la classe s’ouvrira comme une appli.</span>'
       : '<strong>Installer l’appli de la classe</strong><span>Sur l’écran d’accueil, elle s’ouvre d’un geste, même sans réseau.</span>';
     invitation.innerHTML =
-      '<img class="invitation-icone" src="icones/appli-192.png" alt="" width="44" height="44">' +
+      '<img class="invitation-icone" src="icones/appli-192.png' + VERSION_ICONE + '" alt="" width="44" height="44">' +
       '<p class="invitation-texte">' + texte + '</p>' +
       (mode === 'ios' ? '' : '<button type="button" class="btn btn-principal" data-action="installer">' + icone('download') + 'Installer</button>') +
       '<button type="button" class="invitation-fermer" data-action="fermer" aria-label="Ne plus proposer">' + icone('x') + '</button>';
