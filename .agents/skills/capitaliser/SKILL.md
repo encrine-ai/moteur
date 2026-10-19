@@ -1,6 +1,6 @@
 ---
 name: capitaliser
-description: Après une modification de Ma Grande Section, verser ce qu'elle a appris là où la prochaine session le trouvera — le bon skill, un script de contrôle, AGENTS.md, le message de commit — au lieu de le laisser dans la conversation. À utiliser en fin de tâche dès qu'une correction de l'enseignante, une erreur, un piège d'une source d'images, un défaut d'impression ou une décision de pédagogie est apparu ; et quand la demande dit « retiens ça », « note-le pour la prochaine fois », « il ne faut plus que ça arrive », « mets à jour les skills », « qu'est-ce qu'on a appris ? ».
+description: Après une modification de la classe, verser ce qu'elle a appris là où la prochaine session le trouvera — le bon skill, un script de contrôle, AGENTS.md, le message de commit — et, si la leçon vaut pour toutes les classes, la remonter au moteur (skill remonter-au-moteur) — au lieu de la laisser dans la conversation. À utiliser en fin de tâche dès qu'une correction de l'enseignant, une erreur, un piège d'une source d'images, un défaut d'impression ou une décision de pédagogie est apparu ; et quand la demande dit « retiens ça », « note-le pour la prochaine fois », « il ne faut plus que ça arrive », « mets à jour les skills », « qu'est-ce qu'on a appris ? ».
 ---
 
 # Capitaliser
@@ -19,11 +19,19 @@ skill ou dans un script. Une session ne se souvient de rien ; le dépôt, si.
 | un fait sur une source ou un outil | la section **Images** de `AGENTS.md` si elle vaut pour tout le dépôt | le bridage de Wikimedia Commons, le filtre `commercial` d'Openverse qui laisse passer ND |
 | une exigence du programme | `referentiel/cycle1-gs.yml`, relue contre le BO | — |
 | une convention de la classe | **jamais** dans le référentiel : dans le script du matériel concerné | le nombre d'espèces de l'imagier, affirmé à tort comme une règle du programme |
-| une préférence de l'enseignante | le skill qu'elle concerne, à la première personne de la règle | « une image doit convenir à des enfants de cinq ans » |
+| une préférence de l'enseignant | le skill qu'elle concerne, à la première personne de la règle | « une image doit convenir à des enfants de cinq ans » |
+| **une leçon qui vaut pour toutes les classes** (un skill du moteur qui a mené de travers, un contrôle trompeur, un script en échec) | dans une classe : la corriger ici si c'est simple, **et la remonter au moteur** avec le skill **remonter-au-moteur**, avec l'accord de l'enseignant ; dans le moteur lui-même (`python3 scripts/chemins_moteur.py ou` répond « moteur ») : la corriger sur place | une retouche de `verifier-cartes-corpus.py` restée dans une seule classe, qu'une synchronisation aurait écrasée |
 
 Ordre de préférence : **un contrôle automatique d'abord**, une phrase de
 skill ensuite. Une règle écrite se lit quand on pense à la lire ; un contrôle
 s'exécute.
+
+**Une leçon versée dans un fichier du moteur, dans une classe, n'est qu'à
+moitié rangée** : la prochaine mise à jour du moteur (skill
+synchroniser-moteur) l'écraserait, et les autres classes ne la verraient
+jamais. Les fichiers du moteur sont ceux de `scripts/chemins_moteur.py`
+(skills, scripts, code du site…). Finir alors par **remonter-au-moteur**, qui
+demande l'accord de l'enseignant avant d'envoyer quoi que ce soit.
 
 ## Comment l'écrire
 
@@ -71,5 +79,5 @@ Il est en français, et son titre dit **ce qui était faux ou ce qui change
 pour la classe**, pas la manipulation : « Le navet de la fiche 4 montrait une
 carotte », « Les étiquettes débordaient sur les crédits, et la garde sur une
 page vide ». Le corps raconte la cause et ce qui l'empêchera de revenir.
-Une décision de l'enseignante y est consignée telle quelle (« L'enseignante
+Une décision de l'enseignant y est consignée telle quelle (« L'enseignant
 tranche : … ») : c'est ce qui empêche une revue future de la « corriger ».

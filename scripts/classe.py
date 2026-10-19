@@ -233,7 +233,7 @@ def manifeste(cle):
 
 
 def en_tete(c=None):
-    """« Ma Grande Section 2026-2027 — « À la découverte… » », pour les pieds de page."""
+    """« <nom> <annee> — « <projet> » », pour les pieds de page."""
     c = c or charger()
     return "%s %s — « %s »" % (c["nom"], c["annee"], c["projet"])
 
