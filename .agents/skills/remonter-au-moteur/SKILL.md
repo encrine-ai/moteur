@@ -33,7 +33,7 @@ Lire `moteur` dans `classe.yml` :
 | Genre | Ce que c'est | Titre |
 |---|---|---|
 | **défaut** | quelque chose du moteur a mal marché : un skill qui a mené de travers, un contrôle qui a laissé passer une erreur ou qui en a vu une à tort, un script en échec, un gabarit qui déborde, une documentation fausse. Corrigé ici ou contourné, peu importe : avec de quoi le reproduire | `[défaut] …` |
-| **amélioration** | un changement **déjà fait ici** dans un fichier du moteur (liste des chemins dans le skill synchroniser-moteur) : la liste des fichiers, les commits, et le correctif | `[amélioration] …` |
+| **amélioration** | un changement **déjà fait ici** dans un fichier du moteur (la liste est dans `scripts/chemins_moteur.py`, la seule ; `python3 scripts/chemins_moteur.py ecarts <moteur.version>` montre ce que la classe a retouché) : la liste des fichiers, les commits, et le correctif | `[amélioration] …` |
 | **idée** | une capacité que la classe aurait voulue et que le moteur n'a pas : un type de cahier, un niveau, une question de l'entretien | `[idée] …` |
 
 Ne se remontent pas : le contenu de la classe (une fiche, une espèce, une
@@ -82,9 +82,16 @@ Corps, en français :
 ### Ce qui est proposé
 <pour une amélioration : les fichiers, les commits de la classe
  (https://github.com/<propriétaire/dépôt>/commit/<sha>) et le correctif dans un bloc <details>
- (git diff des seuls fichiers du moteur) ; au-delà de 40 Ko, les liens des commits seulement>
+ (git diff des seuls fichiers du moteur, ci-dessous) ; au-delà de 40 Ko, les liens des commits seulement>
 ### La classe d'où ça vient
 <niveau · thème · version du moteur · lien du site>
+```
+
+Le correctif ne montre **que** les fichiers du moteur, jamais le contenu
+de la classe qui a pu changer dans les mêmes commits :
+
+```sh
+git diff <premier sha>^ <dernier sha> -- $(python3 scripts/chemins_moteur.py chemins)
 ```
 
 **Jamais** : un prénom d'élève ou d'adulte, une adresse, une photo d'enfant

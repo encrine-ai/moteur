@@ -167,7 +167,9 @@ Chaque demande de fusion `remontees-batch` fusionnée et pas encore étiquetée
    et 390 px, clair et sombre, **sans erreur dans la console** ; regarder les
    captures.
 3. **Relire le diff** : rien du contenu de la classe ne doit y apparaître
-   (synchroniser-moteur, « Ce qui bouge, ce qui ne bouge jamais »). Pour la
+   (synchroniser-moteur, « Ce qui bouge, ce qui ne bouge jamais ») ;
+   `python3 scripts/chemins_moteur.py bilan` le range fichier par fichier et
+   sort en code 1 au premier fichier de contenu. Pour la
    Grande Section, la moindre ligne d'un document ou d'un cahier qui change
    arrête la propagation de cette classe : contenu validé. Seuls changent,
    par construction, les fichiers que synchroniser-moteur dit fabriqués
@@ -247,8 +249,11 @@ même, le dire, et proposer au propriétaire de supprimer la vieille branche).
 
 - **Une amélioration** : reconstruire le correctif depuis le **commit public
   de la classe**, pas depuis le texte de l'issue (le Markdown abîme les
-  espaces) — cloner la classe dans un dossier temporaire, `git -C <tmp> show
-  <sha> -- <chemins du moteur>` dans un fichier, le lire, puis
+  espaces) — cloner la classe dans un dossier temporaire, ne garder que les
+  fichiers du moteur, avec la liste **du moteur** (lancée ici, jamais le
+  script de la classe) :
+  `git -C <tmp> show <sha> -- $(python3 scripts/chemins_moteur.py chemins) > <fichier>`,
+  le lire, puis
   `git apply --3way` (la classe ne partage pas d'historique avec le moteur :
   l'avis « lacks the necessary blob » est attendu, il se rabat sur
   l'application simple ; vérifier `git status`). L'adapter au moteur
@@ -323,7 +328,7 @@ en français, sites à l'appui.
   propriétaire, puis la fusion par l'agent — jamais avant, jamais sur l'OK
   d'un autre.
 - Jamais le contenu d'une classe : la couche moteur seulement
-  (synchroniser-moteur), et pour la Grande Section, rien qui change un
+  (`scripts/chemins_moteur.py`, la seule liste), et pour la Grande Section, rien qui change un
   document ou un cahier.
 - Une classe ne reçoit une poussée que si **tous** ses contrôles sont verts,
   en avance rapide, et n'est dite à jour qu'une fois vue en ligne.
