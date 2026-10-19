@@ -12,12 +12,16 @@ Ce dépôt est **le modèle** d'Encrine (https://encrine.ai) : le moteur qui
 fabrique l'année d'une classe — programmation, progressions conformes au
 programme, fiches, imagier, cartes de vocabulaire, PDF — à partir de
 `classe.yml`. Chaque enseignant crée **son** dépôt depuis ce modèle (partir
-de zéro) ou depuis une classe partagée de la galerie, elle-même cochée
-« Template repository » (partir de cette classe), puis lance le skill
+de zéro) ou depuis une classe partagée de la galerie (partir de cette
+classe) : la galerie en montre une **copie relue**, hébergée dans
+`encrine-ai` au commit qu'elle a relu, servie sur `https://encrine.ai/<id>/`
+et cochée « Template repository » — la classe et le site de son auteur
+restent à lui, et ses changements n'arrivent dans la copie qu'après une
+nouvelle relecture (skill `partager-ma-classe`). Puis il lance le skill
 `nouvelle-classe` (`/nouvelle-classe` dans Claude Code) — sans adresse : le
 skill voit qu'une classe est déjà là et l'enrichit. Le modèle **ne publie rien** : le déploiement saute pour le
 seul dépôt `encrine-ai/moteur`, testé par son nom (et non par
-`is_template`, que portent aussi les classes partagées). La **classe de
+`is_template`, que portent aussi les copies de la galerie). La **classe de
 démonstration** est un dépôt à part, `encrine-ai/tour-du-monde`, publié sur
 https://encrine.ai/tour-du-monde/, et créé depuis ce modèle comme toute
 classe.
@@ -117,7 +121,7 @@ matériel qu'il couvre, et finir par [`capitaliser`](.agents/skills/capitaliser/
 | [`remonter-au-moteur`](.agents/skills/remonter-au-moteur/SKILL.md) | un défaut, une amélioration ou une idée qui servirait à toutes les classes devient une issue sur le dépôt du moteur (`moteur` dans `classe.yml`) |
 | [`synchroniser-moteur`](.agents/skills/synchroniser-moteur/SKILL.md) | mettre à jour le moteur d'une classe depuis le dépôt modèle, sans toucher à son contenu, contrôles et PDF compris |
 | [`trier-remontees`](.agents/skills/trier-remontees/SKILL.md) | **dans le moteur seulement** (jamais copié dans une classe) : chaque nuit ou à la demande du propriétaire, qualifier les issues remontées par les classes, les intégrer en un seul lot qui attend son OK, puis l'installer dans ses classes, contrôles et PDF compris, et fermer les issues |
-| [`partager-ma-classe`](.agents/skills/partager-ma-classe/SKILL.md) | à la demande de l'enseignant seulement : vérifier (dont `verifier-partage.py` : aucun prénom d'élève, aucune photo de classe, aucun texte recopié), préparer la fiche et proposer la classe à « Les classes » d'encrine.ai, ou l'en retirer |
+| [`partager-ma-classe`](.agents/skills/partager-ma-classe/SKILL.md) | à la demande de l'enseignant seulement : vérifier (dont `verifier-partage.py` : aucun prénom d'élève, aucune photo de classe, aucun texte recopié), préparer la fiche, recueillir l'accord et proposer la classe à « Les classes » d'encrine.ai, qui en montre une copie relue ; la mettre à jour (nouvelle relecture) ou l'en retirer |
 | [`capitaliser`](.agents/skills/capitaliser/SKILL.md) | en fin de tâche : verser ce qu'elle a appris dans le bon skill, le bon script ou ce fichier |
 
 Un skill se mesure : `scripts/mesurer-declenchement.py` rejoue une liste de

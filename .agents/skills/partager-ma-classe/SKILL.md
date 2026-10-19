@@ -1,30 +1,41 @@
 ---
 name: partager-ma-classe
-description: Partager sa classe dans la galerie de la plateforme (« Les classes »), si l'enseignant le veut — vérifier d'abord que tout est juste et partageable (programme couvert, une page par fiche, licences des images, aucun prénom d'élève ni photo de classe, aucun album ni chanson recopié : scripts/verifier-partage.py), préparer la fiche de la classe (projet, niveau, milieux, auteur, licence, faits vérifiés), demander son accord, puis proposer la classe à la galerie par une demande de fusion que le propriétaire de la plateforme relit. La classe reste dans le dépôt de l'enseignant : la galerie n'en montre qu'un lien. Explique aussi comment la retirer. À utiliser seulement à la demande : « je voudrais partager ma classe », « on peut la mettre dans la galerie ? », « je suis fière de ma classe, d'autres pourraient s'en servir », « montre ma classe aux autres enseignants », « retire ma classe de la galerie », « /partager-ma-classe ». Ne concerne pas les retours sur l'outil (retours-enseignant, remonter-au-moteur).
+description: Partager sa classe dans la galerie de la plateforme (« Les classes »), si l'enseignant le veut — vérifier d'abord que tout est juste et partageable (programme couvert, une page par fiche, licences des images, aucun prénom d'élève ni photo de classe, aucun album ni chanson recopié : scripts/verifier-partage.py), préparer la fiche de la classe (titre, niveau, périodes, auteur, licence, faits vérifiés, commit), recueillir son accord explicite, puis proposer la classe à la galerie par une demande que l'agent galerie relit et que le propriétaire de la plateforme accepte. Une fois acceptée, la galerie montre une COPIE RELUE de la classe, hébergée par Encrine (https://encrine.ai/<id>/), dont on peut partir ; la classe et le site de l'enseignant restent à lui, et ses changements n'arrivent dans la copie qu'après une nouvelle relecture. Couvre aussi la mise à jour de la copie et le retrait. À utiliser seulement à la demande : « je voudrais partager ma classe », « on peut la mettre dans la galerie ? », « je suis fière de ma classe, d'autres pourraient s'en servir », « montre ma classe aux autres enseignants », « mets à jour ma classe dans la galerie », « la galerie montre une vieille version de ma classe », « retire ma classe de la galerie », « /partager-ma-classe ». Ne concerne pas les retours sur l'outil (retours-enseignant, remonter-au-moteur).
 ---
 
 # Partager ma classe
 
 La galerie de la plateforme montre ce que les enseignants ont fait, pour
 donner des idées : chaque classe partagée y a une carte, aux couleurs de son
-thème, avec deux gestes — **voir la classe** (son site, chez son auteur) et
-**partir de cette classe**. Décidé le 18 octobre 2026 : chaque classe
-partagée qui le permet est elle-même un **dépôt-modèle GitHub** (« Template
-repository ») ; « partir de cette classe », c'est « Use this template » sur
-son dépôt, puis l'entretien sans adresse (skill nouvelle-classe, mode
-« enrichir »). Le site d'une classe-modèle continue de se publier : le
-déploiement ne saute que pour le dépôt du moteur lui-même. Et :
+thème, avec deux gestes — **voir la classe** et **partir de cette classe**.
+
+Décidé par le propriétaire de la plateforme : la galerie montre une **copie
+relue**, comme Ludea. Quand une classe est acceptée, l'agent de la galerie
+en fait une **copie dans l'organisation `encrine-ai`, au commit exact qui a
+été relu**, servie sur `https://encrine.ai/<id>/` ; c'est cette copie que
+montre la carte, et c'est d'elle que part « Partir de cette classe ».
+Ainsi, ce que voient les autres enseignants est toujours ce que quelqu'un a
+relu, même si la classe d'origine change le lendemain. Et :
 
 - **on partage si on le veut** : ce skill ne se lance qu'à la demande de
   l'enseignant, jamais de lui-même, jamais en fin d'un autre travail ;
-- **les contrôles d'abord, puis une personne relit** : pour commencer, le
-  propriétaire de la plateforme, qui accepte ou non la demande de fusion ;
-- **rien n'est copié** : la galerie garde un lien vers le site de
-  l'enseignant ; la classe reste dans son dépôt, et il la retire quand il veut.
+- **les contrôles d'abord, puis une relecture** : l'agent de la galerie
+  relit la classe au commit annoncé, et le propriétaire de la plateforme
+  accepte ou non ;
+- **la classe et le site de l'enseignant restent à lui** : il continue d'y
+  travailler comme avant. La copie ne bouge pas toute seule : ses
+  changements n'y arrivent qu'après **une nouvelle relecture**, qu'il
+  demande quand il veut (étape 5) ;
+- **rien ne part sans son accord explicite** (étape 3), et il retire sa
+  classe quand il veut (étape 6).
+
+À lui dire, en une phrase, dès qu'il demande : « Une copie relue de ta
+classe est montrée dans la galerie ; tes changements y arrivent après une
+nouvelle relecture. »
 
 Parler sans jargon, en suivant `ton` dans `classe.yml` (tu par défaut) : dire
-« la galerie », « ta fiche », « la personne qui relit », jamais « pull
-request », « JSON », « merge ».
+« la galerie », « ta fiche », « la personne qui relit », « la copie »,
+jamais « pull request », « JSON », « merge », « fork ».
 
 ## 0. Où partager
 
@@ -34,9 +45,18 @@ garder sous `partage/fiche.json` dans la classe, et le dire : « Tout est
 prêt ; la galerie n'est pas encore ouverte, je la proposerai dès qu'elle le
 sera. »
 
-Avant tout, `depot` doit être renseigné dans `classe.yml`
-(`propriétaire/dépôt`, celui de `git remote get-url origin`) : la fiche de
-galerie en tire ses liens. `classe.py verifier` le signale s'il manque.
+Avant tout :
+
+- `depot` doit être renseigné dans `classe.yml` (`propriétaire/dépôt`,
+  celui de `git remote get-url origin`) : la relecture part de ce dépôt.
+  `classe.py verifier` le signale s'il manque ;
+- **le travail est sur `main`, envoyé, et le site en ligne est à jour** :
+  la relecture porte sur un commit précis (`git rev-parse origin/main`), et
+  vérifie que le site publié est bien celui de ce commit. Un travail en
+  cours se finit d'abord ; un déploiement rouge se répare d'abord (skill
+  site-et-calendrier) ;
+- `moteur.version` est connue (skill synchroniser-moteur, étape 0, si elle
+  vaut `null`) : la demande la porte.
 
 ## 1. Vérifier — rien ne se partage s'il reste du rouge
 
@@ -52,7 +72,7 @@ Dans cet ordre, chacun vert avant le suivant :
 
 **Les licences.** Les pictogrammes ARASAAC sont sous licence « pas d'usage
 commercial » (NC) : ils se partagent, mais **le dire** sur la fiche (champ
-`restrictions`), parce qu'une classe qui en contient ne peut pas servir de
+`licence_note`), parce qu'une classe qui en contient ne peut pas servir de
 base à un matériel vendu. Une image ND (pas de modification) ne passe jamais.
 
 **`verifier-partage.py` signale un prénom.** Demander, une question à la fois,
@@ -74,50 +94,65 @@ ou un texte écrit par l'enseignant, le déclarer dans
 `partage.textes_autorises` (`{debut: <premiers mots>, raison: <pourquoi>}`),
 après lui avoir posé la question.
 
+Noter les chiffres que ces contrôles viennent de donner (les attendus
+couverts, le nombre de PDF de `verifier-pagination.py`) : ce sont eux, et
+eux seuls, qui vont sur la fiche. Si un contrôle a demandé une correction,
+la committer et l'envoyer sur `main`, attendre le déploiement, et refaire
+les contrôles sur ce nouveau commit.
+
 ## 2. Préparer la fiche de la classe
 
-Le format est celui de `classes.json` dans le dépôt de la galerie, un
-enregistrement par classe :
+La fiche a **les noms de champs des cartes de la galerie** (`classes.json`
+de `galerie.depot`, décrit dans son `README.md`) : la personne qui relit
+n'a rien à traduire. Un enregistrement :
 
 ```json
 {
   "id": "<propriétaire>-<dépôt>",
-  "projet": "<classe.yml : projet>",
+  "titre": "<classe.yml : projet>",
   "niveau": "<classe.yml : niveau.libelle>",
   "annee": "<classe.yml : annee>",
   "zone": "<classe.yml : calendrier.zone>",
-  "milieux": [{"nom": "<periodes[].milieu>", "couleur": "<--p1 … --p5 du thème, en hex>"}],
-  "auteur": "<enseignant.signature de classe.yml, ou le nom choisi ici>",
+  "accroche": "<classe.yml : accroche, une ou deux phrases>",
+  "milieux": [{"nom": "<periodes[].milieu, minuscule initiale : « l’Europe »>", "couleur": "<--p1 … --p5 du thème, en hex>", "semaines": 7}],
+  "auteur": "<le nom choisi ici>",
   "licence": "CC BY-SA 4.0",
-  "restrictions": ["pictogrammes ARASAAC : pas d'usage commercial"],
-  "site": "https://<propriétaire>.github.io/<dépôt>/",
+  "licence_note": "sauf les pictogrammes ARASAAC, sous CC BY-NC-SA",
+  "site": "<https://<propriétaire>.github.io/<dépôt>/, ou `site` de classe.yml>",
   "depot": "<propriétaire>/<dépôt>",
-  "modele": true,
   "origine": {"depot": "<classe.yml : origine.depot>", "titre": "…", "auteur": "…"},
-  "faits": {"attendus": "159/159", "pdf": <le total que donne verifier-pagination.py, 65 pour une GS complète>, "pagination": "vérifiée", "moteur": "<moteur.version>"},
-  "partage_le": "AAAA-MM-JJ"
+  "verifie": {"attendus": "159/159", "pdf": 65, "pagination": true, "le": "AAAA-MM-JJ", "commit": "<sha de origin/main>", "moteur": "<moteur.version>"},
+  "partagee_le": "AAAA-MM-JJ"
 }
 ```
 
-- **`depot`** est `classe.yml : depot`, sous la forme `propriétaire/dépôt`.
-  La page d'accueil de la galerie en tire le lien du dépôt
-  (`https://github.com/<depot>`) et, si `modele` est vrai, celui du bouton
-  « Partir de cette classe » :
-  `https://github.com/new?template_owner=<propriétaire>&template_name=<dépôt>`.
-- **`modele`** : `true` seulement si la licence permet la reprise (CC BY ou
-  CC BY-SA) **et** que l'enseignant a coché « Template repository »
-  (étape 2 bis) ; sinon `false`, et la carte se montre sans « Partir de
-  cette classe ».
+- **`id`** : `<propriétaire>-<dépôt>`, en minuscules et tirets. C'est aussi
+  le nom de la copie (`encrine-ai/<id>`) et l'adresse où elle sera servie
+  (`https://encrine.ai/<id>/`) ; la galerie peut le raccourcir s'il est
+  déjà pris, et le dit dans sa réponse.
+- **`site` et `depot`** sont ceux **de la classe de l'enseignant** : c'est
+  là que la relecture commence. Sur la carte publiée, la galerie les
+  remplace par ceux de la copie relue ; les siens restent la source citée.
+- **`milieux`** : une entrée par période, dans l'ordre. `semaines` est le
+  nombre que son site affiche pour la période dans sa zone (« … · 7
+  semaines »). Les couleurs viennent du thème de la classe
+  (`site/charte/themes/<theme>/theme.css`, `--p1` … `--p5`), pas de la
+  marque : la carte porte le style de la classe.
+- **`accroche`** : celle de `classe.yml` si elle se lit seule ; sinon une
+  ou deux phrases à lui proposer, ou rien.
+- **`licence_note`** : les exceptions à la licence, en une phrase (les
+  pictogrammes ARASAAC) ; rien s'il n'y en a pas.
 - **`origine`** : seulement si la classe est elle-même partie d'une autre
   (`origine` dans `classe.yml`) ; la carte crédite alors l'original.
+- **`verifie`** : les faits que les contrôles de l'étape 1 viennent de
+  produire (`pdf` : le total que donne `verifier-pagination.py`), jamais de mémoire, et **le commit** sur lequel ils ont tourné
+  (`git rev-parse origin/main`, celui du site en ligne) — c'est ce commit
+  que la galerie relit et copie. La galerie refait ses propres contrôles
+  et écrit les siens sur la carte ; un écart se signale.
+- **`partagee_le`** : la date de la demande.
 - La zone n'est qu'une information pour qui regarde : « partir de cette
   classe » ne la reprend jamais, et redemande toujours la sienne à
   l'enseignant (skill nouvelle-classe).
-- Les couleurs viennent du thème de la classe
-  (`site/charte/themes/<theme>/theme.css`, `--p1` … `--p5`), pas de la
-  marque : la carte de la galerie porte le style de la classe.
-- Les **faits** sont ceux que les contrôles de l'étape 1 viennent de
-  produire, jamais de mémoire.
 - **L'auteur** : partir de **sa signature** (`enseignant.signature` de
   `classe.yml`, celle que montre déjà son site : « La classe de Mme
   Martin ») et la lui proposer comme auteur de la carte — « Je reprends ta
@@ -144,74 +179,144 @@ enregistrement par classe :
 `partage.auteur`) et dans `LICENCE-CONTENU.md` à la racine (la licence, son
 lien, l'auteur, et le crédit de `origine` s'il y en a une) : c'est là que le
 mode « enrichir » de nouvelle-classe les lira, dans la classe qui partira
-de celle-ci. Écrire la fiche dans `partage/fiche.json` de la classe.
+de la copie. Ces deux fichiers changent la classe : les committer et les
+envoyer sur `main` **avant** de fixer `verifie.commit`, attendre le
+déploiement, puis prendre ce commit-là (les contrôles de l'étape 1 n'ont
+pas à être refaits pour ces seules lignes). La fiche elle-même se garde
+dans `partage/fiche.json`, committée après la demande : elle ne peut pas
+contenir le commit qui la contient, et la galerie relit le commit annoncé,
+pas ce qui le suit.
 
-## 2 bis. Faire de la classe un modèle — seulement si la licence le permet
+**Aucune case « Template repository » à cocher** dans le dépôt de
+l'enseignant : on part de la copie relue, que la galerie marque elle-même
+comme modèle quand la licence le permet. Si la case est cochée, elle peut
+le rester ; si la licence est NC ou tous droits réservés, proposer de la
+décocher (une copie par « Use this template » reprendrait tout le contenu,
+ce que la licence n'autorise pas).
 
-- **CC BY ou CC BY-SA** : demander à l'enseignant, en une phrase et sans
-  technique, le seul geste qu'aucune session ne peut faire à sa place :
-  « Dans ton dépôt sur GitHub, ouvre **Settings → General**, et coche
-  **Template repository**, juste sous le nom du dépôt. C'est ce qui fait
-  marcher le bouton « Partir de cette classe ». » Attendre qu'il dise que
-  c'est fait (`gh api repos/<depot> --jq .is_template` le confirme quand
-  `gh` répond), puis mettre `"modele": true` dans la fiche.
-- **Toute autre licence** (NC, tous droits réservés) : **pas de case
-  cochée** — une copie par « Use this template » reprendrait tout le
-  contenu, ce que la licence n'autorise pas. `"modele": false`. Si la case
-  est déjà cochée, demander de la décocher avant de proposer la classe.
+## 3. Demander l'accord — une phrase explicite, rien de public sans un oui
 
-## 3. Demander l'accord — rien de public sans un oui
+Montrer la fiche en clair (le titre, les périodes, le nom affiché, la
+licence, ce qui sera visible), puis lui lire **la phrase d'accord**, en mots
+simples, avec son nom et sa licence dedans :
 
-Montrer la fiche en clair (le projet, les milieux, le nom affiché, la
-licence, ce qui sera visible) et demander, avec l'outil de questions interactives de l'agent s'il en a un (`AskUserQuestion` dans Claude Code), sinon une question à la fois dans la conversation :
-*Oui, propose ma classe* / *Pas maintenant*. Dire ce qui se passe ensuite :
-« Une personne relit avant que ta classe apparaisse ; tu pourras la retirer
-quand tu veux. » Un « pas maintenant » est respecté : ne pas reposer la
-question dans la séance.
+> « J'accepte qu'Encrine héberge une copie de ma classe telle qu'elle aura
+> été relue, la montre dans la galerie « Les classes » sous le nom
+> « <auteur> », et que d'autres enseignants en partent selon sa licence
+> (<licence>). Je peux la retirer à tout moment. »
+
+Et la question, avec l'outil de questions interactives de l'agent s'il en a
+un (`AskUserQuestion` dans Claude Code), sinon dans la conversation :
+*Oui, j'accepte et je propose ma classe* / *Pas maintenant*. Dire ce qui se
+passe ensuite : « Une personne relit avant que ta classe apparaisse. Ce qui
+sera montré, c'est une copie de ta classe telle qu'elle est aujourd'hui ; ta
+classe et ton site restent à toi. » Un « pas maintenant » est respecté : ne
+pas reposer la question dans la séance. **Ne jamais écrire l'accord sans
+son oui** : c'est la phrase qui part dans la demande (étape 4), avec la
+date.
 
 ## 4. Proposer la classe à la galerie
+
+La demande — issue ou demande de fusion — commence par **une marque**, sur
+sa première ligne, que l'agent de la galerie lit pour savoir quoi faire :
+
+```
+<!-- partage v1 genre=<ajout|mise-a-jour|retrait> classe=<propriétaire/dépôt> commit=<sha> moteur=<moteur.version> -->
+```
+
+`commit` est `verifie.commit` (le commit relu et copié), `moteur` la
+version du moteur de la classe (`moteur=inconnue` si on n'a pas pu la
+reconstituer, jamais `null`). Puis le corps, en français :
+
+```
+### La classe
+<titre> — <niveau>, <annee>, zone <zone>
+Site : <site> · Dépôt : https://github.com/<depot>/tree/<commit>
+### L'accord de l'auteur
+> J'accepte qu'Encrine héberge une copie de ma classe telle qu'elle aura été relue,
+> la montre dans la galerie « Les classes » sous le nom « <auteur> », et que d'autres
+> enseignants en partent selon sa licence (<licence>). Je peux la retirer à tout moment.
+Donné le <AAAA-MM-JJ>.
+### La fiche
+<la fiche, en bloc de code json>
+### Les contrôles
+<chaque contrôle de l'étape 1 et son résultat chiffré, sur ce commit>
+```
+
+Titre : **« Partage : <titre> (<niveau>) »** pour un ajout ;
+**« Partage (mise à jour) : <titre> (<niveau>) »** pour une mise à jour
+(étape 5) ; **« Retrait : <titre> »** pour un retrait (étape 6).
 
 Le premier chemin qui marche :
 
 1. **Le serveur GitHub de la session** : une branche `classe/<id>` sur une
-   copie (fork) du dépôt de la galerie, qui ajoute l'enregistrement à
-   `classes.json`, puis une demande de fusion vers `galerie.depot`, titrée
-   « Partage : <projet> (<niveau>) », dont le texte reprend la fiche et la
-   sortie des contrôles. Sans droits suffisants, passer au chemin 2.
+   copie (fork) du dépôt de la galerie, qui ajoute ou remplace
+   l'enregistrement dans `classes.json`, puis une demande de fusion vers
+   `galerie.depot`, avec ce titre et ce corps. La personne qui relit ne la
+   fusionne pas telle quelle : c'est elle qui écrit la carte de la copie.
+   Sans droits suffisants, passer au chemin 2.
 2. **Un lien prérempli** : une issue sur `galerie.depot`
-   (`https://github.com/<galerie.depot>/issues/new?title=<titre encodé>&body=<fiche encodée>`,
-   `urllib.parse.quote`) ; l'enseignant clique sur *Submit new issue*, et la
-   personne qui relit ajoute la carte. Le donner en une phrase : « Un clic
-   pour proposer ta classe : … ».
+   (`https://github.com/<galerie.depot>/issues/new?title=<titre encodé>&body=<corps encodé>`,
+   `urllib.parse.quote`) ; l'enseignant clique sur *Submit new issue* — de
+   **son** compte GitHub, celui de sa classe : la galerie ne partage pas la
+   classe de quelqu'un d'autre. Le donner en une phrase : « Un clic pour
+   proposer ta classe : … ».
 
-Puis le dire simplement : « J'ai proposé ta classe à la galerie. Elle
+Puis le dire simplement : « J'ai proposé ta classe à la galerie. Une copie
 apparaîtra quand elle aura été relue. »
 
-## 5. Retirer sa classe
+## 5. Mettre à jour sa classe dans la galerie
 
-L'enseignant dit « retire ma classe de la galerie » : même chemin, une
-demande de fusion (ou une issue) qui **retire** son enregistrement de
-`classes.json`, avec la mention « à la demande de l'auteur ». Supprimer
-`partage/fiche.json`. Décocher « Template repository » n'est pas
-obligatoire (ceux qui sont déjà partis de la classe gardent leur copie),
-mais le proposer. Rappeler que son site et son dépôt restent à lui : les
-rendre privés ou les supprimer se fait dans ses réglages GitHub, et la carte
-de la galerie, qui n'est qu'un lien, cesse alors de mener quelque part.
+La copie de la galerie est celle du commit relu : elle ne suit pas la
+classe toute seule. L'enseignant dit « mets à jour ma classe dans la
+galerie », ou s'étonne que la galerie montre une vieille version : le lui
+expliquer d'une phrase (« La galerie montre la copie relue de ta classe ; tes
+changements y arrivent après une nouvelle relecture. »), puis :
+
+1. les contrôles de l'étape 1, sur le nouveau commit (`origin/main`, site
+   en ligne à jour) ;
+2. la fiche refaite (étape 2) : les faits du jour, le nouveau
+   `verifie.commit`, et ce qui a changé (titre, périodes, auteur, licence) ;
+   une licence ne se resserre pas pour ceux qui sont déjà partis de la
+   copie : ils gardent celle qu'ils ont reçue ;
+3. l'accord, redemandé en une question (étape 3) : il porte sur la copie
+   telle qu'elle sera relue, donc sur ce nouveau commit ;
+4. la demande (étape 4), `genre=mise-a-jour`, titrée « Partage (mise à
+   jour) : … », dont les contrôles disent aussi, en une ligne, ce qui a
+   changé depuis la dernière copie relue.
+
+La copie garde sa version précédente tant que la nouvelle n'est pas relue
+et acceptée.
+
+## 6. Retirer sa classe
+
+L'enseignant dit « retire ma classe de la galerie » : une demande
+`genre=retrait` (même chemin qu'à l'étape 4, `commit` = `origin/main`),
+titrée « Retrait : <titre> », avec la mention « à la demande de l'auteur ».
+C'est sans discussion : la galerie retire la carte et la copie qu'elle
+hébergeait. Supprimer `partage/fiche.json`. Lui dire ce qui reste : son site
+et son dépôt sont à lui, et ne bougent pas ; ceux qui sont déjà partis de la
+copie gardent leur propre classe, avec le crédit que demande la licence.
 
 ## Garde-fous
 
-- Jamais de partage sans la demande puis le oui de l'enseignant.
+- Jamais de partage sans la demande puis le oui de l'enseignant, et
+  jamais une phrase d'accord qu'il n'a pas acceptée.
 - Jamais un prénom d'élève, une photo d'enfant, une production d'élève, un
   texte d'album ou de chanson recopié, une adresse électronique.
-- Jamais de faits de mémoire : seulement la sortie des contrôles du jour.
-- Jamais de case « Template repository » pour une classe dont la licence
-  n'autorise pas la reprise (ni NC, ni tous droits réservés).
-- Ne rien copier dans la galerie que la fiche : la classe reste chez son
-  auteur.
+- Jamais de faits de mémoire : seulement la sortie des contrôles du jour,
+  sur le commit annoncé.
+- Ne rien promettre de la copie : c'est la galerie qui la relit, la copie
+  et la montre ; on ne pousse jamais dans `encrine-ai`.
+- La classe de l'enseignant reste la sienne : rien n'y change par le
+  partage, sauf `partage/`, `partage.licence`, `partage.auteur` et
+  `LICENCE-CONTENU.md`.
 
 ## Enchaînement
 
 L'enseignant le demande → **partager-ma-classe** (contrôles de l'étape 1,
-avec imprimer-pdf pour le PDF). Une autre classe part de celle-ci par
-« Use this template » puis **nouvelle-classe** (mode « enrichir »). Une idée pour
-l'outil lui-même, pas pour la galerie → remonter-au-moteur.
+avec imprimer-pdf pour le PDF) → l'agent de la galerie relit, le
+propriétaire accepte, la copie relue apparaît. Une autre classe part de
+cette copie par « Partir de cette classe » (« Use this template ») puis
+**nouvelle-classe** (mode « enrichir »). Une idée pour l'outil lui-même,
+pas pour la galerie → remonter-au-moteur.

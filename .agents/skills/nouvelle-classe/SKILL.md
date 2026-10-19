@@ -16,10 +16,13 @@ programme), les documents `01-…` à `04-…`, et les cahiers fabriqués dans
 
 ## Étape 0 — Une classe est-elle déjà là ?
 
-Décidé le 18 octobre 2026 : chaque classe partagée est elle-même un
-dépôt-modèle GitHub. « Partir de cette classe », c'est **« Use this
-template » sur le dépôt de cette classe** : l'enseignant arrive avec tout
-son contenu, son thème et ses PDF, puis lance l'entretien **sans adresse**
+La galerie montre une **copie relue** de chaque classe partagée, hébergée
+par Encrine dans l'organisation `encrine-ai` et marquée dépôt-modèle GitHub
+quand sa licence le permet (skill partager-ma-classe). « Partir de cette
+classe », c'est **« Use this template » sur cette copie relue** — jamais sur
+le dépôt de l'auteur, qui a pu changer depuis la relecture : l'enseignant
+arrive avec tout son contenu, son thème et ses PDF, tels que la galerie les
+a relus, puis lance l'entretien **sans adresse**
 (`/nouvelle-classe` dans Claude Code ; ailleurs « crée ma classe », ou le
 skill nouvelle-classe). Avant toute question, regarder donc ce que contient le dépôt :
 
@@ -56,7 +59,8 @@ collègue ? », puis suivre la ligne qui correspond.
    - **CC BY** : la nouvelle classe choisira la sienne au partage ; le crédit
      reste obligatoire ;
    - **NC, tous droits réservés, licence absente** : cette classe n'aurait
-     pas dû être un modèle (partager-ma-classe l'empêche). Le dire, ne garder
+     pas dû être un modèle (la galerie ne marque modèle que les copies sous
+     CC BY ou CC BY-SA). Le dire, ne garder
      que le thème et les milieux (une idée ne se protège pas), et réécrire
      tout le reste comme pour une classe partie de zéro.
 3. **Ne poser que** — en une fois avec l'outil de questions interactives de
@@ -73,11 +77,11 @@ collègue ? », puis suivre la ligne qui correspond.
 
    ```yaml
    origine:
-     depot: <l'ancienne valeur de `depot`>
+     depot: <l'ancienne valeur de `depot` : le dépôt de l'auteur>
      titre: <le projet de la classe d'origine>
      auteur: <LICENCE-CONTENU.md, sinon partage.auteur ou partage/fiche.json>
      licence: CC BY-SA 4.0
-     site: https://<propriétaire>.github.io/<dépôt>/
+     site: <le site de la copie relue d'où l'on part, https://encrine.ai/<id>/ ; sinon celui de l'auteur>
      reprise_le: AAAA-MM-JJ          # aujourd'hui
    ```
 
