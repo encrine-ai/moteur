@@ -9,8 +9,8 @@ Une classe créée depuis le dépôt modèle **ne partage aucun historique** ave
 lui : ce n'est pas une branche qu'on fusionne, c'est une **copie délibérée,
 fichier par fichier**, de la couche moteur. Elle n'est possible que parce
 que le moteur et le contenu sont séparés — `python3 scripts/classe.py
-verifier` le prouve. C'est la mécanique de Ludea (`sync-engine`) :
-chaque enseignant met à jour **sa** classe, quand il le veut.
+verifier` le prouve. Chaque enseignant met à jour **sa** classe, quand il
+le veut.
 
 ## Ce qui bouge, ce qui ne bouge jamais
 

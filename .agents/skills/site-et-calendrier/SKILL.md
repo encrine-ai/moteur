@@ -310,7 +310,6 @@ l'oublie). Où mène le lien, dans cet ordre :
    - **Contenu** : `partage.licence` (et `licence_note`) s'il existe, la
      classe d'origine (`origine`), le lien vers la page des crédits.
 
-Le modèle est celui des jeux de Ludea (« Made with Ludea + legal notice »).
 Le texte **n'a pas été relu par un juriste** : il reprend les mentions
 qu'impose la LCEN (art. 6, III) à un site personnel, où un particulier peut
 ne pas publier son nom quand l'hébergeur est nommé. Ne pas l'écrire sur le

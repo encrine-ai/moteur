@@ -121,8 +121,7 @@
   }
 
   /* L'hébergeur d'une classe publiée par son enseignant : GitHub Pages
-     (le déploiement du moteur, .github/workflows/pages.yml). Repris des
-     mentions légales que Ludea fabrique pour ses jeux. */
+     (le déploiement du moteur, .github/workflows/pages.yml). */
   var HEBERGEUR = {
     nom: 'GitHub B.V. (GitHub Pages)',
     adresse: 'Vijzelstraat 68-72, 1017 HL Amsterdam, Pays-Bas',
@@ -145,9 +144,8 @@
        sessionStorage l'heure du dernier rechargement après une mise à jour
        (appli.js) ; le service worker (sw.js) garde une copie des pages pour
        le hors-ligne.
-     Ce texte n'a pas été relu par un juriste : il reprend le modèle de Ludea
-     et les mentions qu'impose la LCEN à un site personnel. Une classe qui a
-     ses propres pages les nomme dans classe.yml (`mentions_legales`). */
+     Ce texte n'a pas été relu par un juriste : il reprend les mentions
+     qu'impose la LCEN à un site personnel. Une classe qui a ses propres pages les nomme dans classe.yml (`mentions_legales`). */
   function prepareMentions(page) {
     var esc = GS.outils.esc;
     var C = GS.CLASSE;

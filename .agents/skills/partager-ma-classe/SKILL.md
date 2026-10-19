@@ -10,7 +10,7 @@ donner des idées : chaque classe partagée y a une carte, aux couleurs de son
 thème, avec deux gestes — **voir la classe** et **partir de cette classe**.
 
 Décidé par le propriétaire de la plateforme : la galerie montre une **copie
-relue**, comme Ludea. Quand une classe est acceptée, l'agent de la galerie
+relue**. Quand une classe est acceptée, l'agent de la galerie
 en fait une **copie dans l'organisation `encrine-ai`, au commit exact qui a
 été relu**, servie sur `https://encrine.ai/<id>/` ; c'est cette copie que
 montre la carte, et c'est d'elle que part « Partir de cette classe ».

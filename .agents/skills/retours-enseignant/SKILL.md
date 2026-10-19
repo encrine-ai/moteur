@@ -5,7 +5,7 @@ description: Le mode « retours » — l'enseignant dit, avec ses mots, ce qui n
 
 # Retours de l'enseignant
 
-L'équivalent du mode « retours » de Ludea, pour une classe : quelqu'un qui
+Le mode « retours », pour une classe : quelqu'un qui
 n'est pas technicien fait évoluer **sa** classe en parlant normalement, et
 tout le travail se fait derrière. La personne est souvent l'enseignant
 lui-même, parfois une collègue qui a essayé le matériel ; elle dicte souvent

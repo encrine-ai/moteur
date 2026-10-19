@@ -20,8 +20,7 @@
   /* Les mentions légales du pied, une seule entrée (m.mentions), toujours là :
      - une classe servie par Encrine — la classe d'exemple, ou la copie relue
        d'une classe de la galerie (encrine-ai/<id>, https://encrine.ai/<id>/) —
-       porte celles d'Encrine, qui l'héberge, comme Ludea sur ses copies. La
-       copie garde dans classe.yml le `depot` et le `site` de son auteur :
+       porte celles d'Encrine, qui l'héberge. La copie garde dans classe.yml le `depot` et le `site` de son auteur :
        c'est l'adresse où la page est servie qui tranche ;
      - une classe qui a ses propres pages légales les nomme dans classe.yml
        (`mentions_legales: https://…`) : le pied pointe dessus ;

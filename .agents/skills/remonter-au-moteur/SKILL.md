@@ -10,8 +10,7 @@ qu'elle corrige ou ajoute au moteur y reste, si personne ne le signale. Ce
 skill l'envoie à la **boîte du moteur** — les issues du dépôt modèle — où il
 sera qualifié, intégré au moteur (skill trier-remontees, qui ne vit que
 dans le dépôt du moteur), puis propagé à toutes les classes (skill
-synchroniser-moteur). C'est la mécanique de Ludea (`report-upstream`,
-`ludea-feedback`) : on remonte des apprentissages, jamais la classe
+synchroniser-moteur). On remonte des apprentissages, jamais la classe
 elle-même — la montrer aux autres est le rôle de partager-ma-classe.
 
 ## 0. Faut-il remonter ici ?
