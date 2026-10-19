@@ -369,8 +369,12 @@ def version(c, site=None):
                       and p.relative_to(racine).parts[0] not in ("pdf", "content")
                       and p.name != "sw.js" and "__pycache__" not in p.parts)
     for p in fichiers:
-        h.update(p.relative_to(racine).as_posix().encode() + b"\0")
-        h.update(p.read_bytes())
+        rel = p.relative_to(racine).as_posix()
+        h.update(rel.encode() + b"\0")
+        donnees = p.read_bytes()
+        if rel in PAGES:   # la version qu'y écrit estampiller ne compte pas
+            donnees = ESTAMPE.sub(b"", donnees)
+        h.update(donnees)
     for d in c["documents"]:
         if d.get("md"):
             f = _source(d["md"], site)
@@ -388,6 +392,31 @@ def service_worker(c, v):
 
 VERSION_SW = re.compile(r'^var VERSION = "([0-9a-f]+)";$', re.M)
 
+# Les pages dont estampiller versionne les scripts et les feuilles de style.
+PAGES = ("index.html", "imprimer.html")
+ESTAMPE = re.compile(rb"\?v=[0-9a-f]+")
+BALISE = re.compile(r"<(script|link)\b[^>]*>", re.I)
+ATTRIBUT = re.compile(r'\b(src|href)="([^"]*)"', re.I)
+DISTANTE = re.compile(r"^(?:[a-z][a-z0-9+.-]*:|//|/|#)", re.I)
+
+
+def versionner(html, v):
+    """Chaque <script src> et <link rel=stylesheet href> locaux de la page,
+    suivis de ?v=<v> (une version déjà écrite est remplacée)."""
+    def balise(m):
+        tag = m.group(0)
+        if m.group(1).lower() == "link" and not re.search(r'\brel="stylesheet"', tag, re.I):
+            return tag
+        def attr(a):
+            if (m.group(1).lower() == "script") != (a.group(1).lower() == "src"):
+                return a.group(0)
+            adresse = re.sub(r"\?v=[0-9a-f]+$", "", a.group(2))
+            if not adresse or DISTANTE.match(adresse) or "?" in adresse:
+                return a.group(0)
+            return '%s="%s?v=%s"' % (a.group(1), adresse, v)
+        return ATTRIBUT.sub(attr, tag)
+    return BALISE.sub(balise, html)
+
 
 # ═══════════════════════════════════════════════════════════════════════
 # generer, verifier, estampiller
@@ -401,13 +430,22 @@ def fabriquer(c):
 
 def estampiller(site, c):
     """Sur le site assemblé (déploiement) : la version de sw.js recalculée
-    sur ce qui sera publié, documents de content/ compris."""
+    sur ce qui sera publié, documents de content/ compris, et la même
+    version sur chaque script et chaque feuille de style d'index.html et
+    d'imprimer.html (`app.js?v=<version>`). Une page ne demande ainsi que
+    les scripts de sa publication : ni le cache HTTP (max-age=600 sur
+    GitHub Pages) ni la copie du service worker ne peuvent lui rendre ceux
+    d'une autre. Rien de cela n'est écrit dans le dépôt."""
     site = pathlib.Path(site)
     sw = site / "sw.js"
     texte = sw.read_text(encoding="utf-8")
     v = version(c, site)
     sw.write_text(VERSION_SW.sub('var VERSION = "%s";' % v, texte, count=1), encoding="utf-8")
-    print("sw.js : version %s" % v)
+    for nom in PAGES:
+        page = site / nom
+        if page.is_file():
+            page.write_text(versionner(page.read_text(encoding="utf-8"), v), encoding="utf-8")
+    print("sw.js, %s : version %s" % (", ".join(PAGES), v))
 
 
 def anomalies(c):
@@ -476,7 +514,13 @@ def anomalies(c):
         html = (SITE / page).read_text(encoding="utf-8")
         if 'rel="manifest" href="manifest.webmanifest"' not in html:
             a.append("site/%s ne lie pas le manifeste (manifest.webmanifest)" % page)
+        if ESTAMPE.search(html.encode()):
+            a.append("site/%s : une version en dur (?v=…) — c'est le déploiement qui "
+                     "l'écrit (classe.py estampiller)" % page)
     index = (SITE / "index.html").read_text(encoding="utf-8")
+    if 'id="garde-fou"' not in index or index.find('id="garde-fou"') > index.find("<script src="):
+        a.append("site/index.html : il manque le garde-fou (<script id=\"garde-fou\">), "
+                 "avant les autres scripts — sans lui, une erreur laisse « Chargement… » à l'écran")
     for attendu_ in ('src="appli.js"', 'rel="apple-touch-icon" href="icones/apple-touch-icon.png"',
                      'name="apple-mobile-web-app-capable"', 'name="apple-mobile-web-app-title"'):
         if attendu_ not in index:

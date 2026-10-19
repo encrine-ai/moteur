@@ -156,6 +156,8 @@
         contenu.focus({ preventScroll: true });
       }
       premiere = false;
+      // le premier rendu a eu lieu : le garde-fou d'index.html se tait
+      document.documentElement.setAttribute('data-rendu', 'ok');
       document.dispatchEvent(new CustomEvent('encrine:page', { detail: { type: page.type } }));
     });
   }

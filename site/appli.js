@@ -52,10 +52,29 @@
     if (fond) meta.setAttribute('content', fond);
   }
 
-  /* ——— Le service worker ——— */
+  /* ——— Le service worker ———
+   * Une nouvelle publication installe un nouveau service worker, qui prend
+   * la main tout de suite (skipWaiting, clients.claim) : la page, chargée
+   * par l'ancien, se recharge alors une fois, pour être toute de la
+   * nouvelle version. Pas au premier enregistrement (rien à remplacer), et
+   * jamais deux fois de suite en moins de 30 s (garde contre les boucles). */
+  var CLE_RECHARGE = 'encrine-recharge:' + location.pathname.replace(/[^/]*$/, '');
   function enregistrer() {
     if (!('serviceWorker' in navigator) || !/^https?:$/.test(location.protocol)) return;
-    navigator.serviceWorker.register('sw.js').catch(function () { /* le site marche sans */ });
+    var sw = navigator.serviceWorker;
+    var avait = !!sw.controller;
+    var recharge = false;
+    sw.addEventListener('controllerchange', function () {
+      if (!avait) { avait = true; return; }
+      if (recharge) return;
+      var avant = 0;
+      try { avant = parseInt(window.sessionStorage.getItem(CLE_RECHARGE) || '0', 10); } catch (e) { /* bloqué */ }
+      if (Date.now() - avant < 30000) return;
+      recharge = true;
+      try { window.sessionStorage.setItem(CLE_RECHARGE, String(Date.now())); } catch (e) { /* bloqué */ }
+      location.reload();
+    });
+    sw.register('sw.js').catch(function () { /* le site marche sans */ });
   }
 
   /* ——— L'invitation à installer ——— */

@@ -60,12 +60,36 @@ réseau. Tout est fabriqué par `scripts/appli.py`, que lance
 |---|---|
 | `site/manifest.webmanifest` | nom (`nom — projet`) et nom court (l'étiquette sous l'icône), tirés de `classe.yml` ; `start_url` et `scope` à `./` (le site vit dans un sous-dossier) ; **pas d'`id`** — résolu contre la seule origine, il ferait de deux classes d'un même domaine une seule appli ; `display: standalone`, `lang: fr` ; `theme_color` = `--feuille` (l'en-tête), `background_color` = `--papier`, lus dans le bloc clair de `theme.css` |
 | `site/icones/` et `site/favicon.ico` | l'icône de la classe : les cinq bandes de ses périodes (`--p1`…`--p5`) et un disque `--feuille` portant son initiale en `--sapin`, dans la police des titres du thème — `appli.svg` (la lettre en contour, sans police), `appli-192.png`, `appli-512.png`, `appli-maskable-512.png` (le disque dans la zone sûre), `apple-touch-icon.png` (180, plein, iOS l'arrondit), `favicon-32.png`, `favicon.ico` (16, 32, 48). Aucun logo d'Encrine : c'est l'appli de la classe. Les PNG demandent Pillow, fontTools et brotli ; chaque icône porte l'empreinte de ce dont elle est faite, que `verifier` relit sans eux |
-| `site/sw.js` | le service worker, tiré de `scripts/modele-sw.js` : l'application, les polices, les icônes, `classe.json` et les documents Markdown du menu en cache à l'installation ; **réseau d'abord** pour les pages, documents, scripts et `classe.json` (la copie gardée si le réseau échoue ou tarde 4 s) ; PDF et images **à l'usage** seulement (40 PDF, 300 images au plus) ; un PDF jamais ouvert répond hors connexion par une page qui le dit. `VERSION` est l'empreinte du site : chaque publication qui change quelque chose remplace l'ancien cache. Caches préfixés par la portée : deux classes d'un même domaine ne s'effacent pas |
+| `site/sw.js` | le service worker, tiré de `scripts/modele-sw.js` : l'application, les polices, les icônes, `classe.json` et les documents Markdown du menu en cache à l'installation ; **réseau d'abord**, en revalidant le cache HTTP (`cache: 'no-cache'` : GitHub Pages sert tout avec `max-age=600`), pour les pages, documents, scripts et `classe.json` (la copie gardée si le réseau échoue ou tarde 4 s — seulement de la version demandée) ; l'installation range un **instantané** de la version (pages et scripts de la même publication, sinon elle échoue), que le réseau ne modifie plus ; PDF et images **à l'usage** seulement (40 PDF, 300 images au plus) ; un PDF jamais ouvert répond hors connexion par une page qui le dit. `VERSION` est l'empreinte du site : chaque publication qui change quelque chose remplace l'ancien cache. Caches préfixés par la portée : deux classes d'un même domaine ne s'effacent pas |
 | `site/appli.js` (moteur) | enregistre `sw.js` ; l'**invitation** (`data-composant="invitation"`) : « Installer » par `beforeinstallprompt` sur Android et Chrome, « Partager, puis Sur l'écran d'accueil » dans Safari d'iPhone et d'iPad ; refermée, elle ne revient plus (`localStorage`, par dossier de classe) ; jamais dans l'appli installée ni à l'impression. En mode appli sur iOS, les PDF s'ouvrent dans une feuille du navigateur (`target="_blank"`, sans `download`) ; la couleur de la barre et le titre iOS viennent du thème et de `classe.yml` |
 
 - `classe.yml` peut fixer `appli: {nom, nom_court, initiale}` ; sinon le nom
   court est le nom de la classe (≤ 12 lettres), le projet sans article
   (≤ 15), ou « GS 2026-2027 », et l'initiale celle du nom court.
+- **Jamais une page d'une publication avec les scripts d'une autre** (un
+  iPhone est resté sur « Chargement… » : le nouvel `index.html` avec les
+  anciens scripts, tirés du cache HTTP ou de la copie du service worker).
+  Trois parades : `classe.py estampiller` écrit, sur le site assemblé
+  seulement, chaque `<script src>` et `<link rel=stylesheet>` locaux
+  d'`index.html` et d'`imprimer.html` en `?v=<version de sw.js>` (jamais
+  dans le dépôt : `verifier` refuse un `?v=` en dur) ; le service worker
+  sert un `?v=` de sa version depuis son instantané, un autre depuis le
+  réseau, jamais une copie d'une autre version ; et un nouveau service
+  worker prend la main tout de suite — la page se recharge **une fois**
+  (`controllerchange`, garde de 30 s dans `sessionStorage`, pas au premier
+  enregistrement).
+- **Le garde-fou** (`<script id="garde-fou">`, en ligne et en ES5, avant
+  tous les autres dans `index.html`) : une erreur de script ou une promesse
+  rejetée avant le premier rendu, ou pas de rendu au bout de 8 s, et
+  « Chargement… » laisse place à « Le site n'a pas pu se charger. » et un
+  bouton « Recharger », qui désinscrit le service worker de la classe, vide
+  ses caches (`encrine <portée>`) et recharge. `app.js` pose
+  `data-rendu="ok"` sur `<html>` au premier rendu ; `verifier` refuse un
+  `index.html` sans garde-fou.
+- Safari d'iOS : le JS du moteur et des gabarits reste en ES5 (ni `=>`, ni
+  `?.`, ni `groupBy`, `toSorted`, `findLast`, `at()`, `structuredClone`,
+  lookbehind, champs privés, blocs `static`) ; `marked.min.js` v12 utilise
+  des méthodes privées (`#e()`), d'où iOS 15 au minimum.
 - `imprimer.html` lie le manifeste mais **n'enregistre pas** le service
   worker : Chromium y fabrique les PDF sans rien en cache (vérifié : mêmes
   PDF, mêmes pages, avant et après l'appli).

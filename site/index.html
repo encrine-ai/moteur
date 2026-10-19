@@ -19,6 +19,50 @@
   <link rel="apple-touch-icon" href="icones/apple-touch-icon.png">
   <link rel="stylesheet" href="charte/charte.css">
   <link rel="stylesheet" href="app.css">
+  <!-- Le garde-fou : jamais « Chargement… » pour toujours. Une erreur avant
+       le premier rendu (un script qui manque, ou d'une autre publication),
+       ou pas de rendu au bout de 8 s : un message et « Recharger », qui
+       désinscrit le service worker de la classe, vide ses caches et
+       recharge. app.js pose data-rendu="ok" sur <html> au premier rendu.
+       Autonome et en ES5 : il doit marcher quand tout le reste échoue. -->
+  <script id="garde-fou">
+  (function () {
+    var d = document, html = d.documentElement, montre = false;
+    function rendu() { return html.getAttribute('data-rendu') === 'ok'; }
+    function reparer() {
+      var dossier = location.href.replace(/[?#].*$/, '').replace(/[^\/]*$/, '');
+      var fin = function () { location.reload(); };
+      setTimeout(fin, 4000);
+      var sw = navigator.serviceWorker && navigator.serviceWorker.getRegistrations ?
+        navigator.serviceWorker.getRegistrations().then(function (rs) {
+          return Promise.all(rs.map(function (r) { return r.scope.indexOf(dossier) === 0 ? r.unregister() : null; }));
+        }) : Promise.resolve();
+      var cs = window.caches ? caches.keys().then(function (ns) {
+        return Promise.all(ns.map(function (n) { return n.indexOf('encrine ' + dossier) === 0 ? caches['delete'](n) : null; }));
+      }) : Promise.resolve();
+      Promise.all([sw, cs]).then(fin, fin);
+    }
+    function secours() {
+      var c = d.getElementById('contenu');
+      if (montre || rendu() || !c) return;
+      montre = true;
+      html.setAttribute('data-rendu', 'echec');
+      c.removeAttribute('aria-busy');
+      c.innerHTML = '<div class="garde-fou" role="alert" style="max-width:34em;margin:12vh auto;padding:0 24px;font:18px/1.6 system-ui,sans-serif">' +
+        '<p><strong>Le site n’a pas pu se charger.</strong></p><p>Touchez « Recharger » : la dernière version sera téléchargée.</p>' +
+        '<p><button type="button" class="btn btn-principal" style="font:inherit;padding:.5em 1.2em">Recharger</button></p></div>';
+      c.querySelector('button').onclick = function () { this.disabled = true; this.textContent = 'Rechargement…'; reparer(); };
+    }
+    window.addEventListener('error', function (e) {
+      // une erreur de script, ou un script qui n'a pas pu se charger (pas une image)
+      var t = e.target;
+      if (t && t !== window && t.tagName !== 'SCRIPT') return;
+      if (!rendu()) secours();
+    }, true);
+    window.addEventListener('unhandledrejection', function () { if (!rendu()) secours(); });
+    setTimeout(secours, 8000);
+  })();
+  </script>
 </head>
 <body data-support="ecran">
   <!-- Trois emplacements, que remplissent les gabarits (site/gabarits.js, ou
