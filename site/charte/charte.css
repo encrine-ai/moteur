@@ -37,6 +37,36 @@
   src: url("polices/andika-latin-ext-700.woff2") format("woff2");
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
 
+/* ——— La mention de la marque, au pied de chaque page du matériel ———
+   Fiches, imagier, cartes-corpus : « Conçu avec Encrine · encrine.ai », en
+   petit, dans la MARGE BASSE de la page (une boîte de marge @page) — elle ne
+   prend rien au contenu, et ne peut donc pas faire déborder une fiche : la
+   règle d'une page par fiche et par planche tient, au même nombre de pages.
+   Figtree, la police du texte d'Encrine (site/marque/), à l'ardoise douce
+   de la marque : gris doux, mais lisible à la photocopie. Placée en haut de
+   la marge (à 8 mm du bord), hors de la bande que les imprimantes rognent.
+   Du socle : aucun thème ne la retire (il n'écrit pas de @page). Les
+   documents de l'enseignant ont leur propre pied (impression.css). */
+@font-face { font-family: "Figtree"; font-style: normal; font-weight: 300 900; font-display: block;
+  src: url("../marque/polices/figtree-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@page {
+  @bottom-center {
+    content: "Conçu avec Encrine · encrine.ai";
+    vertical-align: top; padding-top: 1.8mm;
+    font: 500 6.8pt/1 "Figtree", Arial, sans-serif; letter-spacing: .02em; color: #4a5566;
+  }
+}
+/* Une boîte de marge ne fait pas charger sa police, et sans elle Chromium
+   n'imprime RIEN dans la boîte (pas même la police de secours) : ce double
+   invisible, à la police de la mention, la fait charger dès l'ouverture de
+   la page. Pas sous @media print : chargée au moment d'imprimer, la police
+   arrive trop tard et la mention disparaît (essayé). */
+html::before {
+  content: "Conçu avec Encrine · encrine.ai"; font: 500 6.8pt "Figtree", Arial, sans-serif;
+  position: absolute; top: 0; left: 0; visibility: hidden; pointer-events: none;
+}
+
 /* ——— Jetons communs ——— */
 :root {
   /* La police des mots de l'enfant : la même pour toutes les classes */

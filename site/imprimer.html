@@ -7,12 +7,16 @@
        service worker (Chromium y fabrique les PDF, sans rien en cache) -->
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="favicon.ico" sizes="48x48">
-  <link rel="stylesheet" href="charte/charte.css">
+  <!-- Les documents de l'enseignant sont au style de la MARQUE Encrine, le
+       même pour toutes les classes : ni charte.css ni thème ici (skill
+       charte-graphique, « La marque sur le papier »). -->
+  <link rel="stylesheet" href="marque/marque.css">
   <link rel="stylesheet" href="impression.css">
+  <style id="pages"></style>
 </head>
-<body data-support="papier">
-  <div id="bandeau" class="bandeau" data-composant="bandeau-imprime"></div>
-  <article id="contenu" data-composant="document-imprime"></article>
+<body>
+  <section id="premiere" class="premiere" hidden></section>
+  <article id="contenu" class="document"></article>
   <script src="marked.min.js"></script>
   <script src="classe.js"></script>
   <script src="commun.js"></script>
@@ -26,14 +30,33 @@
       var doc = GS.DOCS.find(function (x) { return x.id === id; });
       if (!doc || !doc.md) { document.getElementById('contenu').textContent = 'Document inconnu.'; return; }
 
-      var suffixe = periode ? ' · Période ' + periode : '';
-      if (periode) document.body.dataset.periode = periode;
-      else if (doc.fiches) document.body.dataset.periode = doc.fiches;
       var C = GS.CLASSE;
+      var PERIODES = GS.periodes();
+      var signature = (C.enseignant && C.enseignant.signature || '').trim();
+      var laClasse = signature ? 'La classe de ' + signature : C.nom;
+      // La période dont parle le document : celle de l'extrait, ou celle
+      // d'une évaluation de période (`fiches` dans classe.yml).
+      var nPeriode = periode || doc.fiches || 0;
+      var suffixe = periode ? ' · Période ' + periode : '';
       document.title = C.niveau.code + ' ' + C.annee + ' — ' + doc.titre + suffixe + ' (zone ' + zone + ')';
-      document.getElementById('bandeau').innerHTML =
-        '<span>' + C.niveau.libelle + ' ' + C.annee + ' · ' + C.projet + '</span>' +
-        '<span>' + (doc.groupe ? doc.groupe + ' · ' : '') + doc.titre + suffixe + ' — Zone ' + zone + '</span>';
+
+      function esc(t) {
+        return String(t).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      }
+      function chaineCss(t) { return '"' + String(t).replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\n/g, ' ') + '"'; }
+      // Pas d'émoji sur le papier : un drapeau ou un globe en couleur, au fil
+      // des titres, fait amateur, et la photocopie n'en garde qu'une tache.
+      // La période se repère par sa case de couleur et son nom.
+      var EMOJI = /[\p{Emoji_Presentation}\p{Regional_Indicator}\u{1F3FB}-\u{1F3FF}️‍⃣]/gu;
+      function sansEmoji(t) { return t.replace(EMOJI, '').replace(/[ \t]{2,}/g, ' ').replace(/—\s*—/g, '—'); }
+      function couleur(n) { var p = C.periodes[n - 1]; return p && p.couleur ? p.couleur : ''; }
+      function kase(n) { return '<span class="case" data-couleur="' + esc(couleur(n)) + '" aria-hidden="true"></span>'; }
+      function jour(d) { return GS.fmt(d, { weekday: 'long', day: 'numeric', month: 'long' }); }
+      function dates(p) {
+        return 'du ' + jour(p.debut) + ' au ' + jour(p.fin) + ' ' + GS.fmt(p.fin, { year: 'numeric' }) +
+          ' · ' + p.sem + ' semaines';
+      }
+      function nomPeriode(n) { return 'Période ' + n + ' · ' + C.periodes[n - 1].milieu; }
 
       marked.use({ gfm: true, breaks: false });
       fetch(doc.md).then(function (r) { return r.text(); }).then(function (md) {
@@ -57,8 +80,90 @@
           }
         }
 
+        // Les émojis du texte, retirés nœud par nœud (le reste du balisage ne bouge pas)
+        var it = document.createTreeWalker(contenu, NodeFilter.SHOW_TEXT);
+        for (var n = it.nextNode(); n; n = it.nextNode()) n.nodeValue = sansEmoji(n.nodeValue);
+
+        // Le titre du Markdown passe sur la première page, en sous-titre
+        var h1 = contenu.querySelector('h1');
+        var sousTitre = h1 ? h1.textContent.trim() : '';
+        if (h1) h1.remove();
+
         GS.annoteTitres(contenu);
-        document.body.dataset.pret = '1';
+        // Les titres de période : la case de couleur de la période, devant son nom
+        contenu.querySelectorAll('h2, h3').forEach(function (h) {
+          var m = h.textContent.match(/P[ée]riode\s*([1-9])/i);
+          if (!m || !C.periodes[m[1] - 1]) return;
+          h.classList.add('titre-periode');
+          h.insertAdjacentHTML('afterbegin', kase(+m[1]));
+        });
+        // Les colonnes d'un tableau qui sont des périodes (« P1 — Europe »)
+        contenu.querySelectorAll('th').forEach(function (th) {
+          var m = th.textContent.match(/^\s*(?:P|P[ée]riode\s*)([1-9])\b/i);
+          if (!m || !C.periodes[m[1] - 1]) return;
+          th.classList.add('th-periode');
+          th.dataset.couleur = couleur(+m[1]);
+          th.insertAdjacentHTML('afterbegin', kase(+m[1]));
+        });
+
+        // Un tableau large et dense (la programmation : six colonnes de
+        // texte) s'imprime en paysage, le document entier.
+        var paysage = Array.prototype.some.call(contenu.querySelectorAll('table'), function (t) {
+          var cols = t.rows.length ? t.rows[0].cells.length : 0;
+          var cases = t.querySelectorAll('td');
+          var signes = 0;
+          cases.forEach(function (c) { signes += c.textContent.trim().length; });
+          return cols >= 6 && cases.length && signes / cases.length >= 30;
+        });
+        if (paysage) document.documentElement.classList.add('paysage');
+
+        // L'en-tête courant (la classe, le document) et le pied (la marque,
+        // la page) : des boîtes de marge de la page (@page), hors du texte.
+        var droite = (doc.fiches ? 'Évaluations · ' : '') + doc.titre + suffixe;
+        document.getElementById('pages').textContent =
+          '@page { ' + (paysage ? 'size: A4 landscape; ' : '') +
+          '@top-left { content: ' + chaineCss(laClasse + ' · ' + C.niveau.libelle + ' · ' + C.annee) + '; } ' +
+          '@top-right { content: ' + chaineCss(droite) + '; } } ' +
+          // redit ici : Chromium laisse la règle écrite la dernière l'emporter
+          // sur le :first d'impression.css, et la première page aurait l'en-tête
+          '@page :first { @top-left { content: none; } @top-right { content: none; } }';
+
+        // La première page : le document, la classe, et ses dates
+        var lignes = [
+          ['Niveau', esc(C.niveau.libelle)],
+          ['Année scolaire', esc(C.annee)],
+          ['Zone de vacances', 'Zone ' + esc(zone)]
+        ];
+        if (nPeriode && PERIODES[nPeriode - 1]) {
+          // le nom de la période est déjà au titre (l'extrait, l'évaluation)
+          lignes.push(['Dates de la période', esc(dates(PERIODES[nPeriode - 1]))]);
+        } else {
+          lignes.push(['L’année', '<ol class="annee">' + PERIODES.map(function (p) {
+            return '<li>' + kase(p.n) + '<b>' + esc(nomPeriode(p.n)) + '</b><span>' + esc(dates(p)) + '</span></li>';
+          }).join('') + '</ol>']);
+        }
+        var premiere = document.getElementById('premiere');
+        premiere.innerHTML =
+          '<div class="premiere-tete"><span>' + esc(laClasse) + '</span><span>' +
+            esc(C.niveau.libelle + ' · ' + C.annee + ' · Zone ' + zone) + '</span></div>' +
+          '<div class="premiere-centre">' +
+            (doc.groupe ? '<p class="premiere-groupe">' + esc(doc.groupe) + '</p>' : '') +
+            '<h1 class="premiere-titre">' + (doc.fiches && !periode ? kase(doc.fiches) : '') + esc(doc.titre) + '</h1>' +
+            (periode ? '<p class="premiere-extrait">' + kase(periode) + esc(nomPeriode(periode)) + '</p>' : '') +
+            (sousTitre ? '<p class="premiere-sous">' + esc(sousTitre) + '</p>' : '') +
+            '<p class="premiere-projet"><span>Le projet de l’année</span>' + esc(C.projet) + '</p>' +
+            (signature ? '<p class="premiere-classe">La classe de ' + esc(signature) + '</p>' : '') +
+          '</div>' +
+          '<dl class="premiere-fiche">' + lignes.map(function (l) {
+            return '<div><dt>' + l[0] + '</dt><dd>' + l[1] + '</dd></div>';
+          }).join('') + '</dl>' +
+          '<div class="premiere-pied"><img class="logo" src="marque/logo-encrine.svg" alt="Encrine">' +
+            '<span>Conçu avec Encrine · encrine.ai</span></div>';
+        premiere.hidden = false;
+
+        (document.fonts ? document.fonts.ready : Promise.resolve()).then(function () {
+          document.body.dataset.pret = '1';
+        });
       });
     })();
   </script>

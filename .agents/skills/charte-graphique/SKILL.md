@@ -13,7 +13,7 @@ partagent ce qui sert l'enfant et le papier. D'où trois couches :
 | Couche | Où | Qui la change |
 |---|---|---|
 | **le socle** | `site/charte/socle.css` (+ Andika dans `site/charte/polices/`) | le moteur seul ; aucun thème ne le défait |
-| **les composants du moteur** | `site/app.css`, `site/impression.css`, `site/fiches/fiches.css`, `site/imagier/imagier.css`, `site/cartes-corpus/cartes-corpus.css`, `site/charte/composants.css` (la couverture) — tous dans `@layer moteur` | le moteur ; ils n'emploient que des jetons |
+| **les composants du moteur** | `site/app.css`, `site/fiches/fiches.css`, `site/imagier/imagier.css`, `site/cartes-corpus/cartes-corpus.css`, `site/charte/composants.css` (la couverture) — tous dans `@layer moteur` ; `site/impression.css` et `site/marque/` (les documents de l'enseignant) sont hors thème, au style de la marque | le moteur ; ils n'emploient que des jetons |
 | **le thème de la classe** | `site/charte/themes/<thème>/` : `theme.yml`, `theme.css`, `habillage.css`, `gabarits.js`, `polices/`, `motifs/`, `images/` | la classe, avec son enseignant |
 
 `python3 scripts/classe.py generer` assemble `socle.css`, `composants.css`,
@@ -32,12 +32,65 @@ contrôle qui empêche le thème d'y toucher.
 ses gabarits dessinent l'en-tête et le menu, l'accueil, la page de document
 et la page de chaque période, avec ses images et son mouvement — « comme un
 site différent, à son image » (décision du propriétaire, 18 octobre 2026).
-Sur le papier (fiches, imagier, cartes-corpus, PDF des documents), le thème
+Sur le papier du matériel des élèves (fiches, imagier, cartes-corpus), le thème
 **habille, il ne restructure pas** : couleurs, polices de l'adulte,
 ornements, couverture, jamais la géométrie. C'est ce qui permet à une classe
 de recevoir les nouvelles versions du moteur (skill synchroniser-moteur)
 sans perdre son style : le moteur garde ses accroches et le contrat des
 gabarits ; tout le reste lui est interne et peut changer.
+
+## La marque sur le papier — les documents de l'enseignant
+
+Décision du propriétaire : **les documents de l'enseignant** (projet annuel,
+programmation, progressions et leurs extraits, mode d'emploi, livret,
+évaluations — `imprimer.html`, donc tous les `pdf/<doc>.pdf`) sont au
+**style de la marque Encrine** (https://encrine.ai/design/), uniforme pour
+toutes les classes, **indépendant du thème** : `imprimer.html` ne charge pas
+`charte.css`, aucun thème ne les habille (`verifier-theme.py` refuse les
+anciennes racines `bandeau-imprime`, `document-imprime`).
+
+| Fichier | Rôle |
+|---|---|
+| `site/marque/marque.css` | les polices (Unbounded, Figtree, Marelle, OFL, dans `site/marque/polices/` avec leurs `LICENCE-*.txt`, copiées du site d'Encrine — jamais appelées sur le réseau) et les jetons `--m-*` (craie, ardoise, cases) ; la couleur d'une période vient de sa **famille** (`periodes[].couleur`) rendue dans la case d'Encrine (`[data-couleur]`) |
+| `site/marque/logo-encrine.svg` | le logo, discret, au pied de la première page |
+| `site/impression.css` | la mise en page : première page, titres, tableaux, en-tête et pied |
+| `site/imprimer.html` | construit la première page, l'en-tête courant, les cases des périodes, le paysage |
+
+Ce qu'on y trouve, et pourquoi :
+- **une première page** (`.premiere`, hauteur fixe 258 mm, 171 en paysage) :
+  le groupe du document en Marelle (la seule cursive), le titre en
+  Unbounded, le titre du Markdown en sous-titre (le `h1` quitte le corps),
+  le projet, « La classe de <signature> » si `enseignant.signature`, puis
+  niveau, année, zone, et les dates — de la période (extrait, évaluation de
+  période) ou des cinq périodes. Rien qui imite une couverture d'éditeur ;
+- **en-tête et pied en boîtes de marge `@page`** (Chromium ≥ 131) : à
+  gauche la classe, à droite le document ; en bas « Conçu avec Encrine ·
+  encrine.ai » et « page X / Y ». `imprimer.html` écrit l'en-tête dans
+  `<style id="pages">` et **y redit le `:first`** : sinon la règle injectée
+  l'emporte et la première page porte l'en-tête ;
+- **tableaux** à filets fins, `thead` répété à chaque page, `tr` insécable,
+  première colonne en demi-gras ; une colonne de période (« P1 — Europe »)
+  reçoit sa case et un filet de sa couleur. Un tableau d'au moins six
+  colonnes de texte dense (≥ 30 signes par case : la programmation) met
+  **tout le document en paysage** ;
+- **pas d'émoji** (drapeaux, globes) : retirés au rendu ; la période se
+  repère par sa case de couleur, **toujours avec son nom** ;
+- **peu d'encre** : aucun aplat, aucun fond de ligne ; tout se lit en noir et
+  blanc. L'italique d'un titre passe en romain Figtree (Unbounded n'a pas
+  d'italique ; un faux penché fait amateur).
+
+Essayé et écarté : commencer chaque période d'une progression sur une
+nouvelle page (+1 à +4 pages par progression, pour un trou d'un tiers de
+page à un seul endroit).
+
+**Le matériel des élèves garde sa charte**, et ne reçoit de la marque qu'une
+ligne : « Conçu avec Encrine · encrine.ai », 6,8 pt, Figtree, `#4a5566`, dans
+la **marge basse** (`@page { @bottom-center }` du socle, à 8 mm du bord) —
+elle ne prend rien au contenu, donc aucune fiche ne déborde et le nombre de
+pages ne bouge pas. Piège : une boîte de marge ne fait pas charger sa
+police, et sans elle Chromium n'y imprime **rien** ; le socle porte donc un
+`html::before` invisible à la même police — hors `@media print`, où elle
+arrive trop tard. `verifier-pagination.py` cherche la mention sur chaque page.
 
 ## Le socle — non négociable
 
@@ -126,7 +179,6 @@ un thème qui a ses gabarits dessine les siens (« Le mini-site », plus bas).
 | Étiquette-mot, étiquette de tri | `[data-composant="etiquette"]`, `[data-composant="etiquette-tri"]` | `.mot`, `.repere` ; `.mot-tri` | `::before`, `::after` | papier |
 | Crédits | `[data-composant="credits"]` | | | papier |
 | Fiche élève (écrite à la main) | `.fiche` | le **cadre** seulement : `.entete`, `.idext`, `.champ`, `.trait`, `.cartouche`, `.ref`, `.dom`, `.titre`, `.niveau`, `.n1`, `.n2`, `.sous-objectif`, `.consigne`, `.exo`, `.num`, `.enonce`, `.defi`, `.etoile`, `.pied-fiche`, `.codage`, `.paysage` — jamais le matériel de l'exercice | `::before`, `::after` | papier |
-| Document imprimé | `[data-composant="bandeau-imprime"]`, `[data-composant="document-imprime"]` | `.zone-badge` | | papier |
 
 Les **étiquettes de période** sont la `.pastille` (écran), le `.cartouche`
 de la fiche, l'en-tête de planche et le `.repere` des cartes ; les **motifs

@@ -175,8 +175,9 @@ COMPOSANTS = {
     "fiche": ("papier", ".fiche", {"paysage", "entete", "idext", "champ", "trait", "cartouche", "ref", "dom",
                                   "titre", "niveau", "n1", "n2", "sous-objectif", "consigne", "exo", "num",
                                   "enonce", "defi", "etoile", "pied-fiche", "codage", "credits"}, set()),
-    "bandeau-imprime": ("papier", DC % "bandeau-imprime", {"bandeau"}, set()),
-    "document-imprime": ("papier", DC % "document-imprime", {"zone-badge"}, set()),
+    # Les documents de l'enseignant (imprimer.html) ne sont plus habillables :
+    # ils sont au style de la marque Encrine, le même pour toutes les classes
+    # (site/marque/, impression.css) — un thème qui les nomme est refusé.
 }
 ORNEMENTS = {o: nom for nom, (_, _, _, ornes) in COMPOSANTS.items() for o in ornes}
 # les mots que l'enfant lit : leur police, leur corps et leur espacement sont du socle
