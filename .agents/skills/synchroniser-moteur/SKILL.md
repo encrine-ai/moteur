@@ -84,10 +84,20 @@ thème nouveau du modèle ne s'ajoute que si l'enseignant le demande.
   dossier du moteur qui n'existe que dans la classe (un vieux script : la
   copie le laisse en place) ; `D` : un fichier du moteur absent d'ici. Le
   titre et l'aperçu de lien d'`index.html`, refaits pour chaque classe, ne
-  comptent pas. Exemples vus en octobre 2026 : la Grande Section garde dans
-  `charte-graphique` une section sur son thème « La Promenade » et dans
-  `imagier-photos` la décision sur la vipère ; le tour du monde, une
-  retouche de `verifier-cartes-corpus.py`. Un fichier du moteur modifié ici
+  comptent pas, ni la section « Propre à cette classe » d'un skill. Deux
+  sortes d'écarts, vus en octobre 2026 :
+  - **une leçon qui vaut pour toutes les classes** (la retouche de
+    `verifier-cartes-corpus.py` du tour du monde) : la remonter ; elle est
+    depuis dans le moteur ;
+  - **du contenu de la classe écrit dans un skill** (la Grande Section : son
+    thème « La Promenade » dans `charte-graphique`, la vipère gardée dans
+    `imagier-photos`) : le déplacer **une fois**, dans un commit à lui, dans
+    la section balisée qui finit le skill (`<!-- classe:debut -->`, « ##
+    Propre à cette classe », `<!-- classe:fin -->`), et rendre au reste du
+    skill le texte du moteur ; `chemins_moteur.py verifier` contrôle la
+    forme. Dès lors, `copier` la garde à chaque synchronisation.
+
+  Un fichier du moteur modifié ici
   et pas encore remonté serait **perdu** : passer par le skill **remonter-au-moteur**
   d'abord, puis le réappliquer après la synchronisation si le moteur ne l'a
   pas encore intégré. On ne force jamais.
