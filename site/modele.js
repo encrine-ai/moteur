@@ -17,6 +17,17 @@
   var C = GS.CLASSE;
   var DAY = 86400000;
   var SIGNATURE = { texte: 'Conçu avec Encrine', lien: 'https://encrine.ai' };
+  /* Une classe servie par Encrine — la classe d'exemple, ou la copie relue
+     d'une classe de la galerie (encrine-ai/<id>, https://encrine.ai/<id>/) —
+     porte au pied les mentions légales d'Encrine, qui l'héberge, comme Ludea
+     sur ses copies. La copie garde dans classe.yml le `depot` et le `site`
+     de son auteur : c'est l'adresse où la page est servie qui tranche. */
+  var MENTIONS = { texte: 'Mentions légales', lien: 'https://encrine.ai/mentions-legales/' };
+  function hebergeeParEncrine() {
+    var hote = (typeof location !== 'undefined' && location.hostname) || '';
+    return /^(www\.)?encrine\.ai$/.test(hote) ||
+      /^encrine-ai\//.test(C.depot || '') || /^https:\/\/(www\.)?encrine\.ai\//.test(C.site || '');
+  }
 
   /* ——— Outils de rendu, offerts aux gabarits ——— */
   function esc(t) {
@@ -231,6 +242,7 @@
       projet: projet, imagier: C.imagier || {}, corpus: C.corpus || {},
       images: lesImages, image: image,
       signature: SIGNATURE,
+      mentions: hebergeeParEncrine() ? MENTIONS : null,
       pied: {
         conformite: C.conformite,
         calendrier: 'Dates des vacances : calendrier scolaire officiel ' + C.annee + ', zone ' + GS.ZONE + '.',
@@ -262,5 +274,6 @@
 
   GS.modele = modele;
   GS.SIGNATURE = SIGNATURE;
+  GS.MENTIONS = MENTIONS;
   GS.outils = { esc: esc, texte: texte, icone: icone, romain: romain, nombre: nombre };
 })();

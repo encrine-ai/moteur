@@ -17,7 +17,8 @@
  *     GS.theme({ entete: function (m, page) { … }, … });
  * Le menu s'anime par des accroches que app.js connaît (data-sous-menu,
  * data-menu-ouvrir, data-menu-panneau, data-menu-fermer) ; le pied reçoit de
- * toute façon la signature « Conçu avec Encrine » et le lien des crédits.
+ * toute façon la signature « Conçu avec Encrine », le lien des crédits et,
+ * pour une classe servie par Encrine (m.mentions), « Mentions légales ».
  * Skill charte-graphique, « Les gabarits ».
  */
 (function () {
@@ -247,7 +248,8 @@
       (C.enseignant.signature ? '<p class="m-signature-classe">La classe de ' + esc(C.enseignant.signature) + ' · ' + esc(C.projet) + ' · ' + esc(C.annee) + '</p>' : '') +
       '<p>' + esc(m.pied.conformite) + ' ' + esc(m.pied.calendrier) + '</p>' +
       '<p class="pied-liens">' + (m.images.length ? '<a href="' + m.pied.credits + '">Crédits des images</a> · ' : '') +
-      '<a class="pied-signature" href="' + m.signature.lien + '">' + esc(m.signature.texte) + '</a></p>' +
+      '<a class="pied-signature" href="' + m.signature.lien + '">' + esc(m.signature.texte) + '</a>' +
+      (m.mentions ? ' · <a class="pied-mentions" href="' + m.mentions.lien + '">' + esc(m.mentions.texte) + '</a>' : '') + '</p>' +
       '</div>';
   };
 })();

@@ -302,6 +302,9 @@ Un gabarit est une fonction `(m, page) → HTML` (une chaîne), sans cadriciel.
   groupe des périodes) ; `m.documents`, `m.groupes` (chaque document avec
   `pdf` et `extraits`) ; `m.sortes`, `m.materielNote` ; `m.projet` ;
   `m.images`, `m.image(fichier)` (chemin, crédit) ; `m.signature` ;
+  `m.mentions` (« Mentions légales » d'Encrine, ou `null` : seulement pour
+  une classe servie par Encrine — l'exemple ou une copie relue de la
+  galerie, sur `encrine.ai`) ;
   `m.pied` (conformite, calendrier, credits) ; `m.mouvement` (faux si
   `prefers-reduced-motion`) ; `m.outils` (esc, texte, icone, pastille,
   romain, nombre, jourLong, jourCourt). Un gabarit **échappe** tout texte
@@ -317,8 +320,10 @@ Un gabarit est une fonction `(m, page) → HTML` (une chaîne), sans cadriciel.
   `href="#id"` (sommaire, renvoi) défile sans changer de page.
 - **Le moteur garantit** : le lien d'évitement, le focus sur `<main>` à
   chaque page, le titre de l'onglet, la signature « Conçu avec Encrine »,
-  le lien des crédits (`#/credits`) et le crédit de la classe d'origine
-  (CC BY) — un pied qui les oublie les reçoit sous leur forme sobre —, et
+  le lien des crédits (`#/credits`), le crédit de la classe d'origine
+  (CC BY) et, pour une classe servie par Encrine, le lien « Mentions
+  légales » vers https://encrine.ai/mentions-legales/ (Encrine l'héberge,
+  comme Ludea sur ses copies) — un pied qui les oublie les reçoit sous leur forme sobre —, et
   l'invitation à installer l'appli (`appli.js`, composant `invitation`).
 - **Interdit à un gabarit** (refusé par `verifier-theme.py`) : lire
   (`fetch`, `import`), stocker (`localStorage`…), changer la route, écouter
