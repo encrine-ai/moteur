@@ -155,6 +155,8 @@ def images(racine):
             pass   # l'icône de l'appli, fabriquée depuis le thème (scripts/appli.py)
         elif rel.parts[:2] == ("site", "charte") and ext == ".svg":
             pass
+        elif rel.parts[:2] == ("site", "marque") and ext == ".svg":
+            pass   # le logo de la marque Encrine, pas une image de la classe
         else:
             anomalies.append("%s : image hors des banques créditées (photo, scan ?)" % rel)
     for f in _documents(racine):
