@@ -91,9 +91,11 @@ collègue ? », puis suivre la ligne qui correspond.
    `prenoms_fictifs` (ce sont des personnages, pas des élèves), mais
    `partage.auteur` se vide (l'auteur de la nouvelle classe le choisira en
    partageant ; `partage.licence` reste CC BY-SA si l'origine l'est) ; supprimer
-   `partage/fiche.json` (la fiche de galerie de l'autre classe). Réécrire la
-   tête du `README.md` (étape 7) avec le crédit : « D'après *<titre>*, de
-   <auteur> (<site>), sous licence <licence>. »
+   `partage/fiche.json` (la fiche de galerie de l'autre classe). Le crédit
+   (« D’après *<titre>*, de <auteur>, sous licence <licence>. ») s'écrit de
+   lui-même dans le bloc de tête du `README.md` (étape 7) dès que `origine`
+   est là ; sous le bloc, le texte de l'auteur d'origine se relit et se
+   reprend pour la nouvelle classe.
    `LICENCE-CONTENU.md`, s'il existe, se réécrit de même : la licence (la
    même, si l'origine est CC BY-SA), et le crédit de l'original.
 6. **Selon le niveau** :
@@ -162,7 +164,7 @@ partir de <adresse> ») : son site, son dépôt, ou sa carte de galerie.
    - tous droits réservés, ou licence absente : reprendre **seulement** le
      thème et les milieux, et réécrire tout le reste.
 4. **Écrire `origine`** comme en mode « enrichir » (point 4), `depot` au
-   dépôt courant, et citer l'auteur en tête du README. Les images gardent
+   dépôt courant : le bloc de tête du README cite l'auteur (étape 7). Les images gardent
    leurs propres crédits, à recopier avec elles.
 
 ## Étape 1 — L'entretien
@@ -405,8 +407,18 @@ chaque cahier, et écrire son verdict dans le message de commit.
 
 ## Étape 7 — Mettre le site en ligne
 
-Skill **site-et-calendrier**. Réécrire la tête du `README.md` avec le nom de
-la classe et le lien de son site, tiré du remote. Rappeler à l'enseignant,
+Skill **site-et-calendrier**. **Le `README.md` est celui de la classe, pas
+une copie de celui du moteur** : `python3 scripts/classe.py generer` (une
+fois `depot` écrit) remplace le README du modèle — il porte
+`<!-- encrine:moteur -->` — par un README de classe : un bloc tiré de
+`classe.yml`, entre `<!-- encrine:debut -->` et `<!-- encrine:fin -->` (le
+projet, la signature, le niveau, l'année et la zone, l'accroche, le lien du
+site tiré de `depot` ou de `site`, la licence, « Partir de cette classe » si
+elle le permet, le crédit de `origine`, « Conçu avec Encrine »), puis un
+court texte « Ce dépôt ». Sous le bloc, le fichier est à l'enseignant : y
+écrire, avec lui, ce que la classe a de propre (le tableau des périodes et
+des vacances, le matériel), jamais la technique du moteur. Le bloc ne se
+retouche pas à la main ; `classe.py verifier` le signale périmé. Rappeler à l'enseignant,
 en deux phrases et sans technique, les deux gestes qu'aucune session ne peut
 faire à sa place : le dépôt doit être **public**, et GitHub Pages doit être
 réglé sur **GitHub Actions** (Settings → Pages) ; sans cela, le premier

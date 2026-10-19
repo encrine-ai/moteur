@@ -40,7 +40,11 @@ dépôt, refusé, puis l'application actuelle). Il n'affiche donc :
   imprimer depuis le navigateur ».
 
 Le `README.md` se contente du lien du site : l'adresse du dépôt, sur le
-dépôt, « n'a aucun intérêt ».
+dépôt, « n'a aucun intérêt ». Ce lien est dans son bloc de tête, que
+`classe.py generer` tire de `depot` (`https://<propriétaire>.github.io/<dépôt>/`)
+ou de `site` dans `classe.yml`, à écrire quand la classe est servie
+ailleurs (un domaine propre : la classe d'exemple est sur
+`https://encrine.ai/tour-du-monde/`).
 
 Deux défauts déjà rencontrés : un bouton PDF à `display: inline-block`
 annulait son attribut `hidden` et s'affichait, inerte, sur toutes les pages

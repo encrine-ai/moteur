@@ -19,7 +19,10 @@ Usage :
                                        # du thème, s'il en a), et l'appli
                                        # installable (scripts/appli.py) :
                                        # site/manifest.webmanifest, site/sw.js,
-                                       # site/icones/ et site/favicon.ico
+                                       # site/icones/ et site/favicon.ico ;
+                                       # et le bloc de tête du README.md
+                                       # (scripts/readme.py), le reste du
+                                       # fichier restant à l'enseignant
   python3 scripts/classe.py verifier   # code 1 si classe.js est périmé, si le
                                        # matériel déclaré et les pages fabriquées
                                        # ne concordent pas, ou si une donnée de
@@ -31,7 +34,8 @@ Usage :
                                        # mal formés, si classe/projet.yml
                                        # (contenu.projet) n'a pas la bonne forme,
                                        # ou si le manifeste, les icônes ou
-                                       # sw.js manquent ou sont périmés
+                                       # sw.js manquent ou sont périmés, ou
+                                       # le bloc de tête du README.md
   python3 scripts/classe.py estampiller <site> [--adresse <url>]
                                        # au déploiement : l'image de partage
                                        # <site>/partage.png (Chromium), l'aperçu
@@ -51,7 +55,11 @@ L'identité de la classe : `depot` (« propriétaire/dépôt », le dépôt GitH
 cette classe) et, si elle est partie d'une autre classe par « Use this
 template », `origine` (depot, titre, auteur, licence, site, reprise_le).
 classe.json transmet l'une et l'autre : le pied du site crédite l'original
-(skill nouvelle-classe, « Partir d'une classe »).
+(skill nouvelle-classe, « Partir d'une classe »). `site`, facultatif,
+donne l'adresse du site quand elle n'est pas celle de GitHub Pages
+(https://<propriétaire>.github.io/<dépôt>/, tirée de `depot`) : un domaine
+propre, comme la classe d'exemple sur encrine.ai. Le bloc de tête du
+README.md en tire le lien du site (scripts/readme.py).
 
 Depuis un autre script :
   from classe import charger, milieux, chemin, manifeste, cahiers, couverture
@@ -70,6 +78,7 @@ except ImportError:
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 import appli  # noqa: E402  (l'appli installable : manifeste, icônes, service worker)
 import apercu  # noqa: E402  (l'aperçu de lien : titre, Open Graph, image de partage)
+import readme  # noqa: E402  (le bloc de tête du README de la classe)
 
 RACINE = pathlib.Path(__file__).resolve().parent.parent
 SOURCE = RACINE / "classe.yml"
@@ -377,6 +386,7 @@ def generer():
           "écrits depuis classe.yml")
     apercu.ecrire(c)      # avant l'appli : index.html entre dans la version de sw.js
     appli.fabriquer(c)
+    readme.ecrire(c)
 
 
 # Ce que le moteur n'a pas le droit d'écrire en dur : chaque valeur de classe.yml
@@ -759,6 +769,7 @@ def verifier():
     # L'appli installable : manifeste, icônes, service worker (scripts/appli.py).
     a_appli, w_appli = appli.anomalies(c)
     a_appli += apercu.anomalies(c)
+    a_appli += readme.anomalies(c)
     anomalies += a_appli
     avertissements += w_appli
     for a in avertissements:

@@ -28,7 +28,9 @@ enseignant:
 # courant, c'est une copie faite par « Use this template » d'une classe
 # partagée : l'entretien passe en mode « enrichir » et écrit `origine`
 # (depot, titre, auteur, licence, site, reprise_le), que le pied du site
-# crédite.
+# crédite. `site`, facultatif : l'adresse du site quand ce n'est pas
+# https://<propriétaire>.github.io/<dépôt>/ (un domaine propre) — le bloc de
+# tête du README.md en tire son lien.
 depot: à définir
 moteur:
   depot: encrine-ai/moteur

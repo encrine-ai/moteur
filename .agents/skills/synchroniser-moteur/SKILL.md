@@ -17,7 +17,7 @@ chaque enseignant met à jour **sa** classe, quand il le veut.
 | Couche | Chemins | Synchronisée ? |
 |---|---|---|
 | **le moteur** | `scripts/`, `site/*.js` (sauf `site/classe.js`), `site/*.html`, `site/*.css`, `site/marked.min.js`, les feuilles des cahiers (`site/fiches/fiches.css`, `site/imagier/imagier.css`, `site/cartes-corpus/cartes-corpus.css`), le socle de la charte : `site/charte/socle.css`, `site/charte/composants.css` et `site/charte/polices/` (Andika), `referentiel/` (la liste du programme **et le calendrier officiel de chaque année**, `calendrier-AAAA-AAAA.yml`), `.agents/skills/` (les skills, au standard ouvert) et le lien symbolique `.claude/skills` qui y renvoie pour Claude Code, `.github/workflows/`, `tests/` | **oui** |
-| **la classe** | `classe.yml`, `classe/`, les documents `01-…` à `04-…`, `README.md`, les cahiers fabriqués (`site/fiches/*.html`, `site/imagier/`, `site/cartes-corpus/`, leurs images et crédits), `site/classe.json`, `site/classe.js`, les thèmes `site/charte/themes/` | **jamais** |
+| **la classe** | `classe.yml`, `classe/`, les documents `01-…` à `04-…`, `README.md` (jamais écrasé par celui du modèle : seul son bloc de tête, entre `<!-- encrine:debut -->` et `<!-- encrine:fin -->`, est refait par `classe.py generer`), les cahiers fabriqués (`site/fiches/*.html`, `site/imagier/`, `site/cartes-corpus/`, leurs images et crédits), `site/classe.json`, `site/classe.js`, les thèmes `site/charte/themes/` | **jamais** |
 | **fabriqué** | `site/charte/charte.css` (socle + thème), `site/charte/icones.svg` (icônes génériques + celles des milieux de `classe.yml`), l'appli installable : `site/manifest.webmanifest`, `site/sw.js` (malgré `site/*.js`), `site/icones/`, `site/favicon.ico` | **jamais copiés** : refaits après la synchronisation, `python3 scripts/classe.py generer` puis `python3 scripts/generer-icones.py` (réseau) |
 | **à la main** | `AGENTS.md` (les consignes de l'agent : il mêle les règles du moteur et l'identité de la classe) ; `CLAUDE.md` (l'import `@AGENTS.md` et quelques lignes propres à Claude Code) | ne reprendre que les règles générales, par une lecture attentive ; une classe d'avant `AGENTS.md`, dont tout tient dans `CLAUDE.md`, y déplace ses consignes et ne garde dans `CLAUDE.md` que l'import |
 
@@ -67,7 +67,8 @@ mkdir -p .claude && { [ -L .claude/skills ] || ln -s ../.agents/skills .claude/s
 git add .claude/skills
 git ls-files -s .claude/skills         # doit montrer le mode 120000 (un lien, pas un dossier)
 python3 scripts/classe.py generer      # refait charte.css : nouveau socle + thème de la classe ;
-                                       # et le titre et l'aperçu de lien d'index.html (venu du modèle)
+                                       # et le titre et l'aperçu de lien d'index.html (venu du modèle) ;
+                                       # et le bloc de tête du README.md, le reste restant à la classe
 python3 scripts/verifier-theme.py      # le thème de la classe tient-il le contrat du nouveau moteur ?
 ```
 
