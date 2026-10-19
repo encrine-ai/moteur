@@ -39,8 +39,19 @@ thème nouveau du modèle ne s'ajoute que si l'enseignant le demande.
 
 ## 0. Avant de commencer
 
-- Lire `moteur` dans `classe.yml`. **`depot` non renseigné** : ce dépôt est
-  celui où le moteur se développe, il n'y a rien à synchroniser. Arrêter.
+- **Ce dépôt est-il le moteur lui-même ?** Le dépôt courant — `depot` de
+  `classe.yml`, ou à défaut celui de `git remote get-url origin` — est
+  `moteur.depot` : c'est là que le moteur se développe, il n'y a rien à
+  synchroniser ; une correction s'y fait sur place. Arrêter.
+
+  ```sh
+  python3 scripts/chemins_moteur.py ou     # « moteur » : arrêter ; « classe » : continuer
+  ```
+
+  (L'ancien test, « `depot` à définir », est périmé : le modèle garde
+  `depot: à définir`, mais une copie toute fraîche faite par « Use this
+  template », avant son entretien, aussi — et elle, se synchronise.
+  `chemins_moteur.py copier` refuse de toute façon de tourner dans le moteur.)
 - L'arbre de travail doit être **propre** (`git status`) : sinon, finir ou
   committer le travail en cours d'abord.
 - **`moteur.version` vaut `null`** (une classe créée avant que

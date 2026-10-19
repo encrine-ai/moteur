@@ -16,15 +16,17 @@ elle-même — la montrer aux autres est le rôle de partager-ma-classe.
 
 ## 0. Faut-il remonter ici ?
 
-Lire `moteur` dans `classe.yml` :
+Lire `moteur` dans `classe.yml` (`moteur.depot`, l'adresse
+`propriétaire/dépôt` du moteur), puis :
 
-- **`depot` n'est pas renseigné** (`à définir`) : ce dépôt **est** celui où
-  le moteur se développe (c'est le cas de la Grande Section tant que le
-  dépôt modèle n'existe pas). Ne rien remonter : corriger directement ici,
-  de façon générique (skill capitaliser, `classe.py verifier` vert), et le
-  noter dans `docs/vers-un-moteur.md`.
-- **`depot` est renseigné** : c'est l'adresse `propriétaire/dépôt` du
-  moteur. Continuer.
+- **Ce dépôt est le moteur** — le dépôt courant, `depot` de `classe.yml` ou
+  à défaut celui de `git remote get-url origin`, est `moteur.depot`
+  (`python3 scripts/chemins_moteur.py ou` répond « moteur ») : on ne se
+  remonte pas à soi-même. Corriger directement ici, de façon générique
+  (skill capitaliser, `classe.py verifier` vert). L'ancien test,
+  « `depot` à définir », est périmé : une copie toute fraîche du modèle a
+  aussi `depot: à définir`, et elle remonte comme toute classe.
+- **Ce dépôt est une classe** (« classe ») : continuer.
 - L'enseignant a dit qu'il ne voulait pas de remontées : respecter son
   choix, et l'écrire dans `classe.yml` (`moteur.remontees: non`).
 
