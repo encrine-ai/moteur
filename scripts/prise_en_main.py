@@ -9,7 +9,7 @@ les règles de prudence ; à qui demander quand ça bloque. Il reprend le guide
 écrit à la main pour la première classe passée à son enseignante, rendu
 générique : tout ce qui est propre à une classe vient de classe.yml —
 
-- `enseignant.signature` (« Bienvenue, Aurélie ») et `ton` (tu ou vous) ;
+- `enseignant.signature` (« Bienvenue, Anaïs ») et `ton` (tu ou vous) ;
 - `projet`, `niveau`, `annee`, `depot` (le nom du dépôt, la nouvelle
   adresse), `site` ; `materiel` (les cahiers nommés) et `periodes` (un
   exemple de demande) ;

@@ -257,7 +257,7 @@ seulement si les réponses ne permettent pas de trancher :
 7. **« Comment veux-tu signer ta classe ? »** — en disant pourquoi on le
    demande : **le site est public**, n'importe qui peut le lire. Les choix :
    son nom complet (« Claire Martin »), la forme d'usage (« Mme Martin »),
-   un prénom (« Aurélie »), ou rien ; plus, s'il le veut, **un petit mot
+   un prénom (« Anaïs »), ou rien ; plus, s'il le veut, **un petit mot
    d'accueil** (une ou deux phrases). La réponse s'écrit dans `classe.yml` :
 
    ```yaml

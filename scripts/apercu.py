@@ -70,7 +70,7 @@ def titre(c):
 
 
 def de(nom):
-    """« de Mme Martin », « d’Aurélie » (comme readme.py)."""
+    """« de Mme Martin », « d’Anaïs » (comme readme.py)."""
     return ("d’" if re.match(r"[AEIOUYÀÂÉÈÊËÎÏÔÛÙÜaeiouyàâéèêëîïôûùü]", nom) else "de ") + nom
 
 

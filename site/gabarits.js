@@ -30,7 +30,7 @@
   GS.gabarits = { defaut: {}, theme: {} };
   /* Ce qu'appelle le gabarits.js d'un thème. */
   GS.theme = function (gabarits) { Object.assign(GS.gabarits.theme, gabarits); };
-  /* « de Mme Martin », « d’Aurélie » : la signature après « La classe ». */
+  /* « de Mme Martin », « d’Anaïs » : la signature après « La classe ». */
   GS.de = function (nom) {
     return (/^[AEIOUYÀÂÉÈÊËÎÏÔÛÙÜ]/i.test(nom) ? 'd’' : 'de ') + nom;
   };

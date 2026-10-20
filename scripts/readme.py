@@ -133,7 +133,7 @@ def lien_licence(lic):
 
 
 def de(nom):
-    """« de Mme Martin », « d’Aurélie »."""
+    """« de Mme Martin », « d’Anaïs »."""
     return ("d’" if re.match(r"[AEIOUYÀÂÉÈÊËÎÏÔÛÙÜaeiouyàâéèêëîïôûùü]", nom) else "de ") + nom
 
 
