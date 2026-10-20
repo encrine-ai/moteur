@@ -21,6 +21,7 @@ sauf les PDF.
 | `site/gabarits.js` | les gabarits par défaut : l'en-tête et le menu, l'accueil, le document (boutons PDF `pdf/<doc>.pdf`, extraits `pdf/<doc>-periode-N.pdf`), la période, le pied |
 | `site/imprimer.html` | la vue que Chromium imprime : `?doc=…[&periode=N]`, aux dates de la zone de la classe |
 | `.github/workflows/pages.yml` | à chaque push sur `main` : contrôler `classe.yml`, assembler `_site/`, fabriquer les PDF (un par document et par extrait de période, plus les cahiers : 65 pour une classe de Grande Section complète), contrôler la pagination, publier |
+| `.github/workflows/menage-branches.yml` | dans le moteur comme dans chaque classe : à chaque push sur `main`, chaque lundi et à la demande, supprime les branches `claude/…` dont la pointe est déjà entièrement dans `main` (`git merge-base --is-ancestor`) ; ne touche à aucune autre branche (`main`, `remontees/lot`…) et se contente de lister, dans le résumé du job, les `claude/…` pas encore intégrées |
 | `.github/workflows/controles.yml` | **dans le moteur seulement** (jamais copié dans une classe) : sur chaque demande de fusion et chaque envoi sur `main` d'`encrine-ai/moteur`, les contrôles rapides et sans réseau — `classe.py verifier`, `verifier-theme.py`, `verifier-partage.py` (et `tester`), `chemins_moteur.py verifier`, la syntaxe des scripts et du JavaScript ; `couverture.py` y est affiché sans être exigé, la démonstration du modèle étant en cours d'écriture |
 
 Les documents Markdown sont copiés dans `_site/content/` au déploiement ; en

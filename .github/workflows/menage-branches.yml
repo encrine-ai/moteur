@@ -1,0 +1,68 @@
+name: Ménage des branches
+
+# Les sessions Claude Code sur le web poussent parfois une branche
+# `claude/…` à elles. Le travail, lui, va sur `main`. Ce workflow supprime
+# ces branches une fois qu'elles y sont entièrement intégrées — et rien
+# d'autre : jamais `main`, jamais une branche qui ne commence pas par
+# `claude/` (comme `remontees/lot`), jamais une branche `claude/…` dont un
+# commit manquerait encore à `main` (elle est seulement signalée).
+
+on:
+  push:
+    branches: ["main"]
+  schedule:
+    - cron: "17 3 * * 1"          # le lundi, 3 h 17 (UTC)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: "menage-branches"
+  cancel-in-progress: false
+
+jobs:
+  menage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (tout l'historique)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Supprimer les branches claude/… déjà intégrées à main
+        run: |
+          set -euo pipefail
+          resume="${GITHUB_STEP_SUMMARY:-/dev/stdout}"
+          # Toutes les branches distantes, à jour (et sans les disparues).
+          git fetch --quiet --prune origin '+refs/heads/*:refs/remotes/origin/*'
+
+          # Garde-fou : sans `main`, on ne sait pas ce qui est intégré.
+          if ! git rev-parse --verify --quiet refs/remotes/origin/main >/dev/null; then
+            echo "## Ménage des branches" >> "$resume"
+            echo "Pas de branche \`main\` sur ce dépôt : rien n'est touché." >> "$resume"
+            exit 0
+          fi
+
+          supprimees=() ; gardees=()
+          for ref in $(git for-each-ref --format='%(refname:strip=3)' 'refs/remotes/origin/claude/'); do
+            case "$ref" in claude/*) ;; *) continue ;; esac   # par prudence
+            if git merge-base --is-ancestor "refs/remotes/origin/$ref" refs/remotes/origin/main; then
+              git push --quiet origin --delete "$ref"
+              supprimees+=("$ref")
+            else
+              manque=$(git rev-list --count "refs/remotes/origin/main..refs/remotes/origin/$ref")
+              gardees+=("$ref — $manque commit(s) absent(s) de main")
+            fi
+          done
+
+          {
+            echo "## Ménage des branches"
+            echo
+            echo "### Supprimées (déjà entièrement dans main) : ${#supprimees[@]}"
+            for b in "${supprimees[@]}"; do echo "- \`$b\`"; done
+            echo
+            echo "### Gardées (pas encore intégrées, à regarder) : ${#gardees[@]}"
+            for b in "${gardees[@]}"; do echo "- \`${b%% — *}\` — ${b#* — }"; done
+            echo
+            echo "Les autres branches (\`main\`, \`remontees/lot\`…) ne sont jamais examinées."
+          } >> "$resume"

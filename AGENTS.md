@@ -148,6 +148,11 @@ agent testé à ce jour.
 - **Travailler sur `main`**, quel que soit l'agent : Pages publie la branche par
   défaut, et une session partie sur une autre branche fait échouer le
   premier déploiement.
+- Les sessions Claude Code sur le web peuvent pousser une branche
+  `claude/…` à elles : le travail, lui, va sur `main`, et le workflow
+  `menage-branches` supprime ces branches une fois intégrées à `main`
+  (jamais une autre, jamais une `claude/…` qui garde un commit absent de
+  `main`). Plus besoin de les supprimer à la main.
 - **L'auteur d'un commit n'est jamais l'adresse de l'enseignant.**
 - Dire ce qui est fait, ce qui reste, ce qui attend sa décision — jamais
   « commité et poussé » pendant que le chantier continue.
