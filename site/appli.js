@@ -104,7 +104,7 @@
     invitation.setAttribute('aria-label', 'Installer l’appli de la classe');
     var texte = mode === 'ios'
       ? '<strong>Sur l’écran d’accueil</strong><span>Touchez ' + icone('share') + '<b>Partager</b>, puis ' +
-        icone('square-plus') + '<b>« Sur l’écran d’accueil »</b> : la classe s’ouvrira comme une appli.</span>'
+        icone('square-plus') + '<b>«\u202fSur l’écran d’accueil\u202f»</b>\u00a0: la classe s’ouvrira comme une appli.</span>'
       : '<strong>Installer l’appli de la classe</strong><span>Sur l’écran d’accueil, elle s’ouvre d’un geste, même sans réseau.</span>';
     invitation.innerHTML =
       '<img class="invitation-icone" src="icones/appli-192.png' + VERSION_ICONE + '" alt="" width="44" height="44">' +

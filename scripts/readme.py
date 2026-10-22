@@ -41,6 +41,8 @@ import re
 import subprocess
 import urllib.parse
 
+import typographie
+
 RACINE = pathlib.Path(__file__).resolve().parent.parent
 README = RACINE / "README.md"
 LICENCE = RACINE / "LICENCE-CONTENU.md"
@@ -177,14 +179,14 @@ def bloc(c):
           '&nbsp; Conçu avec <a href="%s">Encrine</a>, le moteur qui fabrique l’année d’une classe.</p>'
           % (ENCRINE, LOGO_SOMBRE, LOGO, ENCRINE),
           "", "---", FIN]
-    return "\n".join(l) + "\n"
+    return typographie.francais("\n".join(l)) + "\n"
 
 
 def corps(c):
     """Le texte qui suit le bloc dans un README de classe neuf : à l'enseignant
     de le réécrire."""
     moteur = (c.get("moteur") or {}).get("depot") or MODELE
-    return (
+    return typographie.francais(
         "\n## Ce dépôt\n\n"
         "Tout le matériel de la classe : les documents de l’année "
         "([`01-projet-annuel.md`](01-projet-annuel.md), "
@@ -231,4 +233,6 @@ def anomalies(c):
                  "python3 scripts/classe.py generer" % (DEBUT, FIN))
     elif poser(texte, c) != texte:
         a.append("README.md : le bloc de la classe est périmé — relancer  python3 scripts/classe.py generer")
+    else:
+        a += typographie.anomalies("README.md (bloc de la classe)", BLOC.search(texte).group(0))
     return a

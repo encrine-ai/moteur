@@ -41,7 +41,7 @@ var GS = (function () {
   }
 
   function badgeText(p) {
-    return 'Zone ' + ZONE + ' : du ' + fmtCourt(p.debut) + ' au ' + fmtCourt(p.fin) + ' ' + fmt(p.fin, { year: 'numeric' }) + ' · ' + p.sem + ' semaines';
+    return 'Zone ' + ZONE + '\u00a0: du ' + fmtCourt(p.debut) + ' au ' + fmtCourt(p.fin) + ' ' + fmt(p.fin, { year: 'numeric' }) + ' · ' + p.sem + ' semaines';
   }
 
   function annoteTitres(racine) {

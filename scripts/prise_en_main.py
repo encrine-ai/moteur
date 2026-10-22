@@ -31,6 +31,7 @@ import re
 import textwrap
 
 import readme
+import typographie
 
 RACINE = pathlib.Path(__file__).resolve().parent.parent
 GUIDE = RACINE / "PRISE-EN-MAIN.md"
@@ -44,6 +45,20 @@ CLES_ACCOMPAGNANT = {"nom", "github"}
 
 def concerne(c):
     return readme.concerne(c)
+
+
+def publiee_par_encrine(c):
+    """La classe est publiée par Encrine — la démonstration, ou la copie
+    relue d'une classe de la galerie — et non par un enseignant : le même
+    test que hebergeeParEncrine() (site/modele.js), sur `depot`, `site` et,
+    pour une copie qui garde le `depot` de son auteur, le remote `origin`."""
+    return bool(readme.depot_encrine(c)) or str(c.get("site") or "").startswith(readme.ENCRINE + "/")
+
+
+def copie_relue(c):
+    """Une copie relue de la galerie : publiée par Encrine, elle garde dans
+    classe.yml le `depot` de l'enseignant dont elle vient."""
+    return publiee_par_encrine(c) and not (readme.depot(c) or "").startswith(readme.ORGANISATION)
 
 
 def _un(t):
@@ -109,6 +124,7 @@ def texte(c, propre=None):
     exemple_p = 2 if len(periodes) >= 2 else 1
     fictifs = [p for p in (c.get("partage") or {}).get("prenoms_fictifs") or [] if _un(p)]
     valide = date_validation(c)
+    encrine = publiee_par_encrine(c)
 
     l = []
     a = l.append
@@ -135,15 +151,21 @@ def texte(c, propre=None):
         "publication, {tu n'as|vous n'avez} jamais à les faire {toi|vous}-même ;")
       % ((" et chaque cahier (%s)" % _liste(cahiers)) if cahiers else ""))
     a(t("- **le dépôt** : l'endroit, sur GitHub, qui garde tout — les textes, les images, "
-        "l'historique de chaque changement. C'est lui que {tu possèdes|vous possédez} ; le site et "
-        "les PDF en sont tirés."))
+        "l'historique de chaque changement. %s ; le site et les PDF en sont tirés.")
+      % ("C'est lui qui garde tout" if encrine else t("C'est lui que {tu possèdes|vous possédez}")))
     a("")
     a(t("**Encrine** est l'outil qui a fabriqué {ta|votre} classe : un « moteur » qui sait écrire une "
         "année conforme au programme, mettre en page les fiches, choisir les photos, fabriquer les PDF. "
         "Il s'améliore avec les retours des enseignants qui s'en servent, et {ta|votre} classe peut "
-        "recevoir ses nouveautés quand {tu le souhaites|vous le souhaitez}. Le bas de {ton|votre} site "
-        "porte la mention « Conçu avec Encrine », et ses mentions légales {te|vous} nomment comme "
-        "éditeur%s.") % ((" (« %s »)" % signature) if signature else ""))
+        "recevoir ses nouveautés quand {tu le souhaites|vous le souhaitez}. %s")
+      % ("Le bas du site porte la mention « Conçu avec Encrine » et renvoie aux mentions légales "
+         "d'Encrine, qui publie cette classe." if encrine else
+         t("Le bas de {ton|votre} site porte la mention « Conçu avec Encrine », et ses mentions "
+           "légales {te|vous} nomment comme éditeur%s.") % ((" (« %s »)" % signature) if signature else "")))
+    if copie_relue(c):
+        a("")
+        a("Cette page est celle de la copie publiée sur encrine.ai ; la classe d'origine reste chez "
+          "son auteur, qui a la sienne.")
     if valide:
         a("")
         a(t("Le contenu de {ta|votre} classe (projet, progressions, évaluations, fiches%s, textes) a été "
@@ -281,7 +303,10 @@ def texte(c, propre=None):
     else:
         a(t("2. **Si ça bloque encore**, {dis|dites} « signale ce problème » : Claude le transmet à "
             "l'outil avec {ton|votre} accord. Ou {écris|écrivez} à hello@encrine.ai."))
-    corps = envelopper("\n".join(l)) + "\n"
+    # Les insécables avant la coupure à 78 colonnes : textwrap ne coupe
+    # qu'aux espaces ordinaires, si bien qu'un « » » ou un « : » reste au
+    # mot qu'il accompagne (encrine-ai/moteur#2).
+    corps = envelopper(typographie.francais("\n".join(l))) + "\n"
     if propre:
         corps += "\n" + propre.strip("\n") + "\n"
     return corps
@@ -329,4 +354,7 @@ def anomalies(c):
     elif GUIDE.read_text(encoding="utf-8") != attendu(c):
         a.append("%s : périmé — relancer  python3 scripts/classe.py generer (la section "
                  "« Propre à cette classe » est gardée)" % NOM)
+    else:
+        # ce que le moteur a écrit, sans la section propre à la classe
+        a += typographie.anomalies(NOM, SECTION_CLASSE.sub("", GUIDE.read_text(encoding="utf-8")))
     return a

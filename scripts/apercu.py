@@ -50,6 +50,8 @@ import threading
 import functools
 import http.server
 
+import typographie
+
 RACINE = pathlib.Path(__file__).resolve().parent.parent
 SITE = RACINE / "site"
 INDEX = "index.html"
@@ -103,7 +105,8 @@ def bloc(c, adresse=None, image=IMAGE):
     url = adresse or "./"
     img = (adresse or "") + image
     e = lambda t: html.escape(t, quote=True)
-    t, d, alt = e(titre(c)), e(description(c)), e(texte_image(c))
+    f = typographie.francais
+    t, d, alt = e(f(titre(c))), e(f(description(c))), e(f(texte_image(c)))
     lignes = [
         DEBUT,
         "<!-- L'aperçu de lien (scripts/apercu.py) : écrit par classe.py generer,",

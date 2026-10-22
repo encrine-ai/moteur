@@ -112,7 +112,7 @@
     if (lignes) { corps += '<h2 id="images">Les images du site</h2><table>' + tete + '<tbody>' + lignes + '</tbody></table>'; page.sections.push({ id: 'images', titre: 'Les images du site' }); }
     if (photos) { corps += '<h2 id="imagier">Les photographies de l’imagier</h2><table>' + tete + '<tbody>' + photos + '</tbody></table>'; page.sections.push({ id: 'imagier', titre: 'Les photographies de l’imagier' }); }
     corps += '<h2 id="polices">Les polices et les icônes</h2><ul>' + polices +
-      '<li><strong>Andika</strong>, SIL International (OFL-1.1) — les mots de l’enfant</li><li>Icônes : Lucide (ISC)</li></ul>';
+      '<li><strong>Andika</strong>, SIL International (OFL-1.1) — les mots de l’enfant</li><li>Icônes\u00a0: Lucide (ISC)</li></ul>';
     page.sections.push({ id: 'polices', titre: 'Les polices et les icônes' });
     page.corps = corps;
     page.html = '<h1>Crédits</h1>' + corps;
@@ -129,7 +129,8 @@
   };
 
   /* La page des mentions légales d'une classe publiée par son enseignant
-     (modele.mentions.source === 'page') : fabriquée ici depuis classe.yml,
+     (modele.mentions.source === 'page') : fabriquée ici depuis classe.yml
+     (une classe publiée par Encrine n'en a pas : rend() mène aux siennes),
      rendue par le gabarit des documents, comme les crédits.
      - L'éditeur est l'enseignant (`enseignant.signature`), « site personnel
        non professionnel » : la loi (LCEN, art. 6, III, 2) permet à un
@@ -165,14 +166,14 @@
     section('editeur', 'Éditeur',
       '<p>' + (ens.signature ? esc(ens.signature) : 'L’enseignant de cette classe') +
       ', site personnel non professionnel.</p>' +
-      (contact ? '<p>Contact : ' + contact + '.</p>' : ''));
+      (contact ? '<p>Contact\u00a0: ' + contact + '.</p>' : ''));
     section('hebergeur', 'Hébergeur',
       '<p>' + esc(HEBERGEUR.nom) + ', ' + esc(HEBERGEUR.adresse) + ' — ' + lien(HEBERGEUR.lien, HEBERGEUR.lienTexte) + '.</p>');
     section('donnees', 'Données personnelles',
-      '<p>Ce site ne collecte aucune donnée personnelle : pas de compte, pas de formulaire, pas de cookie, ' +
+      '<p>Ce site ne collecte aucune donnée personnelle\u00a0: pas de compte, pas de formulaire, pas de cookie, ' +
       'pas de publicité, pas de mesure d’audience. Les polices, les images et les documents viennent du site ' +
-      'lui-même : aucune page n’appelle un autre site.</p>' +
-      '<p>Seuls restent dans le navigateur, sur l’appareil : le choix de ne plus voir l’invitation à installer ' +
+      'lui-même\u00a0: aucune page n’appelle un autre site.</p>' +
+      '<p>Seuls restent dans le navigateur, sur l’appareil\u00a0: le choix de ne plus voir l’invitation à installer ' +
       'l’appli, s’il a été fait, et une copie des pages déjà ouvertes, pour s’en servir sans réseau. ' +
       'Vider les données du site dans le navigateur les efface.</p>' +
       '<p>Comme tout hébergeur, GitHub traite des données techniques, comme l’adresse IP, pour délivrer les pages.</p>');
@@ -187,7 +188,7 @@
         (p.licence_note ? ', ' + esc(p.licence_note) : '') + '.</p>';
     }
     if (org) {
-      contenu += '<p>Cette classe est partie de « ' + (org.site ? lien(org.site, org.titre) : esc(org.titre)) + ' »' +
+      contenu += '<p>Cette classe est partie de «\u202f' + (org.site ? lien(org.site, org.titre) : esc(org.titre)) + '\u202f»' +
         (org.auteur ? ', de ' + esc(org.auteur) : '') + ' (' + esc(org.licence) + ').</p>';
     }
     contenu += '<p>Les images, les photographies et les polices ont leurs propres auteurs et licences, ' +
@@ -211,6 +212,13 @@
 
   function rend() {
     var page = route();
+    /* Une classe publiée par Encrine (modele.mentions.source === 'encrine')
+       n'a pas de page fabriquée : elle n'est pas éditée par un enseignant.
+       #/mentions-legales, ouvert à la main, mène aux mentions d'Encrine. */
+    if (page.type === 'mentions' && modele.mentions.source === 'encrine') {
+      location.replace(modele.mentions.lien);
+      return;
+    }
     var pret = page.type === 'document' ? prepareDocument(page)
       : page.type === 'credits' ? prepareCredits(page)
       : page.type === 'mentions' ? prepareMentions(page) : Promise.resolve(page);
@@ -288,8 +296,8 @@
     }
     var org = modele.classe.origine;
     if (org && !pied.querySelector('[data-origine]')) {
-      pied.insertAdjacentHTML('beforeend', '<p class="pied-origine" data-origine>Classe partie de « ' +
-        (org.site ? '<a href="' + esc(org.site) + '">' + esc(org.titre) + '</a>' : esc(org.titre)) + ' »' +
+      pied.insertAdjacentHTML('beforeend', '<p class="pied-origine" data-origine>Classe partie de «\u202f' +
+        (org.site ? '<a href="' + esc(org.site) + '">' + esc(org.titre) + '</a>' : esc(org.titre)) + '\u202f»' +
         (org.auteur ? ', de ' + esc(org.auteur) : '') + ' (' + esc(org.licence) + ').</p>');
     }
   }
