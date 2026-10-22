@@ -151,8 +151,9 @@ def texte(c, propre=None):
         "publication, {tu n'as|vous n'avez} jamais à les faire {toi|vous}-même ;")
       % ((" et chaque cahier (%s)" % _liste(cahiers)) if cahiers else ""))
     a(t("- **le dépôt** : l'endroit, sur GitHub, qui garde tout — les textes, les images, "
-        "l'historique de chaque changement. %s ; le site et les PDF en sont tirés.")
-      % ("C'est lui qui garde tout" if encrine else t("C'est lui que {tu possèdes|vous possédez}")))
+        "l'historique de chaque changement. %s")
+      % ("Le site et les PDF en sont tirés." if encrine else
+         t("C'est lui que {tu possèdes|vous possédez} ; le site et les PDF en sont tirés.")))
     a("")
     a(t("**Encrine** est l'outil qui a fabriqué {ta|votre} classe : un « moteur » qui sait écrire une "
         "année conforme au programme, mettre en page les fiches, choisir les photos, fabriquer les PDF. "
