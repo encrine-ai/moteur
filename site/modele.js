@@ -231,7 +231,7 @@
     var ponts = (CAL.ponts || []).map(function (p) {
       var du = GS.d(p.du), au = GS.d(p.au);
       return { nom: p.nom, du: du, au: au,
-               texte: p.nom + ' : pas de classe du ' + GS.fmt(du, { weekday: 'long', day: 'numeric' }) +
+               texte: p.nom + '\u00a0: pas de classe du ' + GS.fmt(du, { weekday: 'long', day: 'numeric' }) +
                  ' au ' + jourLong(au, true) + '.' };
     });
     var total = ps.reduce(function (s, p) { return s + p.sem; }, 0);
@@ -256,7 +256,7 @@
       mentions: mentions(),
       pied: {
         conformite: C.conformite,
-        calendrier: 'Dates des vacances : calendrier scolaire officiel ' + C.annee + ', zone ' + GS.ZONE + '.',
+        calendrier: 'Dates des vacances\u00a0: calendrier scolaire officiel ' + C.annee + ', zone ' + GS.ZONE + '.',
         credits: '#/credits'
       },
       mouvement: !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches),
@@ -280,7 +280,7 @@
     var partout = sortes.every(function (m) { return m.periodes.length === nb; });
     var k = sortes.length;
     return (partout ? 'Pour chaque période, ' : 'Pour les périodes prêtes, ') + nombre(k) +
-      (k > 1 ? ' cahiers' : ' cahier') + ' en A4 : ' + usages.join(' ou ') + '.';
+      (k > 1 ? ' cahiers' : ' cahier') + ' en A4\u00a0: ' + usages.join(' ou ') + '.';
   }
 
   GS.modele = modele;

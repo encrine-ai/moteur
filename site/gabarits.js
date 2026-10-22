@@ -128,7 +128,7 @@
         '<span class="zone-badge">zone ' + esc(C.zone) + '</span></div>' + frise +
         '<p class="frise-total">' + esc(m.annee.texte) + '</p>' +
         '<ul class="vacances">' + vac + '</ul>' +
-        '<p class="note">' + ponts + 'Les dates sont celles de la zone ' + esc(C.zone) + ' ; chaque document se télécharge en PDF prêt à imprimer, dates comprises.</p></section>' +
+        '<p class="note">' + ponts + 'Les dates sont celles de la zone ' + esc(C.zone) + '\u202f; chaque document se télécharge en PDF prêt à imprimer, dates comprises.</p></section>' +
       (materiel ? '<section class="bloc" data-composant="bloc" data-bloc="materiel"><div class="bloc-tete"><h2>À imprimer pour la classe</h2></div>' +
         '<p class="note">' + esc(m.materielNote) + '</p><div class="materiels">' + materiel + '</div></section>' : '') +
       '<section class="bloc" data-composant="bloc" data-bloc="documents"><div class="bloc-tete"><h2>Mes documents</h2></div>' + docs + '</section>' +
@@ -218,7 +218,7 @@
       p.corpus.corpus.map(function (k) {
         return '<div><h3>' + esc(k.titre) + '</h3><ul>' + k.mots.map(function (w) { return '<li class="mot-enfant">' + esc(w) + '</li>'; }).join('') + '</ul></div>';
       }).join('') + '</div>' +
-      (p.corpus.sans_carte.length ? '<p class="note">Et aussi, sans carte : <span class="mot-enfant">' + p.corpus.sans_carte.map(esc).join(', ') + '</span>.</p>' : '') +
+      (p.corpus.sans_carte.length ? '<p class="note">Et aussi, sans carte\u00a0: <span class="mot-enfant">' + p.corpus.sans_carte.map(esc).join(', ') + '</span>.</p>' : '') +
       '</section>' : '';
     var projet = D.sectionsProjet(m, p);
     return '<article class="m-periode" data-composant="periode" data-periode="' + p.n + '">' +

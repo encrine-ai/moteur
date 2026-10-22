@@ -801,6 +801,13 @@ def verifier():
     a_appli += apercu.anomalies(c)
     a_appli += readme.anomalies(c)
     a_appli += prise_en_main.anomalies(c)
+    # La typographie des textes que les scripts du site écrivent (le guide,
+    # le README et l'aperçu se contrôlent dans leurs modules).
+    import typographie
+    for nom in typographie.SCRIPTS_DU_SITE:
+        f = RACINE / "site" / nom
+        if f.is_file():
+            a_appli += typographie.anomalies_js("site/" + nom, f.read_text(encoding="utf-8"))
     anomalies += a_appli
     avertissements += w_appli
     for a in avertissements:

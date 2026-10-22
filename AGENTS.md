@@ -32,7 +32,12 @@ licence, site, date de reprise) : le pied du site crédite l'original, ce
 qu'exigent CC BY et CC BY-SA.
 
 Tout est écrit **en français**, y compris les noms de fichiers, les
-commentaires et les messages de commit.
+commentaires et les messages de commit. Ce que le moteur écrit lui-même (le
+guide, le bloc du README, l'aperçu de lien, les textes des scripts du site)
+suit la typographie française : espaces insécables devant « : ; ? ! » et
+dans « … » (`scripts/typographie.py` ; `\u00a0` et `\u202f` dans le
+JavaScript), contrôlées par `classe.py verifier` — sans elles, un « » »
+tombait seul en début de ligne du guide (encrine-ai/moteur#2).
 
 ## Organisation
 

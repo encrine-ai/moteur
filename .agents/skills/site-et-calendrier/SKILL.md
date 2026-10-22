@@ -283,6 +283,11 @@ l'oublie). Où mène le lien, dans cet ordre :
    de la galerie : l'adresse de la page (`encrine.ai`), ou `depot` dans
    `encrine-ai/`, ou `site` sous `https://encrine.ai/` → les mentions
    d'Encrine, https://encrine.ai/mentions-legales/ (Encrine l'héberge).
+   Elle n'a pas de page fabriquée : `#/mentions-legales`, ouvert à la main,
+   mène aux mentions d'Encrine (`rend()`, `app.js`) — la page de la
+   démonstration nommait « l'enseignant de cette classe » comme éditeur
+   (encrine-ai/moteur#1). Son guide `PRISE-EN-MAIN.md` le dit aussi
+   (`publiee_par_encrine()`, `scripts/prise_en_main.py`, même test).
 2. **`mentions_legales: https://…`** dans `classe.yml` (facultatif) : la
    classe a déjà ses pages légales, le pied y pointe.
 3. **Sinon — le cas ordinaire, le site de l'enseignant** : la page
