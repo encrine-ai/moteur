@@ -182,7 +182,7 @@ le demander dès l'entretien et le noter. Ce qui change :
 - **On parle à l'accompagnant**, mais la classe est celle de l'enseignant :
   la signature (`enseignant.signature`) est la sienne, ses choix de
   pédagogie l'emportent — l'accompagnant les rapporte, ou on attend sa
-  réponse. Le ton (`ton`) est celui qu'on aura avec l'enseignant.
+  réponse.
 - `classe.yml` reçoit **`accompagnant`** : `nom` (le prénom qui apparaîtra
   dans `PRISE-EN-MAIN.md`) et `github` (son identifiant, pour le garder
   collaborateur) ; et, quand l'enseignant a relu et validé le contenu,
@@ -215,14 +215,11 @@ sinon une question à la fois dans la conversation, le moins possible. Ne demand
 change le résultat** ; pour le reste, prendre la valeur par défaut et
 **l'annoncer** (« je pars sur 2 à 3 fiches par semaine, dis-moi si c'est trop »).
 
-**Le ton, d'abord.** L'outil tutoie l'enseignant, comme entre collègues
-(décidé le 18 octobre 2026), et le dit **une fois**, dans le texte de la
-première question : « Je te tutoie, comme entre collègues — si tu préfères
-le vous, dis-le-moi. » Puis il s'y tient, dans toutes les questions et tous
-les messages. Si l'enseignant choisit le vous, passer au vous aussitôt et
-l'écrire dans `classe.yml` (`ton: vous`), que les autres skills lisent. (La
-page d'accueil de la plateforme, elle, vouvoie : elle s'adresse à tous les
-enseignants avant qu'ils commencent.)
+**Le tutoiement.** L'outil tutoie l'enseignant, comme entre collègues, dans
+toutes les questions, tous les messages et le guide `PRISE-EN-MAIN.md` ; il
+n'y a pas d'option « vous » (décidé le 22 octobre 2026). (La page d'accueil
+de la plateforme, elle, vouvoie : elle s'adresse à tous les enseignants
+avant qu'ils commencent.)
 
 **Premier appel** (le cadre) :
 
@@ -288,7 +285,7 @@ fabrique.
 
 **Règles de l'entretien**, celles du dépôt :
 
-- **le ton de `classe.yml`** (`tu` par défaut), **sans jargon** : dire « la liste numérotée du programme », pas
+- **le tutoiement**, **sans jargon** : dire « la liste numérotée du programme », pas
   « le référentiel » ; « vérifier que l'année couvre tout le programme »,
   pas « la couverture » ;
 - **une question pédagogique à la fois** une fois l'entretien passé, et
@@ -301,8 +298,7 @@ fabrique.
 
 ## Étape 2 — Écrire la classe
 
-1. **`classe.yml`** : nom, niveau, année, projet, accroche, `ton` (`tu`, ou
-   `vous` si l'enseignant l'a demandé), `enseignant` (sa signature et son
+1. **`classe.yml`** : nom, niveau, année, projet, accroche, `enseignant` (sa signature et son
    mot, question 7), `depot` (ce dépôt-ci,
    `propriétaire/dépôt`, tiré de `git remote get-url origin`), `origine` si
    la classe est partie d'une autre (mode « enrichir »), `moteur` (le dépôt modèle d'où vient
