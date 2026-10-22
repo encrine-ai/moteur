@@ -33,7 +33,7 @@ relu, même si la classe d'origine change le lendemain. Et :
 classe est montrée dans la galerie ; tes changements y arrivent après une
 nouvelle relecture. »
 
-Parler sans jargon, en suivant `ton` dans `classe.yml` (tu par défaut) : dire
+Parler sans jargon, en tutoyant : dire
 « la galerie », « ta fiche », « la personne qui relit », « la copie »,
 jamais « pull request », « JSON », « merge », « fork ».
 

@@ -712,8 +712,10 @@ def verifier():
     _verifier_enseignant(c, anomalies, avertissements)
     _verifier_mentions(c, anomalies)
     _verifier_projet(c, anomalies)
-    if c.get("ton", "tu") not in ("tu", "vous"):
-        anomalies.append("ton : « %s » — `tu` ou `vous`" % c.get("ton"))
+    if "ton" in c:
+        # retirée le 22 octobre 2026 : l'outil tutoie toujours l'enseignant
+        avertissements.append("ton : clé retirée — l'outil tutoie toujours l'enseignant ; "
+                              "la ligne peut être ôtée de classe.yml")
     moteur = c.get("moteur")
     if not isinstance(moteur, dict) or "depot" not in moteur or "version" not in moteur:
         anomalies.append("moteur : il faut `depot` et `version` (skill synchroniser-moteur)")

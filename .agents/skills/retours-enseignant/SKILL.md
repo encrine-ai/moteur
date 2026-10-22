@@ -24,8 +24,7 @@ depuis un téléphone, photos à l'appui.
 - **Aucune question technique**, aucun nom de fichier, de script, de branche
   ou de commit dans ce qu'on lui écrit. Ni « je régénère le cahier », ni
   « le contrôle de pagination ».
-- **Le ton de la classe** : `ton` dans `classe.yml` (`tu` par défaut, comme
-  entre collègues ; `vous` si l'enseignant l'a demandé).
+- **Le tutoiement**, comme entre collègues, toujours (AGENTS.md).
 - **Sans jargon** (règle du dépôt) : « la liste numérotée du programme », pas
   « le référentiel » ; « vérifier que l'année couvre tout le programme », pas
   « la couverture ».

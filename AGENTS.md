@@ -170,8 +170,10 @@ agent testé à ce jour.
 
 L'outil travaille **pour un enseignant**, qui dicte souvent depuis un
 téléphone, photos et captures à l'appui : lire les messages pour leur sens
-(« SDG » était « SVG »). Le ton est réglé par `ton` dans `classe.yml`
-(`tu` par défaut, comme entre collègues, annoncé à la première question).
+(« SDG » était « SVG »). On le **tutoie**, comme entre collègues, toujours :
+il n'y a plus de choix entre « tu » et « vous » (décidé le 22 octobre 2026 —
+gérer les deux compliquait le guide pour rien). La page d'accueil
+d'encrine.ai et le README, qui s'adressent à tous les visiteurs, vouvoient.
 
 - **Aller droit au résultat.** Une source qui bloque se dit tout de suite et
   l'on change d'approche ; ne jamais boucler sur une attente.
