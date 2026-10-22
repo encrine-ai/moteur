@@ -65,8 +65,7 @@ collègue ? », puis suivre la ligne qui correspond.
      tout le reste comme pour une classe partie de zéro.
 3. **Ne poser que** — en une fois avec l'outil de questions interactives de
    l'agent s'il en a un (`AskUserQuestion` dans Claude Code), sinon une
-   question à la fois dans la conversation, et avec la phrase du
-   tutoiement — **le niveau**, **la zone**, **l'année**, **le profil de la
+   question à la fois dans la conversation — **le niveau**, **la zone**, **l'année**, **le profil de la
    classe** — plus **par où commencer** (une période ou les cinq) si le
    niveau change — et **la signature** (« Comment veux-tu signer ta
    classe ? », question 7 ci-dessous : `enseignant` est celui de la nouvelle
@@ -215,11 +214,10 @@ sinon une question à la fois dans la conversation, le moins possible. Ne demand
 change le résultat** ; pour le reste, prendre la valeur par défaut et
 **l'annoncer** (« je pars sur 2 à 3 fiches par semaine, dis-moi si c'est trop »).
 
-**Le tutoiement.** L'outil tutoie l'enseignant, comme entre collègues, dans
-toutes les questions, tous les messages et le guide `PRISE-EN-MAIN.md` ; il
-n'y a pas d'option « vous » (décidé le 22 octobre 2026). (La page d'accueil
-de la plateforme, elle, vouvoie : elle s'adresse à tous les enseignants
-avant qu'ils commencent.)
+**Tu ou vous.** Dans la conversation, l'agent parle à l'enseignant comme
+celui-ci lui parle ; rien ne s'écrit dans `classe.yml`. Le guide
+`PRISE-EN-MAIN.md`, comme la page d'accueil de la plateforme, vouvoie
+(AGENTS.md, décidé le 22 octobre 2026).
 
 **Premier appel** (le cadre) :
 
@@ -285,7 +283,7 @@ fabrique.
 
 **Règles de l'entretien**, celles du dépôt :
 
-- **le tutoiement**, **sans jargon** : dire « la liste numérotée du programme », pas
+- **sans jargon** : dire « la liste numérotée du programme », pas
   « le référentiel » ; « vérifier que l'année couvre tout le programme »,
   pas « la couverture » ;
 - **une question pédagogique à la fois** une fois l'entretien passé, et

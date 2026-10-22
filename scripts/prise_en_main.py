@@ -9,8 +9,8 @@ les règles de prudence ; à qui demander quand ça bloque. Il reprend le guide
 écrit à la main pour la première classe passée à son enseignante, rendu
 générique : tout ce qui est propre à une classe vient de classe.yml —
 
-- `enseignant.signature` (« Bienvenue, Anaïs ») ; le guide tutoie toujours
-  l'enseignant, comme entre collègues (décidé le 22 octobre 2026) ;
+- `enseignant.signature` (« Bienvenue, Anaïs ») ; le guide vouvoie, comme la
+  page d'accueil d'encrine.ai et le README (décidé le 22 octobre 2026) ;
 - `projet`, `niveau`, `annee`, `depot` (le nom du dépôt, la nouvelle
   adresse), `site` ; `materiel` (les cahiers nommés) et `periodes` (un
   exemple de demande) ;
@@ -123,74 +123,74 @@ def texte(c, propre=None):
 
     l = []
     a = l.append
-    a("# Prendre en main ta classe")
+    a("# Prendre en main votre classe")
     a("")
     a("<!-- Écrit par scripts/classe.py generer, depuis classe.yml : ne pas retoucher à la main.")
     a("     Ce qui est propre à cette classe s'écrit à la fin, entre les marqueurs")
     a("     classe:debut et classe:fin (un titre « ## Propre à cette classe ») : c'est gardé. -->")
     a("")
-    a("Bienvenue%s. Cette page t'explique, en mots simples, ce qu'est ta classe, "
-        "« %s » (%s, %s), comment la reprendre à ton nom, et ce que tu peux "
-        "demander ensuite. Tu n'as rien à apprendre de technique : tu parles "
+    a("Bienvenue%s. Cette page vous explique, en mots simples, ce qu'est votre classe, "
+        "« %s » (%s, %s), comment la reprendre à votre nom, et ce que vous pouvez "
+        "demander ensuite. Vous n'avez rien à apprendre de technique : vous parlez "
         "à Claude comme à un collègue, et c'est lui qui fait."
       % ((", " + signature) if signature else "", _un(c["projet"]), _un(c["niveau"]["libelle"]), c["annee"]))
     a("")
-    a("## Ta classe, c'est quoi ?")
+    a("## Votre classe, c'est quoi ?")
     a("")
-    a("Ta classe tient en trois choses, qui vont ensemble :")
+    a("Votre classe tient en trois choses, qui vont ensemble :")
     a("")
-    a("- **ton site** : la page web de ta classe, avec le projet de l'année, la "
+    a("- **votre site** : la page web de votre classe, avec le projet de l'année, la "
         "programmation, les progressions, les évaluations et tous les cahiers. Il s'ouvre sur un "
         "ordinateur, une tablette ou un téléphone, et s'installe comme une appli ;")
     a("- **les PDF** : chaque document%s, prêts à imprimer en A4. Ils sont refabriqués à chaque "
-        "publication, tu n'as jamais à les faire toi-même ;"
+        "publication, vous n'avez jamais à les faire vous-même ;"
       % ((" et chaque cahier (%s)" % _liste(cahiers)) if cahiers else ""))
     a("- **le dépôt** : l'endroit, sur GitHub, qui garde tout — les textes, les images, "
         "l'historique de chaque changement. %s"
       % ("Le site et les PDF en sont tirés." if encrine else
-         ("C'est lui que tu possèdes ; le site et les PDF en sont tirés.")))
+         ("C'est lui que vous possédez ; le site et les PDF en sont tirés.")))
     a("")
-    a("**Encrine** est l'outil qui a fabriqué ta classe : un « moteur » qui sait écrire une "
+    a("**Encrine** est l'outil qui a fabriqué votre classe : un « moteur » qui sait écrire une "
         "année conforme au programme, mettre en page les fiches, choisir les photos, fabriquer les PDF. "
-        "Il s'améliore avec les retours des enseignants qui s'en servent, et ta classe peut "
-        "recevoir ses nouveautés quand tu le souhaites. %s"
+        "Il s'améliore avec les retours des enseignants qui s'en servent, et votre classe peut "
+        "recevoir ses nouveautés quand vous le souhaitez. %s"
       % ("Le bas du site porte la mention « Conçu avec Encrine » et renvoie aux mentions légales "
          "d'Encrine, qui publie cette classe." if encrine else
-         ("Le bas de ton site porte la mention « Conçu avec Encrine », et ses mentions "
-           "légales te nomment comme éditeur%s.") % ((" (« %s »)" % signature) if signature else "")))
+         ("Le bas de votre site porte la mention « Conçu avec Encrine », et ses mentions "
+           "légales vous nomment comme éditeur%s.") % ((" (« %s »)" % signature) if signature else "")))
     if copie_relue(c):
         a("")
         a("Cette page est celle de la copie publiée sur encrine.ai ; la classe d'origine reste chez "
           "son auteur, qui a la sienne.")
     if valide:
         a("")
-        a("Le contenu de ta classe (projet, progressions, évaluations, fiches%s, textes) a été "
-            "relu et **validé le %s**. Il ne change que si tu le demandes."
+        a("Le contenu de votre classe (projet, progressions, évaluations, fiches%s, textes) a été "
+            "relu et **validé le %s**. Il ne change que si vous le demandez."
           % (", espèces de l'imagier, mots" if imagier else "", date_longue(valide)))
     a("")
     a("## Le premier lancement, après le transfert")
     a("")
     if acc:
-        debut = ("%s va te transférer ta classe : elle passera de son compte GitHub "
-                  "au tien.") % acc_nom
+        debut = ("%s va vous transférer votre classe : elle passera de son compte GitHub "
+                  "au vôtre.") % acc_nom
     else:
-        debut = ("Si ta classe passe d'un compte GitHub à un autre (un transfert, depuis "
+        debut = ("Si votre classe passe d'un compte GitHub à un autre (un transfert, depuis "
                   "celui de la personne qui l'a préparée, par exemple), voici la marche à suivre.")
     if not c.get("site"):
-        debut += (" À partir de là, **l'adresse de ton site change** : elle devient "
-                   "`https://<ton-identifiant>.github.io/%s/` (l'ancienne adresse ne "
+        debut += (" À partir de là, **l'adresse de votre site change** : elle devient "
+                   "`https://<votre-identifiant>.github.io/%s/` (l'ancienne adresse ne "
                    "marchera plus).") % nom_depot
     a(debut)
     a("")
-    a("1. Ouvre une session Claude Code sur ta classe (ton dépôt "
-        "`<ton-identifiant>/%s`)." % nom_depot)
-    a("2. Dis simplement :")
+    a("1. Ouvrez une session Claude Code sur votre classe (votre dépôt "
+        "`<votre-identifiant>/%s`)." % nom_depot)
+    a("2. Dites simplement :")
     a("")
     a("   > Je reprends ma classe.")
     a("")
-    a("Claude fera alors, sans te demander de détail technique :")
+    a("Claude fera alors, sans vous demander de détail technique :")
     a("")
-    a("- **la nouvelle adresse** : il écrit ton dépôt dans la fiche d'identité de ta "
+    a("- **la nouvelle adresse** : il écrit votre dépôt dans la fiche d'identité de votre "
         "classe (`classe.yml`, la ligne `depot`), ce qui refait le lien « Voir le site de la classe » "
         "en haut de la page d'accueil du dépôt, le contact des mentions légales du site, et l'aperçu "
         "qui s'affiche quand on colle le lien du site dans un message ;")
@@ -200,24 +200,24 @@ def texte(c, propre=None):
     a("- **les PDF** : il les fabrique tous et vérifie qu'ils s'impriment bien, une page par fiche "
       "et par planche ;")
     a("- **la publication** : il enregistre et publie, attend que le site soit en ligne à sa "
-        "nouvelle adresse, l'ouvre et ouvre un PDF pour s'en assurer, puis te donne le lien.")
+        "nouvelle adresse, l'ouvre et ouvre un PDF pour s'en assurer, puis vous donne le lien.")
     a("")
-    a("**Un réglage à vérifier une fois** : pour que ton site se publie, GitHub doit savoir "
-        "qu'il est fabriqué par l'outil. Dans ton dépôt, sur GitHub : *Settings* → *Pages* → "
+    a("**Un réglage à vérifier une fois** : pour que votre site se publie, GitHub doit savoir "
+        "qu'il est fabriqué par l'outil. Dans votre dépôt, sur GitHub : *Settings* → *Pages* → "
         "*Build and deployment* → *Source* doit être **GitHub Actions**. Claude le vérifie pendant ce "
-        "premier lancement ; s'il ne peut pas le régler lui-même, il te dit exactement où cliquer.")
+        "premier lancement ; s'il ne peut pas le régler lui-même, il vous dit exactement où cliquer.")
     a("")
-    a("Si tu avais installé le site sur ton téléphone, ou donné son lien (à des "
-        "collègues, aux familles, dans un code QR), refais-le avec la nouvelle adresse.")
+    a("Si vous aviez installé le site sur votre téléphone, ou donné son lien (à des "
+        "collègues, aux familles, dans un code QR), refaites-le avec la nouvelle adresse.")
     a("")
-    a("## Ce que tu peux dire ensuite")
+    a("## Ce que vous pouvez dire ensuite")
     a("")
-    a("Parle avec tes mots, depuis ton téléphone si tu veux, "
-        "photos et captures à l'appui. Claude te tutoie, ne te pose que les "
-        "questions qui te reviennent (pédagogie, goût, diffusion), **une à la fois**, et "
-        "te montre ce qu'il a fait avant de le publier.")
+    a("Parlez avec vos mots, depuis votre téléphone si vous voulez, "
+        "photos et captures à l'appui. Claude ne vous pose que les "
+        "questions qui vous reviennent (pédagogie, goût, diffusion), **une à la fois**, et "
+        "vous montre ce qu'il a fait avant de le publier.")
     a("")
-    a("| Tu veux… | Tu dis, par exemple… |")
+    a("| Vous voulez… | Vous dites, par exemple… |")
     a("|---|---|")
     image = ("« Change cette photo de l'imagier », « on ne voit pas bien l'animal »" if imagier
              else "« Change l'image de cette fiche »")
@@ -230,75 +230,75 @@ def texte(c, propre=None):
     a("| signaler un problème de l'outil, ou une idée pour tous | « Transmets ça à l'outil », « ce "
       "serait bien pour tout le monde », « signale ce problème » |")
     a("| recevoir les nouveautés de l'outil | « Mets l'outil à jour » |")
-    a("| partager ta classe avec d'autres enseignants | « Je voudrais partager ma classe » |")
+    a("| partager votre classe avec d'autres enseignants | « Je voudrais partager ma classe » |")
     a("| imprimer | « Refais les PDF », « vérifie que tout s'imprime bien avant que j'imprime la "
       "période %d », « la fiche déborde sur deux pages » |" % exemple_p)
-    a("| savoir où tu en es | « Qu'est-ce qui a changé depuis la dernière fois ? », "
+    a("| savoir où vous en êtes | « Qu'est-ce qui a changé depuis la dernière fois ? », "
         "« est-ce que l'année couvre tout le programme ? » |")
     a("")
     a("Ce qui se passe derrière ces phrases :")
     a("")
-    a("- **Tes retours** : Claude les trie un par un. Ce qui concerne ta classe, il le "
-        "corrige ici, te le montre et le publie. Ce qui viendrait d'un défaut de l'outil, il le "
-        "corrige aussi s'il le peut, et te propose de le signaler.")
+    a("- **Vos retours** : Claude les trie un par un. Ce qui concerne votre classe, il le "
+        "corrige ici, vous le montre et le publie. Ce qui viendrait d'un défaut de l'outil, il le "
+        "corrige aussi s'il le peut, et vous propose de le signaler.")
     a("- **« Transmets ça à l'outil »** : Claude rédige un signalement, sans jamais rien qui désigne "
-        "un élève, te le relit et, avec ton accord, l'envoie au moteur Encrine. Quand "
+        "un élève, vous le relit et, avec votre accord, l'envoie au moteur Encrine. Quand "
         "une amélioration en sort, toutes les classes peuvent la recevoir.")
     a("- **« Mets l'outil à jour »** : Claude récupère la dernière version de l'outil (les programmes "
         "qui fabriquent les pages, les contrôles, les savoir-faire de Claude), sans toucher à "
-        "ton contenu, refait tous les contrôles jusqu'aux PDF, et ne publie que si tout est juste.")
+        "votre contenu, refait tous les contrôles jusqu'aux PDF, et ne publie que si tout est juste.")
     a("- **« Je voudrais partager ma classe »** : Claude relit d'abord tout ce qui doit l'être "
         "(programme couvert, impression, licences des images, aucun prénom d'élève, aucune photo de "
-        "classe, aucun album ni chanson recopié), prépare la présentation de ta classe et "
-        "te demande ton accord. Tu envoies toi-même la proposition "
-        "depuis ton compte. Après une relecture, une **copie relue** de ta classe est "
-        "montrée dans « Les classes », la galerie d'encrine.ai ; ta classe et ton site "
-        "restent à toi. Tu peux la retirer à tout moment : « retire ma classe de "
+        "classe, aucun album ni chanson recopié), prépare la présentation de votre classe et "
+        "vous demande votre accord. Vous envoyez vous-même la proposition "
+        "depuis votre compte. Après une relecture, une **copie relue** de votre classe est "
+        "montrée dans « Les classes », la galerie d'encrine.ai ; votre classe et votre site "
+        "restent à vous. Vous pouvez la retirer à tout moment : « retire ma classe de "
         "la galerie ».")
     a("")
-    a("## Ce qui reste à toi, et ce qui est protégé")
+    a("## Ce qui reste à vous, et ce qui est protégé")
     a("")
-    a("- **Ton contenu ne bouge que sur ta demande.** Claude peut proposer, jamais "
-        "décider à ta place.")
-    a("- **Une mise à jour de l'outil ne touche jamais ton contenu** : ni ta fiche "
-        "d'identité (`classe.yml`), ni tes documents, ni tes fiches, ni tes cahiers, "
-        "ni ton style.")
-    a("- **Tes notes sont gardées.** Quand Claude apprend quelque chose qui ne vaut que pour "
-        "ta classe (une décision sur une image, une habitude de la classe), il l'écrit dans la "
+    a("- **Votre contenu ne bouge que sur votre demande.** Claude peut proposer, jamais "
+        "décider à votre place.")
+    a("- **Une mise à jour de l'outil ne touche jamais votre contenu** : ni votre fiche "
+        "d'identité (`classe.yml`), ni vos documents, ni vos fiches, ni vos cahiers, "
+        "ni votre style.")
+    a("- **Vos notes sont gardées.** Quand Claude apprend quelque chose qui ne vaut que pour "
+        "votre classe (une décision sur une image, une habitude de la classe), il l'écrit dans la "
         "section « Propre à cette classe » de ses savoir-faire, ou de cette page ; les mises à jour "
         "de l'outil la conservent.")
     a("- **Rien n'est perdu** : chaque changement est enregistré, et peut être défait. Si quelque "
-        "chose te déplaît, dis-le : « reviens à la version d'avant ».")
+        "chose vous déplaît, dites-le : « reviens à la version d'avant ».")
     a("")
     a("## Les règles de prudence")
     a("")
-    a("- **Ton site et ta classe sont publics** : n'importe qui peut les lire, même "
-        "ce qui n'est pas encore publié. N'y mets donc rien de privé.")
+    a("- **Votre site et votre classe sont publics** : n'importe qui peut les lire, même "
+        "ce qui n'est pas encore publié. N'y mettez donc rien de privé.")
     if fictifs:
         a("- **Aucun prénom d'élève réel.** Les prénoms des énoncés (%s) sont inventés ; si "
-            "tu en ajoutes, choisis-les inventés aussi, et "
-            "dis-le à Claude." % _liste(fictifs))
+            "vous en ajoutez, choisissez-les inventés aussi, et "
+            "dites-le à Claude." % _liste(fictifs))
     else:
         a("- **Aucun prénom d'élève réel.** Si des énoncés portent des prénoms, "
-            "choisis-les inventés, et dis-le à Claude.")
+            "choisissez-les inventés, et dites-le à Claude.")
     a("- **Aucune photo d'élève**, ni de la classe, ni d'un travail d'élève.")
     if signature:
-        a("- Ni le nom de l'école, ni la ville : ta signature (« %s ») suffit." % signature)
+        a("- Ni le nom de l'école, ni la ville : votre signature (« %s ») suffit." % signature)
     else:
         a("- Ni le nom de l'école, ni la ville : le site n'en a pas besoin.")
     a("")
     a("## Si quelque chose ne va pas")
     a("")
-    a("1. **Demande d'abord à Claude**, avec tes mots : « le site ne s'ouvre plus », "
+    a("1. **Demandez d'abord à Claude**, avec vos mots : « le site ne s'ouvre plus », "
         "« le PDF de la période %d a une page blanche », « je ne comprends pas ce que tu as fait ». Il "
         "cherche, explique sans jargon, et répare." % exemple_p)
     if acc:
-        a("2. **Si ça bloque encore, demande à %s** : %s peut rester parmi les "
-            "collaborateurs de ta classe pour t'aider, et ouvrir une session de son "
-            "côté. Les décisions sur ta classe restent les tiennes." % (acc_nom, acc_nom))
+        a("2. **Si ça bloque encore, demandez à %s** : %s peut rester parmi les "
+            "collaborateurs de votre classe pour vous aider, et ouvrir une session de son "
+            "côté. Les décisions sur votre classe restent les vôtres." % (acc_nom, acc_nom))
     else:
-        a("2. **Si ça bloque encore**, dis « signale ce problème » : Claude le transmet à "
-            "l'outil avec ton accord. Ou écris à hello@encrine.ai.")
+        a("2. **Si ça bloque encore**, dites « signale ce problème » : Claude le transmet à "
+            "l'outil avec votre accord. Ou écrivez à hello@encrine.ai.")
     # Les insécables avant la coupure à 78 colonnes : textwrap ne coupe
     # qu'aux espaces ordinaires, si bien qu'un « » » ou un « : » reste au
     # mot qu'il accompagne (encrine-ai/moteur#2).
